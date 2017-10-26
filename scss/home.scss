@@ -2,64 +2,57 @@
 
 $lineWid: 2;
 $edge: 200;
-$sqrt2: 1.414;
 $pitcher: $edge * .1875;
 $pitcherDis: $edge * .675;
 $lineColor: black;
 
-// matrix(scaleX(),skewY(),skewX(),scaleY(),translateX(),translateY())
+.container-fluid { margin: 10px; }
 
-.container-fluid { 
-	margin: 500px 800px;
+#history { 
+  margin: 50px 0; 
+  .list-group-item {
+    & > div { height: 25px; }
+  }
 }
 
+.btn-group { margin: 5px 0; }
+
+.hit-pos:first-of-type .minus { display: none; }
+
 #field {
-	width: 1000px;
-	height: 1000px;
-	position: relative;
-	& > * { position: absolute; }
+	#left-line, #right-line { stroke: white; }
 	
-	#square {
-		transform-origin: 100% 100%;
-		stroke: $lineColor;
-		stroke-width: $lineWid;
-		transform: rotate(45deg);
-		fill: transparent;
-		width: #{$edge}px;
-		height: #{$edge}px;
-		top: #{1000 - $edge}px;
-		left: #{1000 - $edge}px;
-	}
+	rect, circle, path, line { stroke: transparent; stroke-width: 2px; }
 
-	[id$="-line"] { 
-		height: #{$lineWid}px;
-		width: #{$edge * 5}px; 
-		background: $lineColor;
-		transform-origin: left; 
-		left: #{$edge}px;
-		top: #{$edge - $lineWid}px;
-		&#left-line { transform: rotate(-135deg); }
-		&#right-line { transform: rotate(-45deg); }
+	.diamond { transform: rotate(45deg); transform-origin: 100% 100%; }
+	
+	#base { 
+	  .base {
+		transform-origin: left top; 
+		fill: white; stroke: white;
+		&:hover { fill: black; stroke: black; }
+	  }
+	  
+	  rect.base {
+		&:first-of-type { transform: rotate(45deg); }
+		&:nth-of-type(2) { transform: rotate(-45deg); }
+		&:nth-of-type(3) { transform: rotate(135deg); }
+	  }
+	  
+	  line { stroke: white; stroke-width: .5px; }
 	}
-
-	#arc {
-		border-radius: 50%;
-		width: #{$edge * 2}px;
-		height: #{$edge * 2}px;
-		border: #{$lineWid}px solid $lineColor;
-		border-bottom-color: transparent;
-		border-left-color: transparent;
-		border-right-color: transparent;
-		top: #{-$pitcherDis}px;
+	
+	i { 
+		position: static; 
+		cursor: pointer;
+		&:hover { 
+			font-size: 2em;
+			color: black;
+		}
 	}
+	#fielder i { color: #87ceff; }
+	#runner i { color: blue; }
+}
 
-	#pitcher {
-		border-radius: 50%;
-		width: #{$pitcher}px;
-		height: #{$pitcher}px;
-		border: #{$lineWid}px solid $lineColor;
-		left: #{$edge - $pitcher * .5}px;
-		top: #{$edge - $pitcherDis - $pitcher * .5}px;
-	}
-
+@media (max-width:767px) {
 }

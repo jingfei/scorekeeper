@@ -3,7 +3,6 @@
 var core = require('canner-core');
 var argv = require('minimist')(process.argv.slice(2));
 
-var fs = require('fs-extra');
 var path = require('path');
 var load_ch = './route.js';
 var load_en = './route-en.js';
