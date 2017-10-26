@@ -8,6 +8,10 @@ $lineColor: black;
 
 .container-fluid { margin: 10px; }
 
+rect, circle, path, line { stroke: black; stroke-width: 2px; fill: transparent; }
+
+.diamond { fill: transparent; stroke: black; stroke-width: 2px; transform: rotate(45deg); transform-origin: 100% 100%; }
+
 #test {
 	width: 1000px;
 	height: 1000px;

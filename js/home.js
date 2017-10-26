@@ -18,13 +18,36 @@ function dynamicWidth() {
 }
 
 function buildField(svg, edge, centerX, centerY) {
-	const pitcherR = edge * .1875 * .5, pitcherDis = edge * .675;
+	const pitcherR = edge * .1875 * .5, pitcherDis = edge * .675, 
+		  baseR = edge * .15, fieldEdge = edge / Math.sqrt(2),
+		  lineGap = edge * .0375,
+		  sDiamondMove = lineGap * Math.sqrt(2), sDiamondAway = (Math.sqrt(baseR*baseR - lineGap*lineGap) - lineGap) / Math.sqrt(2);
 	svg.innerHTML = `
-	<rect id="square" x="${centerX-edge}" y="${centerY-edge}" width="${edge}" height="${edge}"/>
-			<line id="left-line" x1="${centerX}" y1="${centerY}" x2="${centerX-edge*3}" y2="${centerY-edge*3}"/>
-			<line id="right-line" x1="${centerX}" y1="${centerY}" x2="${centerX+edge*3}" y2="${centerY-edge*3}"/>
-			<circle id="pitcher" r="${pitcherR}" cx="${centerX}" cy="${centerY-pitcherDis}" />
-			<path id="arc" d="${describeArc(centerX,centerY-pitcherDis,edge,-73.5,73.5)}">`;
+		<rect class="diamond" x="${centerX-edge}" y="${centerY-edge}" width="${edge}" height="${edge}"/>
+		<line id="left-line" x1="${centerX}" y1="${centerY}" x2="${centerX-edge*3}" y2="${centerY-edge*3}"/>
+		<line id="right-line" x1="${centerX}" y1="${centerY}" x2="${centerX+edge*3}" y2="${centerY-edge*3}"/>
+		<circle id="pitcher" r="${pitcherR}" cx="${centerX}" cy="${centerY-pitcherDis}" />
+		<path d="${describeArc(centerX,centerY-pitcherDis,edge,-76,76)}" />
+		<g id="base">
+			<path d="${describeArc(centerX,centerY - fieldEdge * 2,baseR,150,-150)}" />
+			<path d="${describeArc(centerX,centerY,baseR,-30,30)}" />
+			<path d="${describeArc(centerX - fieldEdge,centerY - fieldEdge,baseR,60,120)}" />
+			<path d="${describeArc(centerX + fieldEdge,centerY - fieldEdge,baseR,-120,-60)}" />
+		</g>
+		<g id="diamond-small">
+			<line x1="${centerX - sDiamondAway}" y1="${centerY - sDiamondMove - sDiamondAway}" 
+				  x2="${centerX - fieldEdge + sDiamondMove + sDiamondAway}" y2="${centerY - fieldEdge + sDiamondAway}" />
+			<line x1="${centerX - fieldEdge + sDiamondMove + sDiamondAway}" y1="${centerY - fieldEdge - sDiamondAway}" 
+				  x2="${centerX - sDiamondAway}" y2="${centerY - fieldEdge*2 + sDiamondMove + sDiamondAway}" />
+			<line x1="${centerX + sDiamondAway}" y1="${centerY - fieldEdge*2 + sDiamondMove + sDiamondAway}"
+				  x2="${centerX + fieldEdge - sDiamondMove - sDiamondAway}" y2="${centerY - fieldEdge - sDiamondAway}" />
+			<line x1="${centerX + fieldEdge - sDiamondMove - sDiamondAway}" y1="${centerY - fieldEdge + sDiamondAway}" 
+				  x2="${centerX + sDiamondAway}" y2="${centerY - sDiamondMove - sDiamondAway}" />
+		</g>
+		<g id="foul">
+			<line id="left-line" x1="${centerX}" y1="${centerY + sDiamondMove}" x2="${centerX-edge}" y2="${centerY-edge + sDiamondMove}"/>
+			<line id="right-line" x1="${centerX}" y1="${centerY + sDiamondMove}" x2="${centerX+edge}" y2="${centerY-edge + sDiamondMove}"/>
+		</g>`;
 }
 
 function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
