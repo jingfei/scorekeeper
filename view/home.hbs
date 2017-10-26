@@ -3,18 +3,78 @@
   <head>
     {{> head}}
     <link rel="stylesheet" href="{{baseUrl}}css/home.css" />
-	</head>
-	<body>
-    <div class="container-fluid">
-		<svg id="field">
-			<rect id="square" />
-			<path id="left-line" />
-			<path id="right-line" />
-			
-		</svg>
-		<div id="arc"></div>
-		<div id="pitcher"></div>
-    </div> <!-- /.container-fluid -->
-    <script src="{{baseUrl}}js/home.js"></script>
-  </body>
+  </head>
+<body><div class="container-fluid row">
+  <div class="col-md-2">
+		<div class="btn-group" role="group" id="pitch">
+		  <button type="button" class="btn btn-default" id="b">
+			<svg class="symb" height="12" width="12"><path d="M 0 6 L 12 6" stroke="black" stroke-width="1" fill="none" /></svg>
+			壞球</button>
+		  <button type="button" class="btn btn-default" id="s">
+			<svg class="symb" height="12" width="12"><circle r="4" cx="6" cy="6" stroke="black" stroke-width="1" fill="transparent"></circle></svg>
+			好球</button>
+		  <button type="button" class="btn btn-default" id="w">
+			<svg class="symb" height="12" width="12"><circle r="4" cx="6" cy="6" stroke="black" stroke-width="1" fill="transparent"></circle><path d="M 0 6 L 12 6" stroke="black" stroke-width="1" fill="none" /></svg>
+			揮棒落空</button>
+		  <button type="button" class="btn btn-default" id="f">
+			<svg class="symb" height="12" width="12"><path d="M 0 12 L 6 0 L 12 12 Z" stroke="black" stroke-width="1" fill="none" /></svg>
+			界外球</button>
+		  <button type="button" class="btn btn-default" id="o">
+			<svg class="symb" height="12" width="12"><circle r="2" cx="6" cy="6" stroke="black" stroke-width="1" fill="black"></circle></svg>
+			in play</button>
+		  <button type="button" class="btn btn-default" id="d"><span class="symb">D</span> 觸身球</button>
+		</div>
+    <div id="hit" class="none">
+			<div class="btn-group" role="group" id="hit-kind" data-toggle="buttons">
+			  <label class="btn btn-default" id="g"> <input type="radio" name="hit-kind" autocomplete="off">
+				<svg class="symb" height="12" width="12"><path d="M 0 8 A 10 10 0 0 0 12 8" stroke="black" stroke-width="1" fill="none" /></svg>
+				滾地球</label>
+			  <label class="btn btn-default" id="h"> <input type="radio" name="hit-kind" autocomplete="off">
+				<svg class="symb" height="12" width="12"><path d="M 0 10 L 12 10" stroke="black" stroke-width="1" fill="none" /></svg>
+				平飛球</label>
+			  <label class="btn btn-default" id="f"> <input type="radio" name="hit-kind" autocomplete="off">
+				<svg class="symb" height="12" width="12"><path d="M 12 4 A 10 10 0 0 0 0 4" stroke="black" stroke-width="1" fill="none" /></svg>
+				高飛球</label>
+			</div>
+			<div id="hit-pos-container"></div>
+			<div class="btn-group" role="group" id="hit-result" data-toggle="buttons">
+			  <label class="btn btn-default" id="E"> <input type="radio" name="hit-result" autocomplete="off"> <span class="symb">E</span> 失誤</label>
+			  <label class="btn btn-default" id="FC"><input type="radio" name="hit-result" autocomplete="off"> <span class="symb">FC</span> 野手選擇</label>
+			  <label class="btn btn-default" id="DP"><input type="radio" name="hit-result" autocomplete="off"> <span class="symb">DP</span> 雙殺出局</label>
+			  <label class="btn btn-default" id="T"> <input type="radio" name="hit-result" autocomplete="off"> <span class="symb">T</span> 觸殺出局</label>
+			  <label class="btn btn-default" id="1B"><input type="radio" name="hit-result" autocomplete="off">
+				  <svg class="symb" height="12" width="12"><path d="M 6 12 L 12 6" stroke="red" stroke-width="1" fill="none" /></svg>
+				  一壘安打</label>
+			  <label class="btn btn-default" id="2B"><input type="radio" name="hit-result" autocomplete="off">
+				  <svg class="symb" height="12" width="12"><path d="M 6 12 L 12 6 L 6 0" stroke="red" stroke-width="1" fill="none" /></svg>
+				  二壘安打</label>
+			  <label class="btn btn-default" id="3B"><input type="radio" name="hit-result" autocomplete="off">
+				  <svg class="symb" height="12" width="12"><path d="M 6 12 L 12 6 L 6 0 L 0 6" stroke="red" stroke-width="1" fill="none" /></svg>
+				  三壘安打</label>
+			  <label class="btn btn-default" id="HR"><input type="radio" name="hit-result" autocomplete="off">
+				  <svg class="symb" height="12" width="12"><circle r="1" cx="6" cy="6" stroke="red" stroke-width="1" fill="red"></circle><path d="M 6 12 L 12 6 L 6 0 L 0 6 Z" stroke="red" stroke-width="1" fill="none" /></svg>
+				  全壘打</label>
+		  </div>
+      <button class="btn btn-primary" onclick="addHistory();">下一個打者</button>
+    </div> <!--/#hit -->
+	  <hr/>
+		此打席：
+		<button class="btn btn-default pull-right" onclick="deletePitch()"><i class="glyphicon glyphicon-arrow-left"></i> 退回</button>
+		<div id="record">
+      <div id="r-pitch"></div>
+      <div id="r-hit"></div>
+      <div id="r-field"></div>
+    </div>
+		<div class="list-group" id="history"></div>
+	</div> <!-- /.col-md-2 -->
+	<svg id="field" class="col-md-10">
+    {{> glove}}
+  </svg>
+</div> <!-- /.container-fluid -->
+{{> footer}}
+<script src="{{baseUrl}}js/graph.js"></script>
+<script src="{{baseUrl}}js/field.js"></script>
+<script src="{{baseUrl}}js/textRecord.js"></script>
+<script src="{{baseUrl}}js/home.js"></script>
+</body>
 </html>

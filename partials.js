@@ -2,7 +2,6 @@ var fs = require("fs");
 
 module.exports= function (hbs) {
   hbs.registerPartial('head', getPartials('head'));
-  hbs.registerPartial('header', getPartials('header'));
   hbs.registerPartial('footer', getPartials('footer'));
 
   hbs.registerHelper('replaceBlank', function(string) {
