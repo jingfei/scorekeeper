@@ -21,7 +21,8 @@ function buildField(svg, edge, centerX, centerY) {
 	const pitcherR = edge * .1875 * .5, pitcherDis = edge * .675, 
 		  baseR = edge * .15, fieldEdge = edge / Math.sqrt(2),
 		  lineGap = edge * .0375,
-		  sDiamondMove = lineGap * Math.sqrt(2), sDiamondAway = (Math.sqrt(baseR*baseR - lineGap*lineGap) - lineGap) / Math.sqrt(2);
+		  sDiamondMove = lineGap * Math.sqrt(2), sDiamondAway = (Math.sqrt(baseR*baseR - lineGap*lineGap) - lineGap) / Math.sqrt(2),
+		  lDiamondAway = (Math.sqrt(baseR*baseR - lineGap*lineGap) + lineGap) / Math.sqrt(2);
 	svg.innerHTML = `
 		<rect class="diamond" x="${centerX-edge}" y="${centerY-edge}" width="${edge}" height="${edge}"/>
 		<line id="left-line" x1="${centerX}" y1="${centerY}" x2="${centerX-edge*3}" y2="${centerY-edge*3}"/>
@@ -45,8 +46,9 @@ function buildField(svg, edge, centerX, centerY) {
 				  x2="${centerX + sDiamondAway}" y2="${centerY - sDiamondMove - sDiamondAway}" />
 		</g>
 		<g id="foul">
-			<line id="left-line" x1="${centerX}" y1="${centerY + sDiamondMove}" x2="${centerX-edge}" y2="${centerY-edge + sDiamondMove}"/>
-			<line id="right-line" x1="${centerX}" y1="${centerY + sDiamondMove}" x2="${centerX+edge}" y2="${centerY-edge + sDiamondMove}"/>
+			<line id="left-line" x1="${centerX - lDiamondAway}" y1="${centerY + sDiamondMove - lDiamondAway}" x2="${centerX-edge}" y2="${centerY-edge + sDiamondMove}"/>
+			<line id="right-line" x1="${centerX + lDiamondAway}" y1="${centerY + sDiamondMove - lDiamondAway}" x2="${centerX+edge}" y2="${centerY-edge + sDiamondMove}"/>
+			<path d="${describeArc(centerX,centerY,baseR,60,300)}" />
 		</g>`;
 }
 
