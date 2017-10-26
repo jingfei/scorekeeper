@@ -20,7 +20,7 @@ function dynamicWidth() {
 function buildField(svg, edge, centerX, centerY) {
 	const pitcherR = edge * .1875 * .5, pitcherDis = edge * .675, 
 		  baseR = edge * .15, fieldEdge = edge / Math.sqrt(2),
-		  lineGap = edge * .0375,
+		  lineGap = edge * .0375, baseWidth = edge * .05,
 		  sDiamondMove = lineGap * Math.sqrt(2), sDiamondAway = (Math.sqrt(baseR*baseR - lineGap*lineGap) - lineGap) / Math.sqrt(2),
 		  lDiamondAway = (Math.sqrt(baseR*baseR - lineGap*lineGap) + lineGap) / Math.sqrt(2);
 	svg.innerHTML = `
@@ -34,6 +34,9 @@ function buildField(svg, edge, centerX, centerY) {
 			<path d="${describeArc(centerX,centerY,baseR,-30,30)}" />
 			<path d="${describeArc(centerX - fieldEdge,centerY - fieldEdge,baseR,60,120)}" />
 			<path d="${describeArc(centerX + fieldEdge,centerY - fieldEdge,baseR,-120,-60)}" />
+			<rect class="base" x="${centerX}" y="${centerY - fieldEdge * 2}" width="${baseWidth}" height="${baseWidth}" />
+			<rect class="base" x="${centerX - fieldEdge}" y="${centerY - fieldEdge}" width="${baseWidth}" height="${baseWidth}" />
+			<rect class="base" x="${centerX + fieldEdge}" y="${centerY - fieldEdge}" width="${baseWidth}" height="${baseWidth}" />
 		</g>
 		<g id="diamond-small">
 			<line x1="${centerX - sDiamondAway}" y1="${centerY - sDiamondMove - sDiamondAway}" 

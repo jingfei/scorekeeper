@@ -10,7 +10,13 @@ $lineColor: black;
 
 rect, circle, path, line { stroke: black; stroke-width: 2px; fill: transparent; }
 
-.diamond { fill: transparent; stroke: black; stroke-width: 2px; transform: rotate(45deg); transform-origin: 100% 100%; }
+.diamond { transform: rotate(45deg); transform-origin: 100% 100%; }
+.base { 
+	transform-origin: left top; 
+	&:first-of-type { transform: rotate(45deg); }
+	&:nth-of-type(2) { transform: rotate(-45deg); }
+	&:nth-of-type(3) { transform: rotate(135deg); }
+}
 
 #test {
 	width: 1000px;
