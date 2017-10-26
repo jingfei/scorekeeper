@@ -3,17 +3,20 @@
   <head>
     {{> head}}
     <link rel="stylesheet" href="{{baseUrl}}css/home.css" />
-	</head>
+	<style>
+	  #square { fill: transparent; stroke: black; stroke-width: 2px; transform: rotate(45deg); transform-origin: 100% 100%; }
+	  #left-line, #right-line, #pitcher, #arc { stroke: black; stroke-width: 2px; fill: transparent; }
+	</style>
+  </head>
 	<body>
     <div class="container-fluid">
-		<svg id="field">
-			<rect id="square" />
-			<path id="left-line" />
-			<path id="right-line" />
-			
+		<svg id="field" width="1500" height="800" >
+		  	<rect id="square" x="500" y="500" width="200" height="200"/>
+			<line id="left-line" x1="700" y1="700" x2="100" y2="100"/>
+			<line id="right-line" x1="700" y1="700" x2="1300" y2="100"/>
+			<circle id="pitcher" r="18.75" cx="700" cy="565" />
+			<path id="arc" d="">
 		</svg>
-		<div id="arc"></div>
-		<div id="pitcher"></div>
     </div> <!-- /.container-fluid -->
     <script src="{{baseUrl}}js/home.js"></script>
   </body>

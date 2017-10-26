@@ -7,8 +7,6 @@ route = [
       "url": "",
       "title": "scorekeeper",
       "menu_home": true,
-      "menu": menu,
-      "home": home,
       "baseUrl": "./",
 	  "lang": "zh-TW"
     },

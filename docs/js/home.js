@@ -1,0 +1,1 @@
+function polarToCartesian(r,t,a,e){var n=(e-90)*Math.PI/180;return{x:r+a*Math.cos(n),y:t+a*Math.sin(n)}}function describeArc(r,t,a,e,n){var o=polarToCartesian(r,t,a,n),c=polarToCartesian(r,t,a,e),i=180>=n-e?"0":"1",s=["M",o.x,o.y,"A",a,a,0,i,0,c.x,c.y].join(" ");return s}document.querySelector("#arc").setAttribute("d",describeArc(700,565,200,-73.5,73.5));

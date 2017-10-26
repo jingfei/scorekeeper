@@ -7,17 +7,11 @@ $pitcher: $edge * .1875;
 $pitcherDis: $edge * .675;
 $lineColor: black;
 
-// matrix(scaleX(),skewY(),skewX(),scaleY(),translateX(),translateY())
+.container-fluid { margin: 100px; }
 
-.container-fluid { 
-	margin: 500px 800px;
-}
-
-#field {
+#test {
 	width: 1000px;
 	height: 1000px;
-	position: relative;
-	& > * { position: absolute; }
 	
 	#square {
 		transform-origin: 100% 100%;
@@ -27,8 +21,6 @@ $lineColor: black;
 		fill: transparent;
 		width: #{$edge}px;
 		height: #{$edge}px;
-		top: #{1000 - $edge}px;
-		left: #{1000 - $edge}px;
 	}
 
 	[id$="-line"] { 

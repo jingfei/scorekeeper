@@ -7,11 +7,11 @@
 <meta property="og:title" content="scorekeeper">
 <meta property="og:site_name" content="scorekeeper">
 <meta property="og:description" content="">
-<meta property="og:image" content="">
+<!-- <meta property="og:image" content="../images/logo.png" /> -->
 <title>scorekeeper</title>
 <meta http-equiv="Content-Type" content="text/html" charset="utf-8">
 <link rel="stylesheet" href="../css/frame/bootstrap.min.css">
-<!-- <link href='//fonts.googleapis.com/css?family=Noto+Sans:400,700' rel='stylesheet' type='text/css'> -->
+<!-- <link href='//fonts.googleapis.com/css?family=Noto+Sans:400,700' rel='stylesheet' type='text/css'>-->
 <link rel="stylesheet" href="../css/frame/font-awesome.min.css">
 <!--[if lt IE 9]>
   <script src="/ie8.js"></script>
@@ -21,17 +21,20 @@
 <![endif]-->
 
     <link rel="stylesheet" href="../css/home.css">
-	</head>
+	<style>
+	  #square { fill: transparent; stroke: black; stroke-width: 2px; transform: rotate(45deg); transform-origin: 100% 100%; }
+	  #left-line, #right-line, #pitcher, #arc { stroke: black; stroke-width: 2px; fill: transparent; }
+	</style>
+  </head>
 	<body>
     <div class="container-fluid">
-		<svg id="field">
-			<rect id="square"></rect>
-			<path id="left-line"></path>
-			<path id="right-line"></path>
-			
-		</svg>
-		<div id="arc"></div>
-		<div id="pitcher"></div>
+		<svg id="field" width="1500" height="800">
+		  	<rect id="square" x="500" y="500" width="200" height="200"></rect>
+			<line id="left-line" x1="700" y1="700" x2="100" y2="100"></line>
+			<line id="right-line" x1="700" y1="700" x2="1300" y2="100"></line>
+			<circle id="pitcher" r="18.75" cx="700" cy="565"></circle>
+			<path id="arc" d="">
+		</path></svg>
     </div> <!-- /.container-fluid -->
     <script src="../js/home.js"></script>
   
