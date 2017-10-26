@@ -1,0 +1,31 @@
+@import "./_color";
+@import "./_nav";
+@import "./_footer";
+
+@font-face {
+  font-family: 'NotoSansCJKtc-Regular';
+  src: url("./font/NotoSansCJKtc-Regular.woff") format('woff');
+}
+
+html, body {
+  color: $text-color;
+  font-family: 'NotoSansCJKtc-Regular', 'Noto Sans', "微軟雅黑","Microsoft YaHei", Helvetica, 'sans-serif';
+	font-size: 18px;
+}
+
+
+a {
+  color: $brown;
+  &:hover {
+    color: $brown;
+    opacity: 0.8;
+    text-decoration: none;
+  }
+}
+
+blockquote {
+  background: rgba(255,255,255,.8);
+}
+
+.container-fluid { padding: 0; }
+
