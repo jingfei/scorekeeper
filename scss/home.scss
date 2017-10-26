@@ -2,12 +2,11 @@
 
 $lineWid: 2;
 $edge: 200;
-$sqrt2: 1.414;
 $pitcher: $edge * .1875;
 $pitcherDis: $edge * .675;
 $lineColor: black;
 
-.container-fluid { margin: 100px; }
+.container-fluid { margin: 10px; }
 
 #test {
 	width: 1000px;
