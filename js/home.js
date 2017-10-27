@@ -52,16 +52,53 @@ function buildField(svg, edge, centerX, centerY) {
 		<g id="base">
 			<line x1="${centerX - fieldEdge}" y1="${centerY - fieldEdge}" x2="${centerX}" y2="${centerY - fieldEdge * 2}" />
 			<line x1="${centerX}" y1="${centerY - fieldEdge * 2}" x2="${centerX + fieldEdge}" y2="${centerY - fieldEdge}" />
-			<rect class="base" x="${centerX}" y="${centerY - fieldEdge * 2 - baseWidth * .5}" width="${baseWidth}" height="${baseWidth}" />
-			<rect class="base" x="${centerX - fieldEdge}" y="${centerY - fieldEdge}" width="${baseWidth}" height="${baseWidth}" />
-			<rect class="base" x="${centerX + fieldEdge}" y="${centerY - fieldEdge}" width="${baseWidth}" height="${baseWidth}" />
-			<path class="base" 
+			<rect id="secondBase" class="base" x="${centerX}" y="${centerY - fieldEdge * 2 - baseWidth * .5}" width="${baseWidth}" height="${baseWidth}" />
+			<rect id="thirdBase" class="base" x="${centerX - fieldEdge}" y="${centerY - fieldEdge}" width="${baseWidth}" height="${baseWidth}" />
+			<rect id="firstBase" class="base" x="${centerX + fieldEdge}" y="${centerY - fieldEdge}" width="${baseWidth}" height="${baseWidth}" />
+			<path id="homeBase" class="base" 
 				  d="M${centerX}, ${centerY}
 					 l-${baseWidth*.5}, -${baseWidth*.5}
 					 l0, -${baseWidth*.5}
 					 l${baseWidth}, 0
 					 l0, ${baseWidth*.5} Z" />
+		</g>
+		<g id="fielder">
+			<foreignObject id="f-7" width="24" height="24" x="${centerX - edge}" y="${centerY - fieldEdge * 2.5}"><i class="glyphicon glyphicon-sunglasses"></i></foreignObject>
+			<foreignObject id="f-8" width="24" height="24" x="${centerX - 9}" y="${centerY - fieldEdge * 3}"><i class="glyphicon glyphicon-sunglasses"></i></foreignObject>
+			<foreignObject id="f-9" width="24" height="24" x="${centerX + edge - 9}" y="${centerY - fieldEdge * 2.5}"><i class="glyphicon glyphicon-sunglasses"></i></foreignObject>
+			<foreignObject id="f-6" width="24" height="24" x="${centerX - fieldEdge}" y="${centerY - fieldEdge - edge*.35}"><i class="glyphicon glyphicon-sunglasses"></i></foreignObject>
+			<foreignObject id="f-5" width="24" height="24" x="${centerX - edge*.35}" y="${centerY - fieldEdge * 2 - baseWidth * .5}"><i class="glyphicon glyphicon-sunglasses"></i></foreignObject>
+			<foreignObject id="f-4" width="24" height="24" x="${centerX + edge*.25}" y="${centerY - fieldEdge * 2 - baseWidth * .5}"><i class="glyphicon glyphicon-sunglasses"></i></foreignObject>
+			<foreignObject id="f-3" width="24" height="24" x="${centerX + fieldEdge - edge*.1}" y="${centerY - fieldEdge - edge*.35}"><i class="glyphicon glyphicon-sunglasses"></i></foreignObject>
+			<foreignObject id="f-2" width="24" height="24" x="${centerX - 9}" y="${centerY}"><i class="glyphicon glyphicon-sunglasses"></i></foreignObject>
+			<foreignObject id="f-1" width="24" height="24" x="${centerX - 9}" y="${centerY - pitcherDis - pitcherR * .5}"><i class="glyphicon glyphicon-sunglasses"></i></foreignObject>
+		</g>
+		<g id="runner">
+			<foreignObject id="currentRunner" width="24" height="24" x="${centerX - 9}" y="${centerY - 15}"><i class="glyphicon glyphicon-user"></i></foreignObject>
 		</g>`;
+	document.querySelector('#currentRunner').addEventListener("click", (e) => {
+		const runnerBase = [{x: centerX - 9, y: centerY - 15, dir: [1,-1]}, 
+							{x: centerX - 9 + fieldEdge, y: centerY - 15 - fieldEdge, dir: [-1,-1]}, 
+							{x: centerX - 9, y: centerY - 15 - fieldEdge * 2, dir: [-1,1]}, 
+							{x: centerX - 9 - fieldEdge, y: centerY - 15 - fieldEdge, dir: [1,1]} ];
+		const getXY = () => ({ x: parseInt(e.target.parentElement.getAttribute('x')), y: parseInt(e.target.parentElement.getAttribute('y')) });
+		runnerBase.map( (r,i) => {
+			const t = getXY();
+			if(t.x == parseInt(r.x) && t.y == parseInt(r.y)) {
+				const {x: toX, y: toY} = runnerBase[(i+1) % runnerBase.length];
+				var go = setInterval(() => {
+					const {x, y} = getXY();
+					e.target.parentElement.setAttribute('x',x+r.dir[0]);
+					e.target.parentElement.setAttribute('y',y+r.dir[1]);
+					if( r.dir[0]*(x - toX) > 0 || r.dir[1]*(y - toY) > 0) {
+						e.target.parentElement.setAttribute('x',toX);
+						e.target.parentElement.setAttribute('y',toY);
+						clearInterval(go);
+					}
+				}, 5);
+			}
+		});
+	}, false);
 }
 
 function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
