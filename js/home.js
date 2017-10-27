@@ -1,3 +1,5 @@
+const redMud = '#E41010', grass = '#50A160';
+
 (function() {
 	dynamicWidth();
 })();
@@ -24,34 +26,39 @@ function buildField(svg, edge, centerX, centerY) {
 		  sDiamondMove = lineGap * Math.sqrt(2), sDiamondAway = (Math.sqrt(baseR*baseR - lineGap*lineGap) - lineGap) / Math.sqrt(2),
 		  lDiamondAway = (Math.sqrt(baseR*baseR - lineGap*lineGap) + lineGap) / Math.sqrt(2);
 	svg.innerHTML = `
-		<rect class="diamond" x="${centerX-edge}" y="${centerY-edge}" width="${edge}" height="${edge}"/>
+		<path id="allField"
+			  d="M${centerX}, ${centerY + sDiamondAway * 2}
+				 L${centerX-edge*3}, ${centerY + sDiamondAway * 2 -edge*3}
+				 L${centerX+edge*3}, ${centerY + sDiamondAway * 2 -edge*3} Z" fill="${grass}" />
+		<path id="redDiamond"
+			  d="${describeArc(centerX,centerY-pitcherDis,edge,-76,76)}
+				 L${centerX - lDiamondAway}, ${centerY + sDiamondMove - lDiamondAway}
+				 ${describeArc(centerX,centerY,baseR,60,300,true)} Z" fill="${redMud}" />
 		<line id="left-line" x1="${centerX}" y1="${centerY}" x2="${centerX-edge*3}" y2="${centerY-edge*3}"/>
 		<line id="right-line" x1="${centerX}" y1="${centerY}" x2="${centerX+edge*3}" y2="${centerY-edge*3}"/>
-		<circle id="pitcher" r="${pitcherR}" cx="${centerX}" cy="${centerY-pitcherDis}" />
-		<path d="${describeArc(centerX,centerY-pitcherDis,edge,-76,76)}" />
+		<path id="infield"
+			  d="M${centerX - sDiamondAway}, ${centerY - sDiamondMove - sDiamondAway} 
+				 L${centerX - fieldEdge + sDiamondMove + sDiamondAway}, ${centerY - fieldEdge + sDiamondAway} 
+				 ${describeArc(centerX - fieldEdge,centerY - fieldEdge,baseR,60,120,true)} 
+				 L${centerX - sDiamondAway}, ${centerY - fieldEdge*2 + sDiamondMove + sDiamondAway} 
+				 ${describeArc(centerX,centerY - fieldEdge * 2,baseR,150,-150,true)}  
+				 L${centerX + fieldEdge - sDiamondMove - sDiamondAway}, ${centerY - fieldEdge - sDiamondAway} 
+				 ${describeArc(centerX + fieldEdge,centerY - fieldEdge,baseR,-120,-60,true)} 
+				 L${centerX + sDiamondAway}, ${centerY - sDiamondMove - sDiamondAway} 
+				 ${describeArc(centerX,centerY,baseR,-30,30,true)} Z" fill="${grass}" />
+		<circle id="pitcher" r="${pitcherR}" cx="${centerX}" cy="${centerY-pitcherDis}" fill="${redMud}" />
 		<g id="base">
-			<path d="${describeArc(centerX,centerY - fieldEdge * 2,baseR,150,-150)}" />
-			<path d="${describeArc(centerX,centerY,baseR,-30,30)}" />
-			<path d="${describeArc(centerX - fieldEdge,centerY - fieldEdge,baseR,60,120)}" />
-			<path d="${describeArc(centerX + fieldEdge,centerY - fieldEdge,baseR,-120,-60)}" />
-			<rect class="base" x="${centerX}" y="${centerY - fieldEdge * 2}" width="${baseWidth}" height="${baseWidth}" />
+			<line x1="${centerX - fieldEdge}" y1="${centerY - fieldEdge}" x2="${centerX}" y2="${centerY - fieldEdge * 2}" />
+			<line x1="${centerX}" y1="${centerY - fieldEdge * 2}" x2="${centerX + fieldEdge}" y2="${centerY - fieldEdge}" />
+			<rect class="base" x="${centerX}" y="${centerY - fieldEdge * 2 - baseWidth * .5}" width="${baseWidth}" height="${baseWidth}" />
 			<rect class="base" x="${centerX - fieldEdge}" y="${centerY - fieldEdge}" width="${baseWidth}" height="${baseWidth}" />
 			<rect class="base" x="${centerX + fieldEdge}" y="${centerY - fieldEdge}" width="${baseWidth}" height="${baseWidth}" />
-		</g>
-		<g id="diamond-small">
-			<line x1="${centerX - sDiamondAway}" y1="${centerY - sDiamondMove - sDiamondAway}" 
-				  x2="${centerX - fieldEdge + sDiamondMove + sDiamondAway}" y2="${centerY - fieldEdge + sDiamondAway}" />
-			<line x1="${centerX - fieldEdge + sDiamondMove + sDiamondAway}" y1="${centerY - fieldEdge - sDiamondAway}" 
-				  x2="${centerX - sDiamondAway}" y2="${centerY - fieldEdge*2 + sDiamondMove + sDiamondAway}" />
-			<line x1="${centerX + sDiamondAway}" y1="${centerY - fieldEdge*2 + sDiamondMove + sDiamondAway}"
-				  x2="${centerX + fieldEdge - sDiamondMove - sDiamondAway}" y2="${centerY - fieldEdge - sDiamondAway}" />
-			<line x1="${centerX + fieldEdge - sDiamondMove - sDiamondAway}" y1="${centerY - fieldEdge + sDiamondAway}" 
-				  x2="${centerX + sDiamondAway}" y2="${centerY - sDiamondMove - sDiamondAway}" />
-		</g>
-		<g id="foul">
-			<line id="left-line" x1="${centerX - lDiamondAway}" y1="${centerY + sDiamondMove - lDiamondAway}" x2="${centerX-edge}" y2="${centerY-edge + sDiamondMove}"/>
-			<line id="right-line" x1="${centerX + lDiamondAway}" y1="${centerY + sDiamondMove - lDiamondAway}" x2="${centerX+edge}" y2="${centerY-edge + sDiamondMove}"/>
-			<path d="${describeArc(centerX,centerY,baseR,60,300)}" />
+			<path class="base" 
+				  d="M${centerX}, ${centerY}
+					 l-${baseWidth*.5}, -${baseWidth*.5}
+					 l0, -${baseWidth*.5}
+					 l${baseWidth}, 0
+					 l0, ${baseWidth*.5} Z" />
 		</g>`;
 }
 
@@ -64,17 +71,17 @@ function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
   };
 }
 
-function describeArc(x, y, radius, startAngle, endAngle){
+function describeArc(x, y, radius, startAngle, endAngle, noM = false, getM = false){
 
     var start = polarToCartesian(x, y, radius, endAngle);
     var end = polarToCartesian(x, y, radius, startAngle);
 
     var largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
-
-    var d = [
-        "M", start.x, start.y, 
-        "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y
-    ].join(" ");
+	
+	if(getM) return [start.x, start.y].join(" ");
+	
+	var d = noM ? [] : ["M", start.x, start.y];
+    d = [ ...d, "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y].join(" ");
 
     return d;       
 }

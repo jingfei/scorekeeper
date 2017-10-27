@@ -8,14 +8,24 @@ $lineColor: black;
 
 .container-fluid { margin: 10px; }
 
-rect, circle, path, line { stroke: black; stroke-width: 2px; fill: transparent; }
+#left-line, #right-line { stroke: white; }
+rect, circle, path, line { stroke: transparent; stroke-width: 2px; }
 
 .diamond { transform: rotate(45deg); transform-origin: 100% 100%; }
-.base { 
+#base { 
+  .base {
 	transform-origin: left top; 
+	fill: white; stroke: white;
+	&:hover { fill: black; stroke: black; }
+  }
+  
+  rect.base {
 	&:first-of-type { transform: rotate(45deg); }
 	&:nth-of-type(2) { transform: rotate(-45deg); }
 	&:nth-of-type(3) { transform: rotate(135deg); }
+  }
+  
+  line { stroke: white; stroke-width: .5px; }
 }
 
 #test {
