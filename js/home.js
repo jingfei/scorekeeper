@@ -14,9 +14,10 @@ function dynamicWidth() {
 				|| document.documentElement.clientHeight
 				|| document.body.clientHeight,
 		  svg = document.querySelector('svg');
+	console.log(width,height);
 	svg.setAttribute('width', width);
 	svg.setAttribute('height', height);
-	if(width < 768) buildField(svg,width/4, width*.5, height*.8);			// xs
+	if(width < 768) buildField(svg,width/3, width*.5, height*.5);			// xs
 	else if(width < 992) buildField(svg, width/5, width*.5, height*.8);		// sm
 	else buildField(svg,width/10, width*.5, height*.8);
 }
@@ -90,7 +91,7 @@ function buildField(svg, edge, centerX, centerY) {
 					const {x, y} = getXY();
 					e.target.parentElement.setAttribute('x',x+r.dir[0]);
 					e.target.parentElement.setAttribute('y',y+r.dir[1]);
-					if( r.dir[0]*(x - toX) > 0 || r.dir[1]*(y - toY) > 0) {
+					if(r.dir[0]*(x - toX) > 0 || r.dir[1]*(y - toY) > 0) {
 						e.target.parentElement.setAttribute('x',toX);
 						e.target.parentElement.setAttribute('y',toY);
 						clearInterval(go);
