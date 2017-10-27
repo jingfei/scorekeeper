@@ -5,8 +5,22 @@
     <link rel="stylesheet" href="{{baseUrl}}css/home.css" />
   </head>
 	<body>
-    <div class="container-fluid">
-		<svg id="field"></svg>
+    <div class="container-fluid row">
+		<div class="col-md-2">
+			<div class="btn-group" role="group" id="pitch">
+			  <button type="button" class="btn btn-default" id="b"><i class="fa fa-minus"></i> 壞球</button>
+			  <button type="button" class="btn btn-default" id="s"><i class="fa fa-circle-o"></i> 好球</button>
+			  <button type="button" class="btn btn-default" id="w"><i class="fa fa-minus-circle"></i> 揮棒落空</button>
+			  <button type="button" class="btn btn-default" id="f"><i class="glyphicon glyphicon-triangle-top"></i> 界外球</button>
+			  <button type="button" class="btn btn-default" id="o"><i class="fa fa-circle"></i> 上壘</button>
+			</div>
+			<hr/>
+			此打席：
+			<button class="btn btn-default pull-right" onclick="deletePitch()"><i class="glyphicon glyphicon-arrow-left"></i> 退回</button>
+			<div id="record"></div>
+			<ul class="list-group" id="history"></ul>
+		</div> <!-- /.col-md-2 -->
+		<svg id="field" class="col-md-10"></svg>
     </div> <!-- /.container-fluid -->
     <script src="{{baseUrl}}js/home.js"></script>
   </body>

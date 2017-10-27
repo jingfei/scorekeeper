@@ -1,10 +1,13 @@
 const redMud = '#E41010', grass = '#50A160';
+let currentPitch = [];
 
 (function() {
 	dynamicWidth();
 })();
 
 window.onresize = function(event) { dynamicWidth(); };
+
+document.querySelector('#pitch').addEventListener('click', recordPitch, false);
 
 function dynamicWidth() {
 	const width = window.innerWidth
@@ -13,13 +16,18 @@ function dynamicWidth() {
 		  height = window.innerHeight
 				|| document.documentElement.clientHeight
 				|| document.body.clientHeight,
-		  svg = document.querySelector('svg');
-	console.log(width,height);
-	svg.setAttribute('width', width);
-	svg.setAttribute('height', height);
-	if(width < 768) buildField(svg,width/3, width*.5, height*.5);			// xs
-	else if(width < 992) buildField(svg, width/5, width*.5, height*.8);		// sm
-	else buildField(svg,width/10, width*.5, height*.8);
+		  svg = document.querySelector('svg'),
+		  w = svg.clientWidth,
+		  edge = w < height ? w : height;
+	svg.setAttribute('height', edge);
+	svg.style.width = edge + 'px';
+	svg.setAttribute('width', edge);
+	buildField(svg, edge/2.5, edge*.5 - 10, edge*.9);
+	/*
+	if(width < 768) buildField(svg,edge/3, edge*.5, height*.5);			// xs
+	else if(width < 992) buildField(svg, edge/5, edge*.5, height*.8);		// sm
+	else buildField(svg,edge/10, edge*.5, height*.8);
+	*/
 }
 
 function buildField(svg, edge, centerX, centerY) {
@@ -125,3 +133,57 @@ function describeArc(x, y, radius, startAngle, endAngle, noM = false, getM = fal
 
     return d;       
 }
+
+function recordPitch(e) {
+	let target = e.target;
+	if(target.tagName === 'I') target = target.parentElement;
+	else if(target.tagName !== 'BUTTON') return;
+	const icon = target.querySelector('i');
+	const record = document.querySelector('#record');
+	record.innerHTML += icon.outerHTML + ' ';
+	currentPitch.push(target.id);
+	checkPitch();
+}
+
+function deletePitch() {
+	const record = document.querySelector('#record');
+	const icon = record.querySelector('i:last-of-type');
+	if(icon) { record.removeChild(icon); currentPitch.pop(); }
+}
+
+function checkPitch() {
+	let ans = false;
+	if(currentPitch.includes('o')) // hit
+		ans = confirm('上壘，進入下一個打席?');
+	else if(currentPitch.count('b')  === 4)
+		ans = confirm('保送，進入下一個打席?');
+	else if(currentPitch.count('s') + currentPitch.count('w') === 3 || (currentPitch.count('s') + currentPitch.count('w') + currentPitch.count('f') >= 3 && currentPitch.last()!== 'f'))
+		ans = confirm('三振出局，進入下一個打席?');
+	
+	if(ans) {
+		addHistory();
+		document.querySelector('#record').innerHTML = '';
+	}
+}
+
+function addHistory() {
+	currentPitch = [];
+	const content = document.querySelector('#record').innerHTML;
+	const history = document.querySelector('#history');
+	history.innerHTML = `<li class="list-group-item">${content}</li>` + history.innerHTML;
+}
+
+Object.defineProperties(Array.prototype, {
+  count: {
+    value: function(query) {
+      let count = 0;
+      for(let i=0; i<this.length; i++)
+        if(typeof this[i] == 'object') count += this[i].count(query);
+        else if (this[i]==query) ++count;
+      return count;
+    }
+  },
+  last: {
+	value: function() { return this[this.length - 1]; }
+  }
+});
