@@ -8,11 +8,51 @@
     <div class="container-fluid row">
 		<div class="col-md-2">
 			<div class="btn-group" role="group" id="pitch">
-			  <button type="button" class="btn btn-default" id="b"><i class="fa fa-minus"></i> 壞球</button>
-			  <button type="button" class="btn btn-default" id="s"><i class="fa fa-circle-o"></i> 好球</button>
-			  <button type="button" class="btn btn-default" id="w"><i class="fa fa-minus-circle"></i> 揮棒落空</button>
-			  <button type="button" class="btn btn-default" id="f"><i class="glyphicon glyphicon-triangle-top"></i> 界外球</button>
-			  <button type="button" class="btn btn-default" id="o"><i class="fa fa-circle"></i> 上壘</button>
+			  <button type="button" class="btn btn-default" id="b">
+				<svg class="symb" height="12" width="12"><path d="M 0 6 L 12 6" stroke="black" stroke-width="1" fill="none" /></svg> 
+				壞球</button>
+			  <button type="button" class="btn btn-default" id="s">
+				<svg class="symb" height="12" width="12"><circle r="4" cx="6" cy="6" stroke="black" stroke-width="1" fill="transparent"></circle></svg>
+				好球</button>
+			  <button type="button" class="btn btn-default" id="w">
+				<svg class="symb" height="12" width="12"><circle r="4" cx="6" cy="6" stroke="black" stroke-width="1" fill="transparent"></circle><path d="M 0 6 L 12 6" stroke="black" stroke-width="1" fill="none" /></svg> 
+				揮棒落空</button>
+			  <button type="button" class="btn btn-default" id="f">
+				<svg class="symb" height="12" width="12"><path d="M 0 12 L 6 0 L 12 12 Z" stroke="black" stroke-width="1" fill="none" /></svg>
+				界外球</button>
+			  <button type="button" class="btn btn-default" id="o">
+				<svg class="symb" height="12" width="12"><circle r="4" cx="6" cy="6" stroke="black" stroke-width="1" fill="black"></circle></svg>
+				上壘</button>
+			</div>
+			<div class="btn-group none" role="group" id="hit-kind">
+			  <button type="button" class="btn btn-default" id="o">
+				<svg class="symb" height="12" width="12"><path d="M 0 8 A 10 10 0 0 0 12 8" stroke="black" stroke-width="1" fill="none" /></svg> 
+				滾地球</button>
+			  <button type="button" class="btn btn-default" id="o"> 
+				<svg class="symb" height="12" width="12"><path d="M 0 8 L 12 8" stroke="black" stroke-width="1" fill="none" /></svg> 
+				平飛球</button>
+			  <button type="button" class="btn btn-default" id="o">
+				<svg class="symb" height="12" width="12"><path d="M 12 4 A 10 10 0 0 0 0 4" stroke="black" stroke-width="1" fill="none" /></svg> 
+				高飛球</button>
+			</div>
+			<div id="hit-pos-container"></div>
+			<div class="btn-group none" role="group" id="hit-result" data-toggle="buttons">
+			  <label class="btn btn-default" id="E"> <input type="radio" name="hit-result" autocomplete="off"> <span class="symb">E</span> 失誤</label>
+			  <label class="btn btn-default" id="FC"><input type="radio" name="hit-result" autocomplete="off"> <span class="symb">FC</span> 野手選擇</label>
+			  <label class="btn btn-default" id="DP"><input type="radio" name="hit-result" autocomplete="off"> <span class="symb">DP</span> 雙殺出局</label>
+			  <label class="btn btn-default" id="T"> <input type="radio" name="hit-result" autocomplete="off"> <span class="symb">T</span> 觸殺出局</label>
+			  <label class="btn btn-default" id="h1"><input type="radio" name="hit-result" autocomplete="off"> 
+				<svg class="symb" height="12" width="12"><path d="M 6 12 L 12 6" stroke="black" stroke-width="1" fill="none" /></svg>
+				一壘安打</label>
+			  <label class="btn btn-default" id="h2"><input type="radio" name="hit-result" autocomplete="off">
+				<svg class="symb" height="12" width="12"><path d="M 6 12 L 12 6 L 6 0" stroke="black" stroke-width="1" fill="none" /></svg>
+				二壘安打</label>
+			  <label class="btn btn-default" id="h3"><input type="radio" name="hit-result" autocomplete="off">
+				<svg class="symb" height="12" width="12"><path d="M 6 12 L 12 6 L 6 0 L 0 6" stroke="black" stroke-width="1" fill="none" /></svg>
+				三壘安打</label>
+			  <label class="btn btn-default" id="h4"><input type="radio" name="hit-result" autocomplete="off">
+				<svg class="symb" height="12" width="12"><circle r="1" cx="6" cy="6" stroke="black" stroke-width="1" fill="black"></circle><path d="M 6 12 L 12 6 L 6 0 L 0 6 Z" stroke="black" stroke-width="1" fill="none" /></svg>
+				全壘打</label>
 			</div>
 			<hr/>
 			此打席：

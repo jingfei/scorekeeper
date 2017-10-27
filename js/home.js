@@ -1,4 +1,16 @@
 const redMud = '#E41010', grass = '#50A160';
+const hitPosContent = `<div class="btn-group hit-pos" data-toggle="buttons">
+			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-1" autocomplete="off">1</label>
+			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-2" autocomplete="off">2</label>
+			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-3" autocomplete="off">3</label>
+			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-4" autocomplete="off">4</label>
+			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-5" autocomplete="off">5</label>
+			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-6" autocomplete="off">6</label>
+			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-7" autocomplete="off">7</label>
+			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-8" autocomplete="off">8</label>
+			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-9" autocomplete="off">9</label>
+			  <!-- <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="cancel" autocomplete="off">cancel</label> -->
+			</div>`;
 let currentPitch = [];
 
 (function() {
@@ -7,7 +19,7 @@ let currentPitch = [];
 
 window.onresize = function(event) { dynamicWidth(); };
 
-document.querySelector('#pitch').addEventListener('click', recordPitch, false);
+[...document.querySelectorAll('#pitch > button')].map(e => e.addEventListener('click', recordPitch, false));
 
 function dynamicWidth() {
 	const width = window.innerWidth
@@ -16,7 +28,7 @@ function dynamicWidth() {
 		  height = window.innerHeight
 				|| document.documentElement.clientHeight
 				|| document.body.clientHeight,
-		  svg = document.querySelector('svg'),
+		  svg = document.querySelector('svg#field'),
 		  w = svg.clientWidth,
 		  edge = w < height ? w : height;
 	svg.setAttribute('height', edge);
@@ -135,10 +147,9 @@ function describeArc(x, y, radius, startAngle, endAngle, noM = false, getM = fal
 }
 
 function recordPitch(e) {
-	let target = e.target;
-	if(target.tagName === 'I') target = target.parentElement;
-	else if(target.tagName !== 'BUTTON') return;
-	const icon = target.querySelector('i');
+	const target = e.currentTarget;
+	if(target.tagName !== 'BUTTON') return;
+	const icon = target.querySelector('.symb');
 	const record = document.querySelector('#record');
 	record.innerHTML += icon.outerHTML + ' ';
 	currentPitch.push(target.id);
@@ -153,8 +164,13 @@ function deletePitch() {
 
 function checkPitch() {
 	let ans = false;
-	if(currentPitch.includes('o')) // hit
-		ans = confirm('上壘，進入下一個打席?');
+	if(currentPitch.includes('o')) { // hit
+		ans = alert('上壘!');
+		document.querySelector('#pitch').classList.add('none');
+		[...document.querySelectorAll('[id^="hit-"]')].map(e => e.classList.remove('none'));
+		document.querySelector('#hit-pos-container').innerHTML += hitPosContent;
+		document.querySelector('.hit-pos:last-of-type').addEventListener('click', hitPosTrigger, false);
+	}
 	else if(currentPitch.count('b')  === 4)
 		ans = confirm('保送，進入下一個打席?');
 	else if(currentPitch.count('s') + currentPitch.count('w') === 3 || (currentPitch.count('s') + currentPitch.count('w') + currentPitch.count('f') >= 3 && currentPitch.last()!== 'f'))
@@ -171,6 +187,19 @@ function addHistory() {
 	const content = document.querySelector('#record').innerHTML;
 	const history = document.querySelector('#history');
 	history.innerHTML = `<li class="list-group-item">${content}</li>` + history.innerHTML;
+}
+
+function hitPosTrigger(e) {
+	if(e.target.tagName !== "LABEL") return;
+	const act = e.currentTarget.querySelector('.active');
+	if(act) act.classList.remove('active');
+	e.target.classList.add('active');
+	if(e.target.innerText == "cancel") {
+		e.target.classList.remove('active');
+	} else {
+	  document.querySelector('#hit-pos-container').innerHTML += hitPosContent;
+	  document.querySelector('.hit-pos:last-of-type').addEventListener('click', hitPosTrigger, false);
+	}
 }
 
 Object.defineProperties(Array.prototype, {
