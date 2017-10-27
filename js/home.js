@@ -16,7 +16,9 @@ function dynamicWidth() {
 		  svg = document.querySelector('svg');
 	svg.setAttribute('width', width);
 	svg.setAttribute('height', height);
-	buildField(svg,width/10, width*.5, height*.8);
+	if(width < 768) buildField(svg,width/4, width*.5, height*.8);			// xs
+	else if(width < 992) buildField(svg, width/5, width*.5, height*.8);		// sm
+	else buildField(svg,width/10, width*.5, height*.8);
 }
 
 function buildField(svg, edge, centerX, centerY) {

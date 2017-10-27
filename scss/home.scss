@@ -72,5 +72,7 @@ rect, circle, path, line { stroke: transparent; stroke-width: 2px; }
 		left: #{$edge - $pitcher * .5}px;
 		top: #{$edge - $pitcherDis - $pitcher * .5}px;
 	}
+}
 
+@media (max-width:767px) {
 }
