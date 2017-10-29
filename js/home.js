@@ -107,7 +107,7 @@ function buildField(svg, edge, centerX, centerY) {
       <text x="${centerX - 9 + 5}" y="${centerY-pitcherDis-pitcherR*.5+20}" fill="white">1</text>
 		</g>
 		<g id="runner">
-      <use xlink:href="#helmet" x="${centerX-9}" y="${centerY-25}" />
+      <use xlink:href="#helmet" x="${centerX-9}" y="${centerY-25}" id="currentRunner" />
 		</g>`;
 	document.querySelector('#currentRunner').addEventListener("click", (e) => {
 		const runnerBase = [{x: centerX - 9, y: centerY - 15, dir: [1,-1]}, 
@@ -193,7 +193,7 @@ function checkPitch() {
 		ans = confirm('保送，進入下一個打席?');
   }
 	else if( (currentPitch.last() === 's' || currentPitch.last() === 'w') 
-        && currentPitch.count('s') + currentPitch.count('w') + currentPitch.count('f') == 3) {
+        && currentPitch.count('s') + currentPitch.count('w') + currentPitch.count('f') >= 3) {
     hitResult[2] = 'K';
 		ans = confirm('三振出局，進入下一個打席?');
   }
