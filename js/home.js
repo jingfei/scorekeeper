@@ -179,7 +179,8 @@ function checkPitch() {
     hitResult[2] = 'BB';
 		ans = confirm('保送，進入下一個打席?');
   }
-	else if(currentPitch.count('s') + currentPitch.count('w') === 3 || (currentPitch.count('s') + currentPitch.count('w') + currentPitch.count('f') >= 3 && currentPitch.last()!== 'f')) {
+	else if( (currentPitch.last() === 's' || currentPitch.last() === 'w') 
+        && currentPitch.count('s') + currentPitch.count('w') + currentPitch.count('f') == 3) {
     hitResult[2] = 'K';
 		ans = confirm('三振出局，進入下一個打席?');
   }
