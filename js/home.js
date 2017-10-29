@@ -110,22 +110,22 @@ function buildField(svg, edge, centerX, centerY) {
       <use xlink:href="#helmet" x="${centerX-9}" y="${centerY-25}" id="currentRunner" />
 		</g>`;
 	document.querySelector('#currentRunner').addEventListener("click", (e) => {
-		const runnerBase = [{x: centerX - 9, y: centerY - 15, dir: [1,-1]}, 
-							{x: centerX - 9 + fieldEdge, y: centerY - 15 - fieldEdge, dir: [-1,-1]}, 
-							{x: centerX - 9, y: centerY - 15 - fieldEdge * 2, dir: [-1,1]}, 
-							{x: centerX - 9 - fieldEdge, y: centerY - 15 - fieldEdge, dir: [1,1]} ];
-		const getXY = () => ({ x: parseInt(e.target.parentElement.getAttribute('x')), y: parseInt(e.target.parentElement.getAttribute('y')) });
+		const runnerBase = [{x: centerX - 9, y: centerY - 25, dir: [1,-1]}, 
+							{x: centerX - 9 + fieldEdge, y: centerY - 25 - fieldEdge, dir: [-1,-1]}, 
+							{x: centerX - 9, y: centerY - 25 - fieldEdge * 2, dir: [-1,1]}, 
+							{x: centerX - 9 - fieldEdge, y: centerY - 25 - fieldEdge, dir: [1,1]} ];
+		const getXY = () => ({ x: parseInt(e.target.getAttribute('x')), y: parseInt(e.target.getAttribute('y')) });
 		runnerBase.map( (r,i) => {
 			const t = getXY();
 			if(t.x == parseInt(r.x) && t.y == parseInt(r.y)) {
 				const {x: toX, y: toY} = runnerBase[(i+1) % runnerBase.length];
 				var go = setInterval(() => {
 					const {x, y} = getXY();
-					e.target.parentElement.setAttribute('x',x+r.dir[0]);
-					e.target.parentElement.setAttribute('y',y+r.dir[1]);
+					e.target.setAttribute('x',x+r.dir[0]);
+					e.target.setAttribute('y',y+r.dir[1]);
 					if(r.dir[0]*(x - toX) > 0 || r.dir[1]*(y - toY) > 0) {
-						e.target.parentElement.setAttribute('x',toX);
-						e.target.parentElement.setAttribute('y',toY);
+						e.target.setAttribute('x',toX);
+						e.target.setAttribute('y',toY);
 						clearInterval(go);
 					}
 				}, 5);
@@ -169,8 +169,8 @@ function recordPitch(e) {
 }
 
 function deletePitch() {
-	const record = document.querySelector('#record');
-	const icon = record.querySelector('i:last-of-type');
+	const record = document.querySelector('#r-pitch');
+	const icon = record.querySelector('.symb:last-of-type');
 	if(icon) { record.removeChild(icon); currentPitch.pop(); }
 }
 
