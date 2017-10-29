@@ -51,7 +51,7 @@ function buildField(svg, edge, centerX, centerY) {
 		  lineGap = edge * .0375, baseWidth = edge * .05,
 		  sDiamondMove = lineGap * Math.sqrt(2), sDiamondAway = (Math.sqrt(baseR*baseR - lineGap*lineGap) - lineGap) / Math.sqrt(2),
 		  lDiamondAway = (Math.sqrt(baseR*baseR - lineGap*lineGap) + lineGap) / Math.sqrt(2);
-	svg.innerHTML = `
+	svg.innerHTML = glove + helmet + `
 		<path id="allField"
 			  d="M${centerX}, ${centerY + sDiamondAway * 2}
 				 L${centerX-edge*3}, ${centerY + sDiamondAway * 2 -edge*3}
@@ -87,18 +87,27 @@ function buildField(svg, edge, centerX, centerY) {
 					 l0, ${baseWidth*.5} Z" />
 		</g>
 		<g id="fielder">
-			<foreignObject id="f-7" width="24" height="24" x="${centerX - edge}" y="${centerY - fieldEdge * 2.5}"><i class="glyphicon glyphicon-sunglasses"></i></foreignObject>
-			<foreignObject id="f-8" width="24" height="24" x="${centerX - 9}" y="${centerY - fieldEdge * 3}"><i class="glyphicon glyphicon-sunglasses"></i></foreignObject>
-			<foreignObject id="f-9" width="24" height="24" x="${centerX + edge - 9}" y="${centerY - fieldEdge * 2.5}"><i class="glyphicon glyphicon-sunglasses"></i></foreignObject>
-			<foreignObject id="f-6" width="24" height="24" x="${centerX - fieldEdge}" y="${centerY - fieldEdge - edge*.35}"><i class="glyphicon glyphicon-sunglasses"></i></foreignObject>
-			<foreignObject id="f-5" width="24" height="24" x="${centerX - edge*.35}" y="${centerY - fieldEdge * 2 - baseWidth * .5}"><i class="glyphicon glyphicon-sunglasses"></i></foreignObject>
-			<foreignObject id="f-4" width="24" height="24" x="${centerX + edge*.25}" y="${centerY - fieldEdge * 2 - baseWidth * .5}"><i class="glyphicon glyphicon-sunglasses"></i></foreignObject>
-			<foreignObject id="f-3" width="24" height="24" x="${centerX + fieldEdge - edge*.1}" y="${centerY - fieldEdge - edge*.35}"><i class="glyphicon glyphicon-sunglasses"></i></foreignObject>
-			<foreignObject id="f-2" width="24" height="24" x="${centerX - 9}" y="${centerY}"><i class="glyphicon glyphicon-sunglasses"></i></foreignObject>
-			<foreignObject id="f-1" width="24" height="24" x="${centerX - 9}" y="${centerY - pitcherDis - pitcherR * .5}"><i class="glyphicon glyphicon-sunglasses"></i></foreignObject>
+      <use xlink:href="#glove" x="${centerX - edge}" y="${centerY - fieldEdge * 2.5}" />
+      <text x="${centerX - edge + 5}" y="${centerY-fieldEdge*2.5+20}" fill="white">7</text>
+			<use xlink:href="#glove" x="${centerX - 9}" y="${centerY - fieldEdge * 3}" />
+      <text x="${centerX - 9 + 5}" y="${centerY-fieldEdge*3+20}" fill="white">8</text>
+			<use xlink:href="#glove" x="${centerX + edge - 9}" y="${centerY - fieldEdge * 2.5}" />
+      <text x="${centerX + edge - 9 + 5}" y="${centerY-fieldEdge*2.5+20}" fill="white">9</text>
+			<use xlink:href="#glove" x="${centerX - fieldEdge}" y="${centerY - fieldEdge - edge*.35}" />
+      <text x="${centerX - fieldEdge + 5}" y="${centerY-fieldEdge-edge*.35+20}" fill="white">6</text>
+			<use xlink:href="#glove" x="${centerX - edge*.35}" y="${centerY - fieldEdge * 2 - baseWidth * .5}" />
+      <text x="${centerX - edge*.35 + 5}" y="${centerY-fieldEdge*2-baseWidth*.5+20}" fill="white">5</text>
+			<use xlink:href="#glove" x="${centerX + edge*.25}" y="${centerY - fieldEdge * 2 - baseWidth * .5}" />
+      <text x="${centerX + edge*.25 + 5}" y="${centerY-fieldEdge*2-baseWidth*.5+20}" fill="white">4</text>
+			<use xlink:href="#glove" x="${centerX + fieldEdge - edge*.1}" y="${centerY - fieldEdge - edge*.35}" />
+      <text x="${centerX + fieldEdge - edge*.1 + 5}" y="${centerY-fieldEdge-edge*.35+20}" fill="white">3</text>
+			<use xlink:href="#glove" x="${centerX - 9}" y="${centerY}" />
+      <text x="${centerX - 9 + 5}" y="${centerY+20}" fill="white">2</text>
+			<use xlink:href="#glove" x="${centerX - 9}" y="${centerY - pitcherDis - pitcherR * .5}" />
+      <text x="${centerX - 9 + 5}" y="${centerY-pitcherDis-pitcherR*.5+20}" fill="white">1</text>
 		</g>
 		<g id="runner">
-			<foreignObject id="currentRunner" width="24" height="24" x="${centerX - 9}" y="${centerY - 15}"><i class="glyphicon glyphicon-user"></i></foreignObject>
+      <use xlink:href="#helmet" x="${centerX-9}" y="${centerY-25}" />
 		</g>`;
 	document.querySelector('#currentRunner').addEventListener("click", (e) => {
 		const runnerBase = [{x: centerX - 9, y: centerY - 15, dir: [1,-1]}, 
@@ -168,13 +177,17 @@ function deletePitch() {
 function checkPitch() {
 	let ans = false;
 	if(currentPitch.includes('o')) { // hit
-		ans = alert('In play!');
+		alert('In play!');
 		document.querySelector('#pitch').classList.add('none');
     document.querySelector('#hit').classList.remove('none');
 		document.querySelector('#hit-pos-container').innerHTML += hitPosContent;
 		document.querySelector('.hit-pos:last-of-type').id = "hit-pos-0";
 		document.querySelector('.hit-pos:last-of-type').addEventListener('click', hitPosTrigger, false);
 	}
+  else if(currentPitch.last() === 'd') {
+    hitResult[2] = 'D';
+    ans = confirm('觸身球，進入下一個打席？');
+  }
 	else if(currentPitch.count('b')  === 4) {
     hitResult[2] = 'BB';
 		ans = confirm('保送，進入下一個打席?');
@@ -277,3 +290,4 @@ Object.defineProperties(Array.prototype, {
 	  value: function() { return this[this.length - 1]; }
   }
 });
+

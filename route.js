@@ -8,7 +8,7 @@ route = [
       "title": "scorekeeper",
       "menu_home": true,
       "baseUrl": "./",
-	  "lang": "zh-TW"
+	    "lang": "zh-TW"
     },
     "partials": './partials.js',
     "layout":  "./view/home.hbs",
