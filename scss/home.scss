@@ -8,9 +8,16 @@ $lineColor: black;
 
 .container-fluid { margin: 10px; }
 
-#history { margin: 50px 0; }
+#history { 
+  margin: 50px 0; 
+  .list-group-item {
+    & > div { height: 25px; }
+  }
+}
 
 .btn-group { margin: 5px 0; }
+
+.hit-pos:first-of-type .minus { display: none; }
 
 #field {
 	#left-line, #right-line { stroke: white; }
