@@ -1,4 +1,85 @@
-var graph = function() {
+var graph = (function() {
+  var xmlns = "http://www.w3.org/2000/svg";
+
+  var getSymbElm = function(symb) {
+    switch(symb) {
+      case 's': return createSymbStrike();
+      case 'b': return createSymbBall();
+      case "w": return createSymbSwingMiss();
+      case 'f': return createSymbFoul();
+      case 'o': return createSymbInPlay();
+      case 'd': return createHitByPitch();
+      default: return createSymbBall();
+    }
+  };
+
+  var getSvgElm = function(...symbs) {
+    var svgElm = document.createElementNS (xmlns, "svg");
+    svgElm.classList.add("symb");
+    svgElm.setAttributeNS(null, "height", 12);
+    svgElm.setAttributeNS(null, "width", 12);
+
+    symbs.forEach(symb => {
+      symb.setAttributeNS(null, "stroke", "black");
+      symb.setAttributeNS(null, "stroke-width", 1);
+      svgElm.appendChild(symb);
+    });
+
+    return svgElm;
+  };
+
+  var createSymbBall = function() {
+    var symb = document.createElementNS(xmlns, "path");
+    symb.setAttributeNS(null, "d", "M 0 6 L 12 6");
+    symb.setAttributeNS(null, "fill", "none");
+    return getSvgElm(symb);
+  };
+
+  var createSymbStrike = function() {
+    var symb = document.createElementNS(xmlns, "circle");
+    symb.setAttributeNS(null, "r", 4);
+    symb.setAttributeNS(null, "cx", 6);
+    symb.setAttributeNS(null, "cy", 6);
+    symb.setAttributeNS(null, "fill", "transparent");
+    return getSvgElm(symb);
+  };
+
+  var createSymbSwingMiss = function() {
+    var symb1 = document.createElementNS(xmlns, "circle");
+    symb1.setAttributeNS(null, "r", 4);
+    symb1.setAttributeNS(null, "cx", 6);
+    symb1.setAttributeNS(null, "cy", 6);
+    symb1.setAttributeNS(null, "fill", "transparent");
+
+    var symb2 = document.createElementNS(xmlns, "path");
+    symb2.setAttributeNS(null, "d", "M 0 6 L 12 6");
+    symb2.setAttributeNS(null, "fill", "none");
+
+    return getSvgElm(symb1, symb2);
+  };
+
+  var createSymbFoul = function() {
+    var symb = document.createElementNS(xmlns, "path");
+    symb.setAttributeNS(null, "d", "M 0 12 L 6 0 L 12 12 Z");
+    symb.setAttributeNS(null, "fill", "none");
+    return getSvgElm(symb);
+  };
+
+  var createSymbInPlay = function() {
+    var symb = document.createElementNS(xmlns, "circle");
+    symb.setAttributeNS(null, "r", 2);
+    symb.setAttributeNS(null, "cx", 6);
+    symb.setAttributeNS(null, "cy", 6);
+    symb.setAttributeNS(null, "fill", "black");
+    return getSvgElm(symb);
+  };
+
+  var createHitByPitch = function() {
+    var spanElm = document.createElement('span');
+    spanElm.innerText = 'D';
+    return spanElm;
+  };
+
   var polarToCartesian = function(centerX, centerY, radius, angleInDegrees) {
     var angleInRadians = (angleInDegrees-90) * Math.PI / 180.0;
   
@@ -182,6 +263,7 @@ var graph = function() {
   return {
     describeArc: describeArc,
     glove: glove,
-    helmet: helmet;
+    helmet: helmet,
+    getSymbElm: getSymbElm
   };
-};
+})();

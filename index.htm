@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="shortcut icon" href="./fav.ico" type="image/x-icon">
+    <link rel="icon" type="image/png" href="./fav.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="{{title}}">
+    <meta property="og:site_name" content="{{title}}">
+    <meta property="og:description" content="">
+    <title>{{title}}</title>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8">
+    <link rel="stylesheet" href="./css/frame/bootstrap.min.css" />
+    <link rel="stylesheet" href="./css/frame/font-awesome.min.css" />
+    <!--[if lt IE 9]>
+      <script src="{{baseUrljs}}/ie8.js"></script>
+      <script src="{{baseUrljs}}/frame/css3-mediaqueries.js"></script>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" href="./css/home.css" />
+  </head>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<body><div ng-app="home" class="container-fluid row">
+  <div class="col-md-2" ng-controller="actionController as action">
+		<div class="btn-group" role="group" id="pitch" ng-click="action.recordPitch($event)" ng-show="action.showPitch">
+		  <button type="button" class="btn btn-default" id="b" ng-bind-html="action.getSymbElmHtml('b')+' 壞球'|trustAsHtml"></button>
+		  <button type="button" class="btn btn-default" id="s" ng-bind-html="action.getSymbElmHtml('s')+' 好球'|trustAsHtml"></button>
+		  <button type="button" class="btn btn-default" id="w" ng-bind-html="action.getSymbElmHtml('w')+' 揮棒落空'|trustAsHtml"></button>
+		  <button type="button" class="btn btn-default" id="f" ng-bind-html="action.getSymbElmHtml('f')+' 界外球'|trustAsHtml"></button>
+		  <button type="button" class="btn btn-default" id="o" ng-bind-html="action.getSymbElmHtml('o')+' in play'|trustAsHtml"></button>
+		  <button type="button" class="btn btn-default" id="d" ng-bind-html="action.getSymbElmHtml('d')+'  觸身球'|trustAsHtml"></button>
+		</div>
+    <div id="hit" ng-show="action.showHit">
+			<div class="btn-group" role="group" id="hit-kind" data-toggle="buttons" ng-click="action.hitKindTrigger($event)">
+			  <label class="btn btn-default" id="g"> <input type="radio" name="hit-kind" autocomplete="off">
+				<svg class="symb" height="12" width="12"><path d="M 0 8 A 10 10 0 0 0 12 8" stroke="black" stroke-width="1" fill="none" /></svg>
+				滾地球</label>
+			  <label class="btn btn-default" id="h"> <input type="radio" name="hit-kind" autocomplete="off">
+				<svg class="symb" height="12" width="12"><path d="M 0 10 L 12 10" stroke="black" stroke-width="1" fill="none" /></svg>
+				平飛球</label>
+			  <label class="btn btn-default" id="f"> <input type="radio" name="hit-kind" autocomplete="off">
+				<svg class="symb" height="12" width="12"><path d="M 12 4 A 10 10 0 0 0 0 4" stroke="black" stroke-width="1" fill="none" /></svg>
+				高飛球</label>
+			</div>
+			<div id="hit-pos-container">
+        <div class="btn-group hit-pos" id="hit-pos-{{$index}}" data-toggle="buttons" ng-repeat="data in action.hitPosList track by $index" ng-click="action.hitPosTrigger($event)">
+  			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-1" autocomplete="off">1</label>
+  			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-2" autocomplete="off">2</label>
+  			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-3" autocomplete="off">3</label>
+  			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-4" autocomplete="off">4</label>
+  			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-5" autocomplete="off">5</label>
+  			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-6" autocomplete="off">6</label>
+  			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-7" autocomplete="off">7</label>
+  			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-8" autocomplete="off">8</label>
+  			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-9" autocomplete="off">9</label>
+  			  <button class="btn btn-default minus" style="font-weight:bold">-</button>
+  			  <button class="btn btn-default" style="font-weight:bold">+</button>
+  			</div>
+      </div>
+			<div class="btn-group" role="group" id="hit-result" data-toggle="buttons" ng-click="action.hitResultTrigger($event)">
+			  <label class="btn btn-default" id="E"> <input type="radio" name="hit-result" autocomplete="off"> <span class="symb">E</span> 失誤</label>
+			  <label class="btn btn-default" id="FC"><input type="radio" name="hit-result" autocomplete="off"> <span class="symb">FC</span> 野手選擇</label>
+			  <label class="btn btn-default" id="DP"><input type="radio" name="hit-result" autocomplete="off"> <span class="symb">DP</span> 雙殺出局</label>
+			  <label class="btn btn-default" id="T"> <input type="radio" name="hit-result" autocomplete="off"> <span class="symb">T</span> 觸殺出局</label>
+			  <label class="btn btn-default" id="1B"><input type="radio" name="hit-result" autocomplete="off">
+				  <svg class="symb" height="12" width="12"><path d="M 6 12 L 12 6" stroke="red" stroke-width="1" fill="none" /></svg>
+				  一壘安打</label>
+			  <label class="btn btn-default" id="2B"><input type="radio" name="hit-result" autocomplete="off">
+				  <svg class="symb" height="12" width="12"><path d="M 6 12 L 12 6 L 6 0" stroke="red" stroke-width="1" fill="none" /></svg>
+				  二壘安打</label>
+			  <label class="btn btn-default" id="3B"><input type="radio" name="hit-result" autocomplete="off">
+				  <svg class="symb" height="12" width="12"><path d="M 6 12 L 12 6 L 6 0 L 0 6" stroke="red" stroke-width="1" fill="none" /></svg>
+				  三壘安打</label>
+			  <label class="btn btn-default" id="HR"><input type="radio" name="hit-result" autocomplete="off">
+				  <svg class="symb" height="12" width="12"><circle r="1" cx="6" cy="6" stroke="red" stroke-width="1" fill="red"></circle><path d="M 6 12 L 12 6 L 6 0 L 0 6 Z" stroke="red" stroke-width="1" fill="none" /></svg>
+				  全壘打</label>
+		  </div>
+      <button class="btn btn-primary" ng-click="action.addHistory()">下一個打者</button>
+    </div> <!--/#hit -->
+	  <hr/>
+		此打席：
+		<button class="btn btn-default pull-right" ng-click="action.deletePitch()"><i class="glyphicon glyphicon-arrow-left"></i> 退回</button>
+		<div id="record">
+      <div id="r-pitch">
+        <span ng-repeat="record in action.currentPitch track by $index" ng-bind-html="action.getSymbElmHtml(record)|trustAsHtml"></span>
+      </div>
+      <div id="r-hit">{{action.hitResult.bat}}</div>
+      <div id="r-field">
+        <svg height="20">
+          <path ng-if="action.hitResult.hit" stroke="black" fill="none" ng-attr-d="{{action.hitKindDraw[action.hitResult.hit]}}" />
+          <text ng-repeat="fielder in action.hitResult.fielder track by $index" ng-if="fielder" 
+                ng-attr-x="{{$index * 20 + ($index ? 3 : 6)}}" y="16" style="font-size:14px" fill="black">{{$index ? '-' : ''}} {{fielder}}</text>
+        </svg>
+      </div>
+    </div>
+		<div class="list-group" id="history">
+      <button class="list-group-item" ng-repeat="hitResult in action.historyList | reverse">
+        <div id="h-pitch">
+          <span ng-repeat="record in hitResult.pitch track by $index" ng-bind-html="action.getSymbElmHtml(record)|trustAsHtml"></span>
+        </div>
+        <div id="h-hit">{{hitResult.bat}}</div>
+        <div id="h-field">
+          <svg height="20">
+            <path stroke="black" fill="none" ng-attr-d="{{action.hitKindDraw[hitResult.hit]}}" />
+            <text ng-repeat="fielder in hitResult.fielder track by $index" ng-if="fielder" 
+                  ng-attr-x="{{$index * 20 + ($index ? 3 : 6)}}" y="16" style="font-size:14px" fill="black">{{$index ? '-' : ''}} {{fielder}}</text>
+          </svg>
+        </div>
+      </button>
+    </div>
+	</div> <!-- /.col-md-2 -->
+  <!--
+	<svg id="field" class="col-md-10" ng-controller="field">
+    {{glove}}
+  </svg>
+  -->
+</div> <!-- /.container-fluid -->
+<div id="footer" >
+  Copyright © 2017
+</div>
+
+<script src="./js/frame/jquery-1.12.0.min.js"></script>
+<script src="./js/frame/bootstrap.min.js"></script>
+
+<script src="./js/home.js"></script>
+<script src="./js/graph.js"></script>
+<script src="./js/field.js"></script>
+<script src="./js/action.js"></script>
+</body>
+</html>

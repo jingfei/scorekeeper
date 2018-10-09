@@ -1,7 +1,25 @@
-(function() {
+var app = angular.module("home", []);
+app.controller("field", function($scope) {
 	field.init();
-  textRecord();
-})();
+});
+
+app.filter('trustAsHtml', ['$sce', function($sce) {
+  return function(text) {
+    return $sce.trustAsHtml(text);
+  };
+}]);
+
+app.filter('reverse', function(){
+  return function(items) {
+    return items.slice().reverse();
+  };
+});
+
+// record based on fielding
+var record = {
+  'home': [],
+  'away': []
+};
 
 window.onresize = function(event) { field.adjustWidth(); };
 
