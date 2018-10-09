@@ -1,18 +1,5 @@
-var field = (function() {
+var field = (function(graph) {
   const redMud = '#E41010', grass = '#50A160';
-  const hitPosContent = `<div class="btn-group hit-pos" data-toggle="buttons">
-  			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-1" autocomplete="off">1</label>
-  			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-2" autocomplete="off">2</label>
-  			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-3" autocomplete="off">3</label>
-  			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-4" autocomplete="off">4</label>
-  			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-5" autocomplete="off">5</label>
-  			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-6" autocomplete="off">6</label>
-  			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-7" autocomplete="off">7</label>
-  			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-8" autocomplete="off">8</label>
-  			  <label class="btn btn-default"><input type="radio" name="hit-pos-1" value="f-9" autocomplete="off">9</label>
-  			  <button class="btn btn-default minus" style="font-weight:bold">-</button>
-  			  <button class="btn btn-default" style="font-weight:bold">+</button>
-  			</div>`;
 
   var dynamicWidth = function() {
   	var width = window.innerWidth
@@ -129,4 +116,4 @@ var field = (function() {
     build: buildField,
     adjustWidth: dynamicWidth
   };
-})();
+})(graph);
