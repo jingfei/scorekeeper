@@ -3,6 +3,8 @@ export class Batter {
    * ground
    * line drive
    * fly
+   * pitcher
+   * out
    */
   kind: string,
   /* result:
@@ -15,6 +17,7 @@ export class Batter {
   isOut: boolean;
 
   constructor(values: Object = {}) {
+    this.isOut = false;
     Object.assign(this, values);
   }
 }

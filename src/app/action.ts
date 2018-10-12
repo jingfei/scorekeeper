@@ -11,9 +11,7 @@ export class Action {
   pitch: string,
   batter: Batter,
   fielders: Fielders,
-  runners: Runners,
-  outs: number,
-  score: number;
+  runners: Runners;
 
   constructor(values: Object = {}) {
     Object.assign(this, values);
