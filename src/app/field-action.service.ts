@@ -1,21 +1,19 @@
 import { ActionDataService } from './action-data.service';
 import { Injectable } from '@angular/core';
-import { Action } from './action';
-import { Batter } from './batter';
+import { Pitch, Action } from './action';
+import { HitKind, HitResult, Batter } from './batter';
 import { Fielders } from './fielders';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FieldActionService {
-  currentPitch: string[] = [];
+  currentPitch: Pitch[] = [];
 
-  constructor(private actionDataService: ActionDataService) { 
-  }
+  constructor(private actionDataService: ActionDataService) { }
 
-  recordPitch(pitch: string) {
+  recordPitch(pitch: Pitch) {
     this.currentPitch.push(pitch);
-    console.log(this.currentPitch);
     this.checkPitch();
   }
 
@@ -24,13 +22,13 @@ export class FieldActionService {
     this.currentPitch.pop();
   }
 
-  recordHitKind(kind: string) {
+  recordHitKind(kind: HitKind) {
     var action: Action = this.actionDataService.getLastAction();
     action.batter.kind = kind;
     this.actionDataService = this.actionDataService.addAction(action);
   }
 
-  recordHitResult(res: string) {
+  recordHitResult(res: HitResult) {
     var action: Action = this.actionDataService.getLastAction();
     action.batter.result = res;
     this.actionDataService = this.actionDataService.addAction(action);
@@ -40,7 +38,6 @@ export class FieldActionService {
     var action: Action = this.actionDataService.getLastAction();
     action.fielders.add(pos, isOut);
     this.actionDataService = this.actionDataService.addAction(action);
-    console.log(this.actionDataService.actions);
   }
 
   checkPitch() {
@@ -51,31 +48,30 @@ export class FieldActionService {
 
     action.pitch = this.currentPitch.last();
 
-    if (action.pitch === 'o') { // hit
+    if (action.pitch === Pitch.InPlay) { // hit
       // TODO: show batter menu
       isNext = true;
-    } else if (action.pitch === 'd') { // hit by pitch
+    } else if (action.pitch === Pitch.HitByPitch) { // hit by pitch
       // TODO: 1B, check runners
-      batter.kind = 'pitcher';
-      batter.result = 'D';
+      batter.kind = HitKind.Pitcher;
+      batter.result = HitResult.HitByPitch;
       isNext = true;
-    } else if (this.currentPitch.count('b') === 4) { // bb
+    } else if (this.currentPitch.count(Pitch.Ball) === 4) { // bb
       // TODO: 1B, check runners
-      batter.kind = 'pitcher';
-      batter.result = 'BB';
+      batter.kind = HitKind.Pitcher;
+      batter.result = HitResult.BB;
       isNext = true;
-    } else if ( (action.pitch === 's' || action.pitch === 'w') &&
-        this.currentPitch.count('s') + this.currentPitch.count('w') + this.currentPitch.count('f') >= 3) {
-      batter.kind = 'out';
+    } else if ( (action.pitch === Pitch.Strike || action.pitch === Pitch.SwingMiss) &&
+        this.currentPitch.count(Pitch.Strike) + this.currentPitch.count(Pitch.SwingMiss) + this.currentPitch.count(Pitch.Foul) >= 3) {
+      batter.kind = HitKind.Out;
       batter.isOut = true;
       fielder.addOut();
-      batter.result = action.pitch === 's' ? 'K' : 'KK';
+      batter.result = action.pitch === Pitch.Strike ? HitResult.K : HitResult.KK;
       isNext = true;
     }
     action.batter = batter;
     action.fielders = fielder;
     this.actionDataService = this.actionDataService.addAction(action);
-    console.log(this.actionDataService.actions);
 
     if (isNext) {
       this.currentPitch = [];

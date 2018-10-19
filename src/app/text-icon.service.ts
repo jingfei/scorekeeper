@@ -1,31 +1,44 @@
 import { Injectable } from '@angular/core';
+import { HitKind } from './batter';
+import { Pitch } from './action';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TextIconService {
   xmlns = "http://www.w3.org/2000/svg";
+  hitKindPath = { };
 
-  constructor() { }
-
-  getHitKindIcon(id: string): Element {
-    switch(id) {
-      case 'g': return this.getGroundIcon();
-      case 'h': return this.getLineIcon();
-      case 'f': return this.getFlyIcon();
-    }
+  constructor() { 
+    this.hitKindPath[HitKind.Ground] = 'M 0 16 A 18 18 0 0 0 20 16';
+    this.hitKindPath[HitKind.LineDrive] = 'M 0 4 L 20 4';
+    this.hitKindPath[HitKind.Fly] = 'M 20 8 A 18 18 0 0 0 0 8';
   }
 
-  getPitchIcon(id: string): Element {
-    switch(id) {
-      case 's': return this.getStrikeIcon();
-      case 'b': return this.getBallIcon();
-      case "w": return this.getSwingMissIcon();
-      case 'f': return this.getFoulIcon();
-      case 'o': return this.getInPlayIcon();
-      case 'd': return this.getHitByPitchIcon();
-      default: return this.getBallIcon();
+  getPitchIconHtml(id: Pitch): string {
+    return this.getPitchIcon(id).outerHTML;
+  }
+
+  getHitKindPath(id: HitKind): string {
+    return this.hitKindPath[id];
+  }
+
+  getPitchIcon(id: Pitch): Element {
+    switch (id) {
+      case Pitch.Strike: 
+        return this.getStrikeIcon();
+      case Pitch.Ball: 
+        return this.getBallIcon();
+      case Pitch.SwingMiss: 
+        return this.getSwingMissIcon();
+      case Pitch.Foul: 
+        return this.getFoulIcon();
+      case Pitch.InPlay: 
+        return this.getInPlayIcon();
+      case Pitch.HitByPitch: 
+        return this.getHitByPitchIcon();
     }
+    return this.getBallIcon();
   }
 
   getSvgElm(...symbs): Element {
@@ -94,23 +107,10 @@ export class TextIconService {
     return spanElm;
   }
 
-  getGroundIcon(): Element {
+  getHitKindIcon(id: HitKind): Element {
     var symb = document.createElementNS(this.xmlns, "path");
-    symb.setAttributeNS(null, "d", "M 0 16 A 18 18 0 0 0 20 16");
-    symb.setAttributeNS(null, "fill", "none");
-    return this.getSvgElm(symb);
-  }
-
-  getLineIcon(): Element {
-    var symb = document.createElementNS(this.xmlns, "path");
-    symb.setAttributeNS(null, "d", "M 0 4 L 20 4");
-    symb.setAttributeNS(null, "fill", "none");
-    return this.getSvgElm(symb);
-  }
-
-  getFlyIcon(): Element {
-    var symb = document.createElementNS(this.xmlns, "path");
-    symb.setAttributeNS(null, "d", "M 20 8 A 18 18 0 0 0 0 8");
+    // FIXME: hitKindPath does not match html
+    symb.setAttributeNS(null, "d", this.hitKindPath[id]);
     symb.setAttributeNS(null, "fill", "none");
     return this.getSvgElm(symb);
   }

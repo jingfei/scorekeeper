@@ -13,7 +13,7 @@ platformBrowserDynamic().bootstrapModule(AppModule)
 
 declare global {
   interface Array<T> {
-    count(query: string): number,
+    count(query: T): number,
     last(): T
   }
 }

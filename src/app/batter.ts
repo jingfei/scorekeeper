@@ -1,19 +1,26 @@
+export enum HitKind {
+  NULL, Ground, LineDrive, Fly, Pitcher, Out
+}
+
+export enum HitResult {
+  B1 = '1B',
+  B2 = '2B',
+  B3 = '3B',
+  HR = 'HR',
+  BB = 'BB',
+  HitByPitch = 'Hit by pitch',
+  E = 'Fielder error',
+  FC = 'Fielder choice',
+  DP = 'Double Play',
+  T = 'Tag out',
+  K = 'Strike out',
+  KK = 'Strike out swing',
+  Out = 'Out'
+}
+
 export class Batter {
-  /* kind:
-   * ground
-   * line drive
-   * fly
-   * pitcher
-   * out
-   */
-  kind: string;
-  /* result:
-   * 1B
-   * 2B
-   * 3B
-   * HR
-   */
-  result: string;
+  kind: HitKind;
+  result: HitResult;
   isOut: boolean;
 
   constructor(values: Object = {}) {

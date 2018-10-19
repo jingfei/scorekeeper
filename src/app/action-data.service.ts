@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Action } from './action';
-import { TextIconService } from './text-icon.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +8,7 @@ export class ActionDataService {
   lastId = 0;
   actions: Action[] = [];
 
-  constructor(private textIconService: TextIconService) { }
+  constructor() { }
 
   addAction(action: Action): ActionDataService {
     var isNew = false;
@@ -48,13 +47,5 @@ export class ActionDataService {
 
   getLastAction(): Action {
     return this.actions.pop();
-  }
-
-  getPitchIconHtml(id: string): string {
-    return this.textIconService.getPitchIcon(id).outerHTML;
-  }
-
-  getHitKindIconHtml(id: string): string {
-    return this.textIconService.getHitKindIcon(id).outerHTML;
   }
 }
