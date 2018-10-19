@@ -7,6 +7,7 @@ import { Pitch } from './action';
 import { HitKind, HitResult, Batter } from './batter';
 import { Fielders } from './fielders';
 import { Runners } from './runners';
+import { FieldBuilderService } from './field-builder.service';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +22,8 @@ export class AppComponent { // implements OnInit {
 
   constructor(private sanitizer: DomSanitizer,
       private actionDataService: ActionDataService,
-      private textIconService: TextIconService) { }
+      private textIconService: TextIconService, private fieldBuilderService: FieldBuilderService) { 
+  }
 
   getPitchIconHtml(id: string | number) {
     var pitch = typeof id === "number" ? id : Pitch[id];
@@ -62,5 +64,26 @@ export class AppComponent { // implements OnInit {
 
   getActions() {
     return this.actionDataService.actions;
+  }
+
+  ngAfterViewInit() {
+  	var width = window.innerWidth
+  				|| document.documentElement.clientWidth
+  				|| document.body.clientWidth,
+  		  height = window.innerHeight
+  				|| document.documentElement.clientHeight
+  				|| document.body.clientHeight,
+  		  svg = document.querySelector('svg#field') as HTMLElement,
+  		  w = svg.clientWidth,
+  		  edge = w < height ? w : height;
+  	svg.setAttribute('height', edge + "");
+  	svg.style.width = edge + 'px';
+  	svg.setAttribute('width', edge + "");
+  	this.fieldBuilderService.buildField(svg, edge/2.5, edge*.5 - 10, edge*.9);
+  	/*
+  	if(width < 768) buildField(svg,edge/3, edge*.5, height*.5);			// xs
+  	else if(width < 992) buildField(svg, edge/5, edge*.5, height*.8);		// sm
+  	else buildField(svg,edge/10, edge*.5, height*.8);
+  	*/
   }
 }
