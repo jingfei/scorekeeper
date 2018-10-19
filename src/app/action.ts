@@ -1,5 +1,9 @@
+import { Batter } from './batter';
+import { Fielders } from './fielders';
+import { Runners } from './runners';
+
 export class Action {
-  id: number,
+  id: number;
   /* pitch status
    * b: ball
    * s: strike
@@ -8,9 +12,9 @@ export class Action {
    * o: in play
    * d: hit by pitch
    */
-  pitch: string,
-  batter: Batter,
-  fielders: Fielders,
+  pitch: string;
+  batter: Batter;
+  fielders: Fielders;
   runners: Runners;
 
   constructor(values: Object = {}) {

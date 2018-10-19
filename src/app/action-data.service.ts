@@ -9,10 +9,10 @@ export class ActionDataService {
   lastId = 0;
   actions: Action[] = [];
 
-  constructor() { }
+  constructor(private textIconService: TextIconService) { }
 
   addAction(action: Action): ActionDataService {
-    isNew = false;
+    var isNew = false;
     // Update exist data
     if (action.id > 0) {
       this.actions = this.actions.map(act => {
@@ -51,6 +51,10 @@ export class ActionDataService {
   }
 
   getPitchIconHtml(id: string): string {
-    return TextIconService.getPitchIcon(id).outerHTML;
+    return this.textIconService.getPitchIcon(id).outerHTML;
+  }
+
+  getHitKindIconHtml(id: string): string {
+    return this.textIconService.getHitKindIcon(id).outerHTML;
   }
 }

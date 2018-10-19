@@ -1,6 +1,7 @@
 import { ActionDataService } from './action-data.service';
+import { FieldActionService } from './field-action.service';
 import { Component, OnInit } from '@angular/core';
-import { Action } from './action';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Batter } from './batter';
 import { Fielders } from './fielders';
 import { Runners } from './runners';
@@ -8,19 +9,53 @@ import { Runners } from './runners';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrls: ['./app.component.scss'],
   providers: [ActionDataService]
 })
-export class AppComponent implements OnInit {
+
+export class AppComponent { // implements OnInit {
   title = 'scorekeeper';
+  fieldActionService = new FieldActionService(this.actionDataService);
 
-  newAction: Action = new Action();
+  constructor(private sanitizer: DomSanitizer,
+      private actionDataService: ActionDataService) { }
 
-  constructor(private actionDataService: ActionDataService) {
+  getPitchIconHtml(id: string) {
+    return this.sanitizer.bypassSecurityTrustHtml(this.actionDataService.getPitchIconHtml(id));
   }
 
-  addPitch(p: string) {
-    this.newAction.pitch = p;
+  getHitKindIconPath(id: string) {
+    var path = {'g': 'M 0 16 A 18 18 0 0 0 20 16',
+                'h': 'M 0 4 L 20 4',
+                'f': 'M 20 8 A 18 18 0 0 0 0 8' };
+    return path[id];
   }
 
+  pitchTrigger(e: Event) {
+    var target = e.target as HTMLElement;
+    if(target.tagName === 'BUTTON') {
+      this.fieldActionService.recordPitch(target.id);
+    }
+  }
+
+  hitKindTrigger(e: Event) {
+    var target = e.target as HTMLElement;
+    if (target.tagName === 'LABEL') {
+      this.fieldActionService.recordHitKind(target.id);
+    }
+  }
+
+  hitResultTrigger(e: Event) {
+    var target = e.target as HTMLElement;
+    if (target.tagName === 'LABEL') {
+      this.fieldActionService.recordHitResult(target.id);
+    }
+  }
+
+  fielderPosTrigger(e: Event) {
+    var target = e.target as HTMLElement;
+    if (target.tagName === 'LABEL') {
+      this.fieldActionService.recordFielder(parseInt(target.id));
+    }
+  }
 }

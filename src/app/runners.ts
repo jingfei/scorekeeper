@@ -3,18 +3,13 @@ export class Runners {
    * size fix 4
    * -1 stands for no runner
    */
-  location: number[],
-  score: number;
+  location: number[] = [0, -1, -1, -1];
+  score: number = 0;
 
   constructor(last: Runners = null) {
-    this.location.push(0);
-    this.location.push(-1);
-    this.location.push(-1);
-    this.location.push(-1);
-
     if (last !== null) {
-      for (int i = 0; i < 4; ++i) {
-        setRunner(last.location[i])
+      for (let i in this.location) {
+        this.setRunner(last.location[i])
       }
     }
   }
@@ -24,16 +19,16 @@ export class Runners {
   }
 
   find(base: number): number { // find index of runner
-    for (int i = 0; i < 4; ++i) {
-      if (this.location[i] === base) {
-        return i;
+    for (let b of this.location) {
+      if (b === base) {
+        return b;
       }
     }
     return -1;
   }
 
   go(base: number, step: number = 1) {
-    index = this.find(base);
+    var index = this.find(base);
     if (index !== -1) {
       this.location[index] += step;
       if (this.location[index] > 3) {
@@ -47,7 +42,7 @@ export class Runners {
       if (this.hasRunner(base + 1)) {
         this.force(base + 1);
       }
-      go(base);
+      this.go(base);
     }
   }
 

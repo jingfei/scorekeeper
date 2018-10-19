@@ -1,7 +1,7 @@
 export class Fielders {
-  position: number[],
-  isOut: boolean[],
-  outNum: number;
+  position: number[] = [];
+  isOut: boolean[] = [];
+  outNum: number = 0;
 
   constructor(values: Object = {}) {
     Object.assign(this, values);
@@ -23,7 +23,7 @@ export class Fielders {
 
   update(index: number, position: number, isOut: boolean = false) {
     if (!this.checkIndex(index)) {
-      this.add(number, isOut);
+      this.add(index, isOut);
     } else {
       if (this.isOut[index] !== isOut) {
         this.outNum = isOut ? this.outNum + 1 : this.outNum - 1;
@@ -43,8 +43,8 @@ export class Fielders {
       if (this.isOut[index]) {
         --this.outNum;
       }
-      this.position = this.position.filter((i, t) => i !== index);
-      this.isOut = this.isOut.filter((i, t) => i !== index);
+      this.position = this.position.filter((t, i) => i !== index);
+      this.isOut = this.isOut.filter((t, i) => i !== index);
     }
   }
 

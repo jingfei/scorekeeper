@@ -1,0 +1,65 @@
+/* You can add global styles to this file, and also import other style files */
+$green: #28a745;
+$green-dark: #218838;
+$red: #dc3545;
+$red-dark: #bd2130;
+$blue: #007bff;
+$blue-dark: #0069d9;
+$black: #343a40;
+
+.btn {
+  text-align: center;
+  vertical-align: middle;
+  line-height: 1.5;
+  border-radius: .5rem;
+  border-style: solid;
+  display: inline-block;
+  padding: .375rem .75rem;
+  background: gray;
+  border-color: gray;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+
+  &:not(:disabled):not(.disabled) {
+    cursor: pointer;
+  }
+}
+
+@mixin btn-color($name, $color, $darker: false) {
+  @if $darker { $name: 'fill-'+$name; }
+  .btn-#{$name} {
+    @if $darker { 
+      color: #fff; 
+      background-color: $color;
+      svg * { stroke: #fff; }
+    }
+    @else { 
+      color: $color; 
+      background-color: transparent;
+      svg * { stroke: $color; }
+    }
+    border-color: $color;
+
+    &:hover {
+      color: #fff;
+      @if $darker { 
+        background-color: $darker; 
+        border-color: $darker;
+      }
+      @else { 
+        background-color: $color; 
+        border-color: $color;
+      }
+      svg * { stroke: #fff; }
+    }
+  }
+}
+
+svg * { stroke: $black; }
+
+@include btn-color('green', $green)
+@include btn-color('red', $red)
+@include btn-color('blue', $blue)
+@include btn-color('black', $black)
+@include btn-color('blue', $blue, $blue-dark)
+@include btn-color('green', $green, $green-dark)
+@include btn-color('red', $red, $red-dark)

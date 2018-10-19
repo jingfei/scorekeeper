@@ -10,58 +10,62 @@ import { Fielders } from './fielders';
 export class FieldActionService {
   currentPitch: string[] = [];
 
-  constructor(private actionDataService: ActionDataService) { }
+  constructor(private actionDataService: ActionDataService) { 
+  }
 
   recordPitch(pitch: string) {
-    currentPitch.push(pitch);
+    this.currentPitch.push(pitch);
+    console.log(this.currentPitch);
     this.checkPitch();
   }
 
   deleteLastPitch() {
     // TODO: ActionDataService pop
-    currentPitch.pop();
+    this.currentPitch.pop();
   }
 
   recordHitKind(kind: string) {
-    action: Action = getLastAction();
+    var action: Action = this.actionDataService.getLastAction();
     action.batter.kind = kind;
-    this.actionDataService = addAction(action);
+    this.actionDataService = this.actionDataService.addAction(action);
   }
 
   recordHitResult(res: string) {
-    action: Action = getLastAction();
+    var action: Action = this.actionDataService.getLastAction();
     action.batter.result = res;
-    this.actionDataService = addAction(action);
+    this.actionDataService = this.actionDataService.addAction(action);
   }
 
   recordFielder(pos: number, isOut: boolean = false) {
-    action: Action = getLastAction();
+    var action: Action = this.actionDataService.getLastAction();
     action.fielders.add(pos, isOut);
-    this.actionDataService = addAction(action);
+    this.actionDataService = this.actionDataService.addAction(action);
+    console.log(this.actionDataService.actions);
   }
 
   checkPitch() {
-    action: Action = new Action();
-    batter: Batter = new Batter();
-    fielder: Fielder = new Fielder();
-    isNext = false;
+    var action: Action = new Action();
+    var batter: Batter = new Batter();
+    var fielder: Fielders = new Fielders();
+    var isNext = false;
 
-    action.pitch = currentPitch.last();
+    action.pitch = this.currentPitch.last();
 
     if (action.pitch === 'o') { // hit
       // TODO: show batter menu
+      isNext = true;
     } else if (action.pitch === 'd') { // hit by pitch
       // TODO: 1B, check runners
       batter.kind = 'pitcher';
       batter.result = 'D';
       isNext = true;
-    } else if (currentPitch.count('b') === 4) { // bb
+    } else if (this.currentPitch.count('b') === 4) { // bb
       // TODO: 1B, check runners
       batter.kind = 'pitcher';
       batter.result = 'BB';
       isNext = true;
     } else if ( (action.pitch === 's' || action.pitch === 'w') &&
-        currentPitch.count('s') + currentPitch.count('w') + currentPitch.count('f') >= 3) {
+        this.currentPitch.count('s') + this.currentPitch.count('w') + this.currentPitch.count('f') >= 3) {
       batter.kind = 'out';
       batter.isOut = true;
       fielder.addOut();
@@ -69,8 +73,9 @@ export class FieldActionService {
       isNext = true;
     }
     action.batter = batter;
-    action.fielder = fielder;
-    this.actionDataService = addAction(action);
+    action.fielders = fielder;
+    this.actionDataService = this.actionDataService.addAction(action);
+    console.log(this.actionDataService.actions);
 
     if (isNext) {
       this.currentPitch = [];
