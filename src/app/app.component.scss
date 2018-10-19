@@ -1,6 +1,22 @@
 .btn-group {
   margin: 5px auto;
+  display: flex;
+  flex-flow: row wrap;
+  flex-direction: column;
+
   .btn {
     margin: auto 1px; 
+  }
+
+  input[type="radio"] {
+    visibility: hidden;
+  }
+}
+
+.container {
+  display: flex;
+
+  .half-part {
+    flex: 1 100;
   }
 }

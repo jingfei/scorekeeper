@@ -1,68 +1,73 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div>
-  <div *ngFor="let action of getActions()" id="{{action.id}}">
-    <span [innerHtml]="getPitchIconHtml(action.pitch)"></span>
-    <span *ngIf="action.batter.result">{{action.batter.result}}</span>
-    <svg height="20">
-      <path *ngIf="action.batter.kind" stroke="black" fill="none" [attr.d]="getHitKindIconPath(action.batter.kind)" />
-      <text *ngFor="let fielder of action.fielders.position; index as i"
-            [attr.x]="i * 20 + (i ? 3 : 6)" y="16" style="font-size:14px" fill="black">{{i ? '-' : ''}} {{fielder}}</text>
-    </svg>
-  </div>
-</div>
-<div style="text-align:center">
-  <div id="pitch" class="btn-group" (click)="pitchTrigger($event)">
-    <button class="btn btn-green" data-pitch='Ball'><span [innerHtml]="getPitchIconHtml('Ball')"></span> Ball</button>
-    <button class="btn btn-green" data-pitch='HitByPitch'><span [innerHtml]="getPitchIconHtml('HitByPitch')"></span> Hit by pitch</button>
-    <button class="btn btn-red" data-pitch='Strike'><span [innerHtml]="getPitchIconHtml('Strike')"></span> Strike</button>
-    <button class="btn btn-red" data-pitch='SwingMiss'><span [innerHtml]="getPitchIconHtml('SwingMiss')"></span> Swing & Miss</button>
-    <button class="btn btn-red" data-pitch='Foul'><span [innerHtml]="getPitchIconHtml('Foul')"></span> Foul</button>
-    <button class="btn btn-blue" data-pitch='InPlay'><span [innerHtml]="getPitchIconHtml('InPlay')"></span> in play</button>
-  </div>
-
-  <div id="hit">
-		<div class="btn-group" role="group" id="hit-kind" (click)="hitKindTrigger($event)">
-		  <label class="btn btn-fill-blue" data-hit-kind="Ground"> <input type="radio" name="hit-kind" autocomplete="off">
-			<svg class="symb" height="12" width="12"><path d="M 0 8 A 10 10 0 0 0 12 8" stroke-width="1" fill="none" /></svg>
-			Grounders</label>
-		  <label class="btn btn-fill-blue" data-hit-kind="LineDrive"> <input type="radio" name="hit-kind" autocomplete="off">
-			<svg class="symb" height="12" width="12"><path d="M 0 10 L 12 10" stroke-width="1" fill="none" /></svg>
-			Line Drive</label>
-		  <label class="btn btn-fill-blue" data-hit-kind="Fly"> <input type="radio" name="hit-kind" autocomplete="off">
-			<svg class="symb" height="12" width="12"><path d="M 12 4 A 10 10 0 0 0 0 4" stroke-width="1" fill="none" /></svg>
-		  Fly Ball</label>
-		</div>
-		<div id="pos-container">
-      <div class="btn-group pos" id="pos-" (click)="fielderPosTrigger($event)">
-        <label class="btn btn-fill-green" *ngFor="let number of [1,2,3,4,5,6,7,8,9]" [attr.data-pos]="number"><input type="radio" name="pos-" value="{{number}}" autocomplete="off">{{number}}</label>
-  		  <button class="btn btn-fill-green minus" style="font-weight:bold">-</button>
-  		  <button class="btn btn-fill-green" style="font-weight:bold">+</button>
-  		</div>
+<div class="container">
+  <div class="half-part">
+    <div *ngFor="let action of getActions().slice().reverse()" id="{{action.id}}"> 
+      <div *ngIf="action.batter.result">{{action.batter.result}}</div>
+      <svg height="20">
+        <path *ngIf="action.batter.kind" stroke="black" fill="none" [attr.d]="getHitKindIconPath(action.batter.kind)" />
+        <text *ngFor="let fielder of action.fielders.position; index as i"
+              [attr.x]="i * 20 + (i ? 3 : 6)" y="16" style="font-size:14px" fill="black">{{i ? '-' : ''}} {{fielder}}</text>
+      </svg>
+      <div [innerHtml]="getPitchIconHtml(action.pitch)"></div>
     </div>
-		<div class="btn-group" role="group" id="hit-result" (click)="hitResultTrigger($event)">
-		  <label class="btn btn-default" data-hit-res="E"> <input type="radio" name="hit-result" autocomplete="off"> <span class="symb">E</span> 失誤</label>
-		  <label class="btn btn-fill-red" data-hit-res="FC"><input type="radio" name="hit-result" autocomplete="off"> <span class="symb">FC</span> 野手選擇</label>
-		  <label class="btn btn-fill-red" data-hit-res="DP"><input type="radio" name="hit-result" autocomplete="off"> <span class="symb">DP</span> 雙殺出局</label>
-		  <label class="btn btn-fill-red" data-hit-res="T"> <input type="radio" name="hit-result" autocomplete="off"> <span class="symb">T</span> 觸殺出局</label>
-		  <label class="btn btn-fill-blue" data-hit-res="B1"><input type="radio" name="hit-result" autocomplete="off">
-			  <svg class="symb" height="12" width="12"><path d="M 6 12 L 12 6" stroke-width="1" fill="none" /></svg>
-			  Single</label>
-		  <label class="btn btn-fill-blue" data-hit-res="B2"><input type="radio" name="hit-result" autocomplete="off">
-			  <svg class="symb" height="12" width="12"><path d="M 6 12 L 12 6 L 6 0" stroke-width="1" fill="none" /></svg>
-			  Double</label>
-		  <label class="btn btn-fill-blue" data-hit-res="B3"><input type="radio" name="hit-result" autocomplete="off">
-			  <svg class="symb" height="12" width="12"><path d="M 6 12 L 12 6 L 6 0 L 0 6" stroke-width="1" fill="none" /></svg>
-			  Triple</label>
-		  <label class="btn btn-fill-blue" data-hit-res="HR"><input type="radio" name="hit-result" autocomplete="off">
-			  <svg class="symb" height="12" width="12"><circle r="1" cx="6" cy="6" stroke-width="1" fill="red"></circle><path d="M 6 12 L 12 6 L 6 0 L 0 6 Z" stroke-width="1" fill="none" /></svg>
-			  Home Run</label>
-	  </div>
-    <button class="btn btn-black">Next Batter</button>
-  </div> <!--/#hit -->
+  </div>
 
-  <div id="r-pitch">
-    <span *ngFor="let pitch of fieldActionService.currentPitch" [innerHtml]="getPitchIconHtml(pitch)"></span>
+  <div class="half-part">
+    <svg id="field" style="width:100%"></svg>
+  </div>
+  
+  <div class="half-part">
+    <div id="pitch" class="btn-group" (click)="pitchTrigger($event)" *ngIf="showPitchMenu">
+      <button class="btn btn-green" data-pitch='Ball'><span [innerHtml]="getPitchIconHtml('Ball')"></span> Ball</button>
+      <button class="btn btn-green" data-pitch='HitByPitch'><span [innerHtml]="getPitchIconHtml('HitByPitch')"></span> Hit by pitch</button>
+      <button class="btn btn-red" data-pitch='Strike'><span [innerHtml]="getPitchIconHtml('Strike')"></span> Strike</button>
+      <button class="btn btn-red" data-pitch='SwingMiss'><span [innerHtml]="getPitchIconHtml('SwingMiss')"></span> Swing & Miss</button>
+      <button class="btn btn-red" data-pitch='Foul'><span [innerHtml]="getPitchIconHtml('Foul')"></span> Foul</button>
+      <button class="btn btn-blue" data-pitch='InPlay'><span [innerHtml]="getPitchIconHtml('InPlay')"></span> in play</button>
+    </div>
+  
+    <div id="hit" *ngIf="showHitMenu">
+  		<div class="btn-group" role="group" id="hit-kind" (click)="hitKindTrigger($event)">
+  		  <label class="btn btn-fill-blue" data-hit-kind="Ground"> <input type="radio" name="hit-kind" autocomplete="off">
+  			<svg class="symb" height="12" width="12"><path d="M 0 8 A 10 10 0 0 0 12 8" stroke-width="1" fill="none" /></svg>
+  			Grounders</label>
+  		  <label class="btn btn-fill-blue" data-hit-kind="LineDrive"> <input type="radio" name="hit-kind" autocomplete="off">
+  			<svg class="symb" height="12" width="12"><path d="M 0 10 L 12 10" stroke-width="1" fill="none" /></svg>
+  			Line Drive</label>
+  		  <label class="btn btn-fill-blue" data-hit-kind="Fly"> <input type="radio" name="hit-kind" autocomplete="off">
+  			<svg class="symb" height="12" width="12"><path d="M 12 4 A 10 10 0 0 0 0 4" stroke-width="1" fill="none" /></svg>
+  		  Fly Ball</label>
+  		</div>
+  		<div id="pos-container">
+        <div class="btn-group pos" id="pos-" (click)="fielderPosTrigger($event)">
+          <label class="btn btn-fill-green" *ngFor="let number of [1,2,3,4,5,6,7,8,9]" [attr.data-pos]="number"><input type="radio" name="pos-" value="{{number}}" autocomplete="off">{{number}}</label>
+    		  <button class="btn btn-fill-green minus" style="font-weight:bold">-</button>
+    		  <button class="btn btn-fill-green" style="font-weight:bold">+</button>
+    		</div>
+      </div>
+  		<div class="btn-group" role="group" id="hit-result" (click)="hitResultTrigger($event)">
+  		  <label class="btn btn-default" data-hit-res="E"> <input type="radio" name="hit-result" autocomplete="off"> <span class="symb">E</span> 失誤</label>
+  		  <label class="btn btn-fill-red" data-hit-res="FC"><input type="radio" name="hit-result" autocomplete="off"> <span class="symb">FC</span> 野手選擇</label>
+  		  <label class="btn btn-fill-red" data-hit-res="DP"><input type="radio" name="hit-result" autocomplete="off"> <span class="symb">DP</span> 雙殺出局</label>
+  		  <label class="btn btn-fill-red" data-hit-res="T"> <input type="radio" name="hit-result" autocomplete="off"> <span class="symb">T</span> 觸殺出局</label>
+  		  <label class="btn btn-fill-blue" data-hit-res="B1"><input type="radio" name="hit-result" autocomplete="off">
+  			  <svg class="symb" height="12" width="12"><path d="M 6 12 L 12 6" stroke-width="1" fill="none" /></svg>
+  			  Single</label>
+  		  <label class="btn btn-fill-blue" data-hit-res="B2"><input type="radio" name="hit-result" autocomplete="off">
+  			  <svg class="symb" height="12" width="12"><path d="M 6 12 L 12 6 L 6 0" stroke-width="1" fill="none" /></svg>
+  			  Double</label>
+  		  <label class="btn btn-fill-blue" data-hit-res="B3"><input type="radio" name="hit-result" autocomplete="off">
+  			  <svg class="symb" height="12" width="12"><path d="M 6 12 L 12 6 L 6 0 L 0 6" stroke-width="1" fill="none" /></svg>
+  			  Triple</label>
+  		  <label class="btn btn-fill-blue" data-hit-res="HR"><input type="radio" name="hit-result" autocomplete="off">
+  			  <svg class="symb" height="12" width="12"><circle r="1" cx="6" cy="6" stroke-width="1" fill="red"></circle><path d="M 6 12 L 12 6 L 6 0 L 0 6 Z" stroke-width="1" fill="none" /></svg>
+  			  Home Run</label>
+  	  </div>
+      <button class="btn btn-black">Next Batter</button>
+    </div> <!--/#hit -->
+  
+    <div id="r-pitch">
+      <span *ngFor="let pitch of fieldActionService.currentPitch" [innerHtml]="getPitchIconHtml(pitch)"></span>
+    </div>
   </div>
 </div>
-
-<svg id="field" style="width:80%"></svg>

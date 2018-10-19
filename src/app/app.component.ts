@@ -17,7 +17,8 @@ import { FieldBuilderService } from './field-builder.service';
 })
 
 export class AppComponent { // implements OnInit {
-  title = 'scorekeeper';
+  showPitchMenu = true;
+  showHitMenu = false;
   fieldActionService = new FieldActionService(this.actionDataService);
 
   constructor(private sanitizer: DomSanitizer,
@@ -37,6 +38,9 @@ export class AppComponent { // implements OnInit {
   pitchTrigger(e: Event) {
     var target = e.target as HTMLElement;
     if(target.tagName === 'BUTTON') {
+      var pitch = Pitch[target.dataset.pitch];
+      this.showHitMenu = pitch === Pitch.InPlay;
+      this.showPitchMenu = !this.showHitMenu;
       this.fieldActionService.recordPitch(Pitch[target.dataset.pitch]);
     }
   }
