@@ -1,0 +1,60 @@
+<svg>
+  <svg:glove></svg:glove><helmet></helmet>
+  <svg:path id="allField"
+  	  [attr.d]="'M'+centerX+', '+(centerY + sDiamondAway * 2)
+  		 +'L'+(centerX-edge*3)+', '+(centerY + sDiamondAway * 2 -edge*3)
+  		 +'L'+(centerX+edge*3)+', '+(centerY + sDiamondAway * 2 -edge*3)+' Z'" [attr.fill]="grass" />
+  <svg:path id="redDiamond"
+  	  [attr.d]="describeArc(centerX,centerY-pitcherDis,edge,-76,76)
+  		 +'L'+(centerX - lDiamondAway)+', '+(centerY + sDiamondMove - lDiamondAway)
+  		 +' '+describeArc(centerX,centerY,baseR,60,300,true)+' Z'" [attr.fill]="redMud" />
+  <svg:line id="left-line" [attr.x1]="centerX" [attr.y1]="centerY" [attr.x2]="centerX-edge*3" [attr.y2]="centerY-edge*3"/>
+  <svg:line id="right-line" [attr.x1]="centerX" [attr.y1]="centerY" [attr.x2]="centerX+edge*3" [attr.y2]="centerY-edge*3"/>
+  <svg:path id="infield"
+  	  [attr.d]="'M'+(centerX - sDiamondAway)+', '+(centerY - sDiamondMove - sDiamondAway)
+  		 +'L'+(centerX - fieldEdge + sDiamondMove + sDiamondAway)+', '+(centerY - fieldEdge + sDiamondAway)
+  		 +' '+describeArc(centerX - fieldEdge,centerY - fieldEdge,baseR,60,120,true)
+  		 +'L'+(centerX - sDiamondAway)+', '+(centerY - fieldEdge*2 + sDiamondMove + sDiamondAway)
+  		 +' '+describeArc(centerX,centerY - fieldEdge * 2,baseR,150,-150,true)
+  		 +'L'+(centerX + fieldEdge - sDiamondMove - sDiamondAway)+', '+(centerY - fieldEdge - sDiamondAway)
+  		 +' '+describeArc(centerX + fieldEdge,centerY - fieldEdge,baseR,-120,-60,true)
+  		 +'L'+(centerX + sDiamondAway)+', '+(centerY - sDiamondMove - sDiamondAway)
+  		 +' '+describeArc(centerX,centerY,baseR,-30,30,true)+' Z'" [attr.fill]="grass" />
+  <svg:circle id="pitcher" [attr.r]="pitcherR" [attr.cx]="centerX" [attr.cy]="centerY-pitcherDis" [attr.fill]="redMud" />
+  <svg:g id="base">
+  	<svg:line [attr.x1]="centerX - fieldEdge" [attr.y1]="centerY - fieldEdge" [attr.x2]="centerX" [attr.y2]="centerY - fieldEdge * 2" />
+  	<svg:line [attr.x1]="centerX" [attr.y1]="centerY - fieldEdge * 2" [attr.x2]="centerX + fieldEdge" [attr.y2]="centerY - fieldEdge" />
+  	<svg:rect id="secondBase" class="base" [attr.x]="centerX" [attr.y]="centerY - fieldEdge * 2 - baseWidth * .5" [attr.width]="baseWidth" [attr.height]="baseWidth" />
+  	<svg:rect id="thirdBase" class="base" [attr.x]="centerX - fieldEdge" [attr.y]="centerY - fieldEdge" [attr.width]="baseWidth" [attr.height]="baseWidth" />
+  	<svg:rect id="firstBase" class="base" [attr.x]="centerX + fieldEdge" [attr.y]="centerY - fieldEdge" [attr.width]="baseWidth" [attr.height]="baseWidth" />
+  	<svg:path id="homeBase" class="base" 
+  		  [attr.d]="'M'+centerX+', '+centerY
+  			 +'l-'+baseWidth*.5+', -'+baseWidth*.5
+  			 +'l0, -'+baseWidth*.5
+  			 +'l'+baseWidth+', 0'
+  			 +'l0, '+baseWidth*.5+' Z'" />
+  </svg:g>
+  <svg:g id="fielder">
+    <svg:use xlink:href="#glove" [attr.x]="centerX - edge" [attr.y]="centerY - fieldEdge * 2.5" />
+    <text [attr.x]="centerX - edge + 5" [attr.y]="centerY-fieldEdge*2.5+20" fill="white">7</text>
+  	<svg:use xlink:href="#glove" [attr.x]="centerX - 9" [attr.y]="centerY - fieldEdge * 3" />
+    <text [attr.x]="centerX - 9 + 5" [attr.y]="centerY-fieldEdge*3+20" fill="white">8</text>
+  	<svg:use xlink:href="#glove" [attr.x]="centerX + edge - 9" [attr.y]="centerY - fieldEdge * 2.5" />
+    <text [attr.x]="centerX + edge - 9 + 5" [attr.y]="centerY-fieldEdge*2.5+20" fill="white">9</text>
+  	<svg:use xlink:href="#glove" [attr.x]="centerX - fieldEdge" [attr.y]="centerY - fieldEdge - edge*.35" />
+    <text [attr.x]="centerX - fieldEdge + 5" [attr.y]="centerY-fieldEdge-edge*.35+20" fill="white">6</text>
+  	<svg:use xlink:href="#glove" [attr.x]="centerX - edge*.35" [attr.y]="centerY - fieldEdge * 2 - baseWidth * .5" />
+    <text [attr.x]="centerX - edge*.35 + 5" [attr.y]="centerY-fieldEdge*2-baseWidth*.5+20" fill="white">5</text>
+  	<svg:use xlink:href="#glove" [attr.x]="centerX + edge*.25" [attr.y]="centerY - fieldEdge * 2 - baseWidth * .5" />
+    <text [attr.x]="centerX + edge*.25 + 5" [attr.y]="centerY-fieldEdge*2-baseWidth*.5+20" fill="white">4</text>
+  	<svg:use xlink:href="#glove" [attr.x]="centerX + fieldEdge - edge*.1" [attr.y]="centerY - fieldEdge - edge*.35" />
+    <text [attr.x]="centerX + fieldEdge - edge*.1 + 5" [attr.y]="centerY-fieldEdge-edge*.35+20" fill="white">3</text>
+  	<svg:use xlink:href="#glove" [attr.x]="centerX - 9" [attr.y]="centerY" />
+    <text [attr.x]="centerX - 9 + 5" [attr.y]="centerY+20" fill="white">2</text>
+  	<svg:use xlink:href="#glove" [attr.x]="centerX - 9" [attr.y]="centerY - pitcherDis - pitcherR * .5" />
+    <text [attr.x]="centerX - 9 + 5" [attr.y]="centerY-pitcherDis-pitcherR*.5+20" fill="white">1</text>
+  </svg:g>
+  <svg:g id="runner">
+    <svg:use xlink:href="#helmet" [attr.x]="centerX-9" [attr.y]="centerY-25" id="currentRunner" (click)="run($event)" />
+  </svg:g>
+</svg>
