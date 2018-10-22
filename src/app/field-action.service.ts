@@ -3,12 +3,14 @@ import { Injectable } from '@angular/core';
 import { Pitch, Action } from './action';
 import { HitKind, HitResult, Batter } from './batter';
 import { Fielders } from './fielders';
+import { Runners } from './runners';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FieldActionService {
   currentPitch: Pitch[] = [];
+  runners: Runners = new Runners();
 
   constructor(private actionDataService: ActionDataService) { }
 
@@ -66,11 +68,13 @@ export class FieldActionService {
       isNext = true;
     } else if (action.pitch === Pitch.HitByPitch) { // hit by pitch
       // TODO: 1B, check runners
+      this.runners.force();
       batter.kind = HitKind.Pitcher;
       batter.result = HitResult.HitByPitch;
       isNext = true;
     } else if (this.currentPitch.count(Pitch.Ball) === 4) { // bb
       // TODO: 1B, check runners
+      this.runners.force();
       batter.kind = HitKind.Pitcher;
       batter.result = HitResult.BB;
       isNext = true;
@@ -84,10 +88,12 @@ export class FieldActionService {
     }
     action.batter = batter;
     action.fielders = fielder;
+    action.runners = this.runners;
     this.actionDataService = this.actionDataService.addAction(action);
 
     if (isNext) {
       this.currentPitch = [];
+      this.runners = new Runners(this.runners);
     }
   }
 }

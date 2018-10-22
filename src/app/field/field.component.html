@@ -1,34 +1,37 @@
 <svg>
-  <svg:glove></svg:glove><helmet></helmet>
+  <glove></glove>
+  <svg:defs>
+    <svg:rect id="runner" [attr.width]="baseWidth*4" [attr.height]="baseWidth*4" />
+  </svg:defs>
   <svg:path id="allField"
   	  [attr.d]="'M'+centerX+', '+(centerY + sDiamondAway * 2)
   		 +'L'+(centerX-edge*3)+', '+(centerY + sDiamondAway * 2 -edge*3)
-  		 +'L'+(centerX+edge*3)+', '+(centerY + sDiamondAway * 2 -edge*3)+' Z'" [attr.fill]="grass" />
+  		 +'L'+(centerX+edge*3)+', '+(centerY + sDiamondAway * 2 -edge*3)+' Z'" />
   <svg:path id="redDiamond"
   	  [attr.d]="describeArc(centerX,centerY-pitcherDis,edge,-76,76)
   		 +'L'+(centerX - lDiamondAway)+', '+(centerY + sDiamondMove - lDiamondAway)
-  		 +' '+describeArc(centerX,centerY,baseR,60,300,true)+' Z'" [attr.fill]="redMud" />
+  		 +' '+describeArc(centerX,centerY,baseR,60,300,true)+' Z'" />
   <svg:line id="left-line" [attr.x1]="centerX" [attr.y1]="centerY" [attr.x2]="centerX-edge*3" [attr.y2]="centerY-edge*3"/>
   <svg:line id="right-line" [attr.x1]="centerX" [attr.y1]="centerY" [attr.x2]="centerX+edge*3" [attr.y2]="centerY-edge*3"/>
   <svg:path id="infield"
-  	  [attr.d]="'M'+(centerX - sDiamondAway)+', '+(centerY - sDiamondMove - sDiamondAway)
-  		 +'L'+(centerX - fieldEdge + sDiamondMove + sDiamondAway)+', '+(centerY - fieldEdge + sDiamondAway)
-  		 +' '+describeArc(centerX - fieldEdge,centerY - fieldEdge,baseR,60,120,true)
-  		 +'L'+(centerX - sDiamondAway)+', '+(centerY - fieldEdge*2 + sDiamondMove + sDiamondAway)
-  		 +' '+describeArc(centerX,centerY - fieldEdge * 2,baseR,150,-150,true)
-  		 +'L'+(centerX + fieldEdge - sDiamondMove - sDiamondAway)+', '+(centerY - fieldEdge - sDiamondAway)
-  		 +' '+describeArc(centerX + fieldEdge,centerY - fieldEdge,baseR,-120,-60,true)
-  		 +'L'+(centerX + sDiamondAway)+', '+(centerY - sDiamondMove - sDiamondAway)
-  		 +' '+describeArc(centerX,centerY,baseR,-30,30,true)+' Z'" [attr.fill]="grass" />
-  <svg:circle id="pitcher" [attr.r]="pitcherR" [attr.cx]="centerX" [attr.cy]="centerY-pitcherDis" [attr.fill]="redMud" />
+  	  [attr.d]="'M'+(bases[0].x - sDiamondAway)+', '+(bases[0].y - sDiamondMove - sDiamondAway)
+  		 +'L'+(bases[3].x + sDiamondMove + sDiamondAway)+', '+(bases[3].y + sDiamondAway)
+  		 +' '+describeArc(bases[3].x,bases[3].y,baseR,60,120,true)
+  		 +'L'+(bases[2].x - sDiamondAway)+', '+(bases[2].y + sDiamondMove + sDiamondAway)
+  		 +' '+describeArc(bases[2].x,bases[2].y,baseR,150,-150,true)
+  		 +'L'+(bases[1].x - sDiamondMove - sDiamondAway)+', '+(bases[1].y - sDiamondAway)
+  		 +' '+describeArc(bases[1].x,bases[1].y,baseR,-120,-60,true)
+  		 +'L'+(bases[0].x + sDiamondAway)+', '+(bases[0].y - sDiamondMove - sDiamondAway)
+  		 +' '+describeArc(bases[0].x,bases[0].y,baseR,-30,30,true)+' Z'" />
+  <svg:circle id="pitcher" [attr.r]="pitcherR" [attr.cx]="bases[0].x" [attr.cy]="bases[0].y-pitcherDis" />
   <svg:g id="base">
-  	<svg:line [attr.x1]="centerX - fieldEdge" [attr.y1]="centerY - fieldEdge" [attr.x2]="centerX" [attr.y2]="centerY - fieldEdge * 2" />
-  	<svg:line [attr.x1]="centerX" [attr.y1]="centerY - fieldEdge * 2" [attr.x2]="centerX + fieldEdge" [attr.y2]="centerY - fieldEdge" />
-  	<svg:rect id="secondBase" class="base" [attr.x]="centerX" [attr.y]="centerY - fieldEdge * 2 - baseWidth * .5" [attr.width]="baseWidth" [attr.height]="baseWidth" />
-  	<svg:rect id="thirdBase" class="base" [attr.x]="centerX - fieldEdge" [attr.y]="centerY - fieldEdge" [attr.width]="baseWidth" [attr.height]="baseWidth" />
-  	<svg:rect id="firstBase" class="base" [attr.x]="centerX + fieldEdge" [attr.y]="centerY - fieldEdge" [attr.width]="baseWidth" [attr.height]="baseWidth" />
+  	<svg:line [attr.x1]="bases[3].x" [attr.y1]="bases[3].y" [attr.x2]="bases[2].x" [attr.y2]="bases[2].y" />
+  	<svg:line [attr.x1]="bases[2].x" [attr.y1]="bases[2].y" [attr.x2]="bases[1].x" [attr.y2]="bases[1].y" />
+    <svg:g *ngFor="let base of [1,2,3]">
+      <svg:rect class="base" [attr.x]="bases[base].x" [attr.y]="bases[base].y" [attr.width]="baseWidth" [attr.height]="baseWidth" [attr.transform]="'rotate('+bases[base].rotate+','+bases[base].x+','+bases[base].y+')'"/>
+    </svg:g>
   	<svg:path id="homeBase" class="base" 
-  		  [attr.d]="'M'+centerX+', '+centerY
+  		  [attr.d]="'M'+bases[0].x+', '+bases[0].y
   			 +'l-'+baseWidth*.5+', -'+baseWidth*.5
   			 +'l0, -'+baseWidth*.5
   			 +'l'+baseWidth+', 0'
@@ -54,7 +57,7 @@
   	<svg:use xlink:href="#glove" [attr.x]="centerX - 9" [attr.y]="centerY - pitcherDis - pitcherR * .5" />
     <text [attr.x]="centerX - 9 + 5" [attr.y]="centerY-pitcherDis-pitcherR*.5+20" fill="white">1</text>
   </svg:g>
-  <svg:g id="runner">
-    <svg:use xlink:href="#helmet" [attr.x]="centerX-9" [attr.y]="centerY-25" id="currentRunner" (click)="run($event)" />
+  <svg:g id="runners" *ngFor="let runner of [1,2,3]">
+    <svg:use xlink:href="#runner" *ngIf="hasRunner(runner)" [attr.x]="bases[runner].x-baseWidth*2" [attr.y]="bases[runner].y-baseWidth*2" />
   </svg:g>
 </svg>

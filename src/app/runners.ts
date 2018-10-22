@@ -6,10 +6,14 @@ export class Runners {
   location: number[] = [0, -1, -1, -1];
   score: number = 0;
 
-  constructor(last: Runners = null) {
+  constructor(last: Runners = null, location: number[] = []) {
     if (last !== null) {
       for (let i in this.location) {
         this.setRunner(last.location[i])
+      }
+    } else if (location.length === 4) {
+      for (let i in this.location) {
+        this.setRunner(location[i])
       }
     }
   }

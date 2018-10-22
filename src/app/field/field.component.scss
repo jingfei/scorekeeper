@@ -1,7 +1,19 @@
+$redMud: #E41010; 
+$grass: #50A160;
+
 svg {
   height: 500px;
   width: 500px;
-  svg#glove {
-    cursor: move;
-  }
+}
+
+#allField, #infield {
+  fill: $grass;
+}
+
+#pitcher, #redDiamond {
+  fill: $redMud;
+}
+
+#runner {
+  fill: blue;
 }

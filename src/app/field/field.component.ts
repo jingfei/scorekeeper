@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Runners } from '../runners';
 
 @Component({
   selector: 'field',
@@ -6,9 +7,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./field.component.scss']
 })
 export class FieldComponent implements OnInit {
-  redMud = '#E41010'; 
-  grass = '#50A160';
-  edge = 500/2.5;
+  @Input('locations') locations;
+
+  graphWidth = 500;
+  edge = this.graphWidth/2.5;
   pitcherR = this.edge * .1875 * .5;
   pitcherDis = this.edge * .675; 
   baseR = this.edge * .15;
@@ -20,33 +22,36 @@ export class FieldComponent implements OnInit {
   lDiamondAway = (Math.sqrt(this.baseR*this.baseR - this.lineGap*this.lineGap) + this.lineGap) / Math.sqrt(2);
   centerX = this.edge*2.5*.5 - 10;
   centerY = this.edge*2.5*.9;
+  bases = [ { x: this.centerX, y: this.centerY, dir: [1,-1], rotate: 0 }, 
+  				  { x: this.centerX + this.fieldEdge, y: this.centerY - this.fieldEdge, dir: [-1,-1], rotate: 135 }, 
+  				  { x: this.centerX, y: this.centerY - this.fieldEdge * 2, dir: [-1,1], rotate: 45 }, 
+  				  { x: this.centerX - this.fieldEdge, y: this.centerY - this.fieldEdge, dir: [1,1], rotate: 315 } ];
   
   constructor() { }
   ngOnInit() { }
 
-  run(e: Event) {
-  	var runnerBase = [{x: this.centerX - 9, y: this.centerY - 25, dir: [1,-1]}, 
-  						{x: this.centerX - 9 + this.fieldEdge, y: this.centerY - 25 - this.fieldEdge, dir: [-1,-1]}, 
-  						{x: this.centerX - 9, y: this.centerY - 25 - this.fieldEdge * 2, dir: [-1,1]}, 
-  						{x: this.centerX - 9 - this.fieldEdge, y: this.centerY - 25 - this.fieldEdge, dir: [1,1]} ];
-    var target = e.target as HTMLElement;
-  	var getXY = () => ({ x: parseInt(target.getAttribute('x')), y: parseInt(target.getAttribute('y')) });
-  	runnerBase.map( (r,i) => {
-  		const t = getXY();
-  		if(t.x == parseInt(r.x.toString()) && t.y == parseInt(r.y.toString())) {
-  			const {x: toX, y: toY} = runnerBase[(i+1) % runnerBase.length];
-  			var go = setInterval(() => {
-  				const {x, y} = getXY();
-  				target.setAttribute('x',(x+r.dir[0]).toString());
-  				target.setAttribute('y',(y+r.dir[1]).toString());
-  				if(r.dir[0]*(x - toX) > 0 || r.dir[1]*(y - toY) > 0) {
-  					target.setAttribute('x',toX.toString());
-  					target.setAttribute('y',toY.toString());
-  					clearInterval(go);
-  				}
-  			}, 5);
-  		}
-  	});
+  run(fromBase: number, toBase: number) {
+    // TODO: add animation to runners
+    //for (var i: number = fromBase; i <= toBase; ++i) {
+  	//  var go = setInterval(() => {
+  	//  	const {x, y} = {bases[i].x, bases[i].y};
+  	//  	target.setAttribute('x',(x+dir[0]).toString());
+  	//  	target.setAttribute('y',(y+dir[1]).toString());
+  	//  	if(r.dir[0]*(x - toX) > 0 || r.dir[1]*(y - toY) > 0) {
+  	//  		target.setAttribute('x',toX.toString());
+  	//  		target.setAttribute('y',toY.toString());
+  	//  		clearInterval(go);
+  	//  	}
+  	//  }, 5);
+    //}
+  }
+
+  hasRunner(runner: number) {
+    if (typeof this.locations === 'string') {
+      this.locations = this.locations.split(',').map(s => parseInt(s));
+    }
+    var r = new Runners(null, this.locations);
+    return r.hasRunner(runner);
   }
 
   describeArc(x, y, radius, startAngle, endAngle, noM = false, getM = false){
