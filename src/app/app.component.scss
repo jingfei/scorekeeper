@@ -20,3 +20,26 @@
     flex: 1 100;
   }
 }
+
+.scoreboard {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  & > div {
+    line-height: 2em;
+    & > span {
+      margin: 0 5px;
+      &.text {
+        vertical-align: sub;
+      }
+      &.circle{
+        vertical-align: middle;
+        font-size: 3em;
+        color: red;
+        margin: 0;
+      }
+      &.fill::before { content: '●'; }
+      &.outline::before { content: '◌'; font-size: .9em; }
+    }
+  }
+}

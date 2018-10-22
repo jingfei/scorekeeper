@@ -12,6 +12,19 @@ export class FieldActionService {
 
   constructor(private actionDataService: ActionDataService) { }
 
+  getCurrentPitchCount(pitch: Pitch) {
+    switch(pitch) {
+      case Pitch.Ball:
+        return this.currentPitch.count(Pitch.Ball);
+      case Pitch.Strike:
+        var cnt = this.currentPitch.count(Pitch.Strike) +
+                    this.currentPitch.count(Pitch.Foul) +
+                    this.currentPitch.count(Pitch.SwingMiss);
+        cnt = cnt > 2 ? 2 : cnt;
+        return cnt;
+    }
+  }
+
   recordPitch(pitch: Pitch) {
     this.currentPitch.push(pitch);
     this.checkPitch();

@@ -7,6 +7,10 @@ $blue: #007bff;
 $blue-dark: #0069d9;
 $black: #343a40;
 
+body, html {
+  font: normal 16px/1.5em 'Microsoft JhengHei',arial,sans-serif;
+}
+
 .btn {
   text-align: center;
   vertical-align: middle;

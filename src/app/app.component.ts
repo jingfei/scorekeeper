@@ -64,6 +64,26 @@ export class AppComponent { // implements OnInit {
     }
   }
 
+  getPitch(kind: string) {
+    var cnt = this.fieldActionService.getCurrentPitchCount(Pitch[kind]);
+    var res: string[] = [];
+
+    while(cnt--) {
+      res.push('fill');
+    }
+
+    if (Pitch[kind] === Pitch.Strike) {
+      while(res.length < 2) {
+        res.push('outline');
+      }
+    } else if (Pitch[kind] === Pitch.Ball) {
+      while(res.length < 3) {
+        res.push('outline');
+      }
+    }
+    return res;
+  }
+
   getActions() {
     return this.actionDataService.actions;
   }

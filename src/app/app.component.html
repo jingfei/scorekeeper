@@ -12,7 +12,20 @@
     </div>
   </div>
 
-  <field class="half-part"></field>
+  <div class="half-part">
+    <div class="scoreboard">
+      <div>
+        <span class="text">BALL</span> 
+        <span class="circle {{class}}" *ngFor="let class of getPitch('Ball')"></span>
+      </div>
+      <div>
+        <span class="text">STRIKE</span>
+        <span class="circle {{class}}" *ngFor="let class of getPitch('Strike')"></span>
+      </div>
+      <!-- <div><span class="text">OUT</span></div> -->
+    </div>
+    <field></field>
+  </div>
   
   <div class="half-part">
     <div id="pitch" class="btn-group" (click)="pitchTrigger($event)" *ngIf="showPitchMenu">
