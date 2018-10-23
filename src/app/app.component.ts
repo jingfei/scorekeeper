@@ -84,7 +84,31 @@ export class AppComponent { // implements OnInit {
     return res;
   }
 
+  nextBatter() {
+    this.showHitMenu = false;
+    this.showPitchMenu = true;
+  }
+
   getActions() {
     return this.actionDataService.actions;
+  }
+
+  getAdvancedActions() {
+    // FIXME: no pick off currently
+    var newActions = [];
+    var actions = this.actionDataService.actions;
+    for (var i = 0; i < actions.length; ++i) {
+      if (actions[i].batter.result) {
+        var action = Object.assign({pitches: [actions[i].pitch]}, actions[i]);
+        var j = i-1;
+        while (j >= 0 && !actions[j].batter.result) {
+          action.pitches.push(actions[j].pitch);
+          --j;
+        }
+        action.pitches = action.pitches.slice().reverse();
+        newActions.push(action);
+      }
+    }
+    return newActions;
   }
 }

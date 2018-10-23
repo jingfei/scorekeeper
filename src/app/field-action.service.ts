@@ -69,18 +69,15 @@ export class FieldActionService {
     } else if (action.pitch === Pitch.HitByPitch) { // hit by pitch
       // TODO: 1B, check runners
       this.runners.force();
-      batter.kind = HitKind.Pitcher;
       batter.result = HitResult.HitByPitch;
       isNext = true;
     } else if (this.currentPitch.count(Pitch.Ball) === 4) { // bb
       // TODO: 1B, check runners
       this.runners.force();
-      batter.kind = HitKind.Pitcher;
       batter.result = HitResult.BB;
       isNext = true;
     } else if ( (action.pitch === Pitch.Strike || action.pitch === Pitch.SwingMiss) &&
         this.currentPitch.count(Pitch.Strike) + this.currentPitch.count(Pitch.SwingMiss) + this.currentPitch.count(Pitch.Foul) >= 3) {
-      batter.kind = HitKind.Out;
       batter.isOut = true;
       fielder.addOut();
       batter.result = action.pitch === Pitch.Strike ? HitResult.K : HitResult.KK;

@@ -1,5 +1,5 @@
 export enum HitKind {
-  NULL, Ground, LineDrive, Fly, Pitcher, Out
+  NULL, Ground, LineDrive, Fly
 }
 
 export enum HitResult {

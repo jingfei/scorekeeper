@@ -42,7 +42,7 @@ body, html {
       svg * { stroke: $color; }
     }
     border-color: $color;
-
+    
     &:hover {
       color: #fff;
       @if $darker { 

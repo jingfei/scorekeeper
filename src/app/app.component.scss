@@ -43,3 +43,16 @@
     }
   }
 }
+
+.history-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+
+  .history {
+    border-radius: 10px;
+    border: 1px solid black;
+    padding: 5px;
+    margin: 2px;
+  }
+}

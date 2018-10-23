@@ -1,14 +1,16 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div class="container">
-  <div class="half-part">
-    <div *ngFor="let action of getActions().slice().reverse()" id="{{action.id}}"> 
+  <div class="half-part history-container">
+    <div *ngFor="let action of getAdvancedActions().slice().reverse()" id="{{action.id}}" class="history"> 
       <div *ngIf="action.batter.result">{{action.batter.result}}</div>
-      <svg height="20">
+      <div *ngIf="action.batter.kind"><svg height="20">
         <path *ngIf="action.batter.kind" stroke="black" fill="none" [attr.d]="getHitKindIconPath(action.batter.kind)" />
         <text *ngFor="let fielder of action.fielders.position; index as i"
               [attr.x]="i * 20 + (i ? 3 : 6)" y="16" style="font-size:14px" fill="black">{{i ? '-' : ''}} {{fielder}}</text>
-      </svg>
-      <div [innerHtml]="getPitchIconHtml(action.pitch)"></div>
+      </svg></div>
+      <div>
+        <span *ngFor="let pitch of action.pitches" [innerHtml]="getPitchIconHtml(pitch)"></span>
+      </div>
     </div>
   </div>
 
@@ -74,7 +76,7 @@
   			  <svg class="symb" height="12" width="12"><circle r="1" cx="6" cy="6" stroke-width="1" fill="red"></circle><path d="M 6 12 L 12 6 L 6 0 L 0 6 Z" stroke-width="1" fill="none" /></svg>
   			  Home Run</label>
   	  </div>
-      <button class="btn btn-black">Next Batter</button>
+      <button class="btn btn-black" (click)="nextBatter()">Next Batter</button>
     </div> <!--/#hit -->
   
     <div id="r-pitch">
