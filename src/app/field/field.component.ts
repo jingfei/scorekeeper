@@ -30,20 +30,42 @@ export class FieldComponent implements OnInit {
   constructor() { }
   ngOnInit() { }
 
-  run(fromBase: number, toBase: number) {
-    // TODO: add animation to runners
-    //for (var i: number = fromBase; i <= toBase; ++i) {
-  	//  var go = setInterval(() => {
-  	//  	const {x, y} = {bases[i].x, bases[i].y};
-  	//  	target.setAttribute('x',(x+dir[0]).toString());
-  	//  	target.setAttribute('y',(y+dir[1]).toString());
-  	//  	if(r.dir[0]*(x - toX) > 0 || r.dir[1]*(y - toY) > 0) {
-  	//  		target.setAttribute('x',toX.toString());
-  	//  		target.setAttribute('y',toY.toString());
-  	//  		clearInterval(go);
-  	//  	}
-  	//  }, 5);
-    //}
+  run(totalRun = 1, hasRun = 0) {
+    var fromBase = 0, toBase = 3, speed = 5;
+    var getXY = (target) => ({ x: parseInt(target.getAttribute('x')), y: parseInt(target.getAttribute('y')) });
+    var goList = [];
+    for (var i: number = fromBase; i <= toBase; ++i) {
+      var target = document.querySelector("#runner-base-"+i);
+      if (target !== null) {
+        var {x: toX, y: toY} = this.bases[(i+1+hasRun) % 4];
+        toX -= this.baseWidth*2;
+        toY -= this.baseWidth*2;
+        var dir = this.bases[(i+hasRun)%4].dir;
+        if (i+hasRun < 4) {
+          goList.push({target: target, dir: dir, toX: toX, toY: toY});
+        }
+      }
+    }
+    var isCalled = false;
+  	var go = setInterval(() => {
+      goList.forEach(v => {
+        var { target, dir, toX, toY } = v;
+        var { x, y } = getXY(target);
+  		  target.setAttribute('x',(x+dir[0]*speed).toString());
+  		  target.setAttribute('y',(y+dir[1]*speed).toString());
+  		  if(dir[0]*(x - toX) > 0 || dir[1]*(y - toY) > 0) {
+  		  	target.setAttribute('x',toX.toString());
+  		  	target.setAttribute('y',toY.toString());
+          if (!isCalled) {
+            isCalled = true;
+            clearInterval(go);
+            if (totalRun - hasRun > 1) {
+              this.run(totalRun, hasRun + 1);
+            }
+          }
+  		  }
+      });
+  	}, 5);
   }
 
   hasRunner(runner: number) {
