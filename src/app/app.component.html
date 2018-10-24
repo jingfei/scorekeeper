@@ -29,7 +29,7 @@
     <field locations="{{fieldActionService.runners.location}}"></field>
   </div>
   
-  <div class="half-part">
+  <div class="half-part" id="buttons">
     <div id="pitch" class="btn-group" (click)="pitchTrigger($event)" *ngIf="showPitchMenu">
       <button class="btn btn-green" data-pitch='Ball'><span [innerHtml]="getPitchIconHtml('Ball')"></span> Ball</button>
       <button class="btn btn-green" data-pitch='HitByPitch'><span [innerHtml]="getPitchIconHtml('HitByPitch')"></span> Hit by pitch</button>
