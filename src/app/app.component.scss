@@ -4,14 +4,13 @@
     display: flex;
     flex-flow: row wrap;
     flex-direction: column;
-    transition-duration: 0.4s;
   
     .btn {
       margin: -1px 1px; 
-overflow: hidden;
-position: relative;
+      overflow: hidden;
+      position: relative;
 
-      &:after {
+      &::after {
         content: '';
         background: black;
         display: block;
@@ -21,9 +20,9 @@ position: relative;
         margin-top: -200%;
         margin-left: -20px!important;
         opacity: 0;
-        transition: all 0.8s;
+        transition: all .4s;
       }
-      &:active:after {
+      &:active::after {
         padding: 0;
         margin: 0;
         opacity: 1;

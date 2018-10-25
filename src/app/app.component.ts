@@ -36,10 +36,18 @@ export class AppComponent { // implements OnInit {
   pitchTrigger(e: Event) {
     var target = e.target as HTMLElement;
     if(target.tagName === 'BUTTON') {
+      target.disabled = true;
       var pitch = Pitch[target.dataset.pitch];
       this.showHitMenu = pitch === Pitch.InPlay;
       this.showPitchMenu = !this.showHitMenu;
       this.fieldActionService.recordPitch(Pitch[target.dataset.pitch]);
+    }
+  }
+
+  btnTransitionEnd(e: Event) {
+    if (e.pseudoElement === "::after") {
+      var target = e.target as HTMLElement;
+      target.disabled = false;
     }
   }
 
