@@ -57,7 +57,7 @@
   	<svg:use xlink:href="#glove" [attr.x]="centerX - 9" [attr.y]="centerY - pitcherDis - pitcherR * .5" />
     <text [attr.x]="centerX - 9 + 5" [attr.y]="centerY-pitcherDis-pitcherR*.5+20" fill="white">1</text>
   </svg:g>
-  <svg:g id="runners" *ngFor="let runner of [0,1,2,3]">
-    <svg:use xlink:href="#runner" *ngIf="hasRunner(runner)" id="runner-base-{{runner}}" [attr.x]="bases[runner].x-baseWidth*2" [attr.y]="bases[runner].y-baseWidth*2" (click)="run()"/>
+  <svg:g class="runners" *ngFor="let runner of [0,1,2,3]">
+    <svg:use xlink:href="#runner" *ngIf="hasRunner(runner)" id="runner-base-{{runner}}" [attr.x]="bases[runner].x-baseWidth*2" [attr.y]="bases[runner].y-baseWidth*2" />
   </svg:g>
 </svg>

@@ -31,6 +31,14 @@ export class Runners {
     return -1;
   }
 
+  hit(step: number) { // every runner go step
+    for (var base = 3; base >= 0; --base) {
+      if (this.hasRunner(base)) {
+        this.go(base, step);
+      }
+    }
+  }
+
   go(base: number, step: number = 1) {
     var index = this.find(base);
     if (index !== -1) {

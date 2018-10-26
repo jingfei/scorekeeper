@@ -1,5 +1,6 @@
 import { ActionDataService } from './action-data.service';
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 import { Pitch, Action } from './action';
 import { HitKind, HitResult, Batter } from './batter';
 import { Fielders } from './fielders';
@@ -10,6 +11,7 @@ import { Runners } from './runners';
 })
 export class FieldActionService {
   currentPitch: Pitch[] = [];
+  lastRunners: Runners = new Runners();
   runners: Runners = new Runners();
 
   constructor(private actionDataService: ActionDataService) { }
@@ -55,6 +57,41 @@ export class FieldActionService {
     this.actionDataService = this.actionDataService.addAction(action);
   }
 
+  nextBatter() {
+    var action: Action = this.actionDataService.getLastAction();
+    var n = 0;
+
+    this.currentPitch = [];
+    switch(action.batter.result) {
+      case HitResult.B1: 
+        n = 1;
+        break;
+      case HitResult.B2: 
+        n = 2;
+        break;
+      case HitResult.B3: 
+        n = 3
+        break;
+    }
+    if (n) {
+      this.runners = action.runners;
+      this.lastRunners = new Runners(this.runners);
+      this.actionDataService.fieldRunnerSource.next(n);
+      this.runners.hit(n);
+    }
+    this.actionDataService = this.actionDataService.addAction(action);
+
+    var newAction: Action = new Action();
+    var batter: Batter = new Batter();
+    var fielder: Fielders = new Fielders();
+    newAction.batter = batter;
+    newAction.fielders = fielder;
+    newAction.runners = this.runners;
+    this.actionDataService = this.actionDataService.addAction(newAction);
+
+    this.runners = new Runners(this.runners);
+  }
+
   checkPitch() {
     var action: Action = new Action();
     var batter: Batter = new Batter();
@@ -65,14 +102,16 @@ export class FieldActionService {
 
     if (action.pitch === Pitch.InPlay) { // hit
       // TODO: show batter menu
-      isNext = true;
+      // isNext = true;
     } else if (action.pitch === Pitch.HitByPitch) { // hit by pitch
-      // TODO: 1B, check runners
+      this.lastRunners = new Runners(this.runners);
+      this.actionDataService.fieldRunnerSource.next(1);
       this.runners.force();
       batter.result = HitResult.HitByPitch;
       isNext = true;
     } else if (this.currentPitch.count(Pitch.Ball) === 4) { // bb
-      // TODO: 1B, check runners
+      this.lastRunners = new Runners(this.runners);
+      this.actionDataService.fieldRunnerSource.next(1);
       this.runners.force();
       batter.result = HitResult.BB;
       isNext = true;

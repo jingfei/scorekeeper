@@ -1,4 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { ActionDataService } from '../action-data.service';
+import { FieldActionService } from '../field-action.service';
+import { Subscription } from 'rxjs';
 import { Runners } from '../runners';
 
 @Component({
@@ -6,8 +9,12 @@ import { Runners } from '../runners';
   templateUrl: './field.component.html',
   styleUrls: ['./field.component.scss']
 })
-export class FieldComponent implements OnInit {
+export class FieldComponent { // implements OnInit {
   @Input('locations') locations;
+  @Input('lastLocations') lastLocations;
+
+  subscription: Subscription;
+  showLastRunners = false;
 
   graphWidth = 500;
   edge = this.graphWidth/2.5;
@@ -27,10 +34,15 @@ export class FieldComponent implements OnInit {
   				  { x: this.centerX, y: this.centerY - this.fieldEdge * 2, dir: [-1,1], rotate: 45 }, 
   				  { x: this.centerX - this.fieldEdge, y: this.centerY - this.fieldEdge, dir: [1,1], rotate: 315 } ];
   
-  constructor() { }
-  ngOnInit() { }
+  constructor(private actionDataService: ActionDataService) {
+    this.subscription = actionDataService.fieldRunner$.subscribe(
+      (n: number) => {
+        this.showLastRunners = true;
+        this.run(n);
+    });
+  }
 
-  run(totalRun = 1, hasRun = 0) {
+  run(totalRun: number = 1, hasRun: number = 0) {
     var fromBase = 0, toBase = 3, speed = 5;
     var getXY = (target) => ({ x: parseInt(target.getAttribute('x')), y: parseInt(target.getAttribute('y')) });
     var goList = [];
@@ -38,18 +50,21 @@ export class FieldComponent implements OnInit {
       var target = document.querySelector("#runner-base-"+i);
       if (target !== null) {
         var {x: toX, y: toY} = this.bases[(i+1+hasRun) % 4];
+        var {x: fromX, y: fromY} = this.bases[i];
         toX -= this.baseWidth*2;
         toY -= this.baseWidth*2;
+        fromX -= this.baseWidth*2;
+        fromY -= this.baseWidth*2;
         var dir = this.bases[(i+hasRun)%4].dir;
         if (i+hasRun < 4) {
-          goList.push({target: target, dir: dir, toX: toX, toY: toY});
+          goList.push({target: target, dir: dir, toX: toX, toY: toY, fromX: fromX, fromY: fromY});
         }
       }
     }
     var isCalled = false;
   	var go = setInterval(() => {
       goList.forEach(v => {
-        var { target, dir, toX, toY } = v;
+        var { target, dir, toX, toY, fromX, fromY } = v;
         var { x, y } = getXY(target);
   		  target.setAttribute('x',(x+dir[0]*speed).toString());
   		  target.setAttribute('y',(y+dir[1]*speed).toString());
@@ -61,6 +76,10 @@ export class FieldComponent implements OnInit {
             clearInterval(go);
             if (totalRun - hasRun > 1) {
               this.run(totalRun, hasRun + 1);
+            } else {
+              // callback
+              this.showLastRunners = false;
+              this.initRunners();
             }
           }
   		  }
@@ -68,11 +87,27 @@ export class FieldComponent implements OnInit {
   	}, 5);
   }
 
-  hasRunner(runner: number) {
-    if (typeof this.locations === 'string') {
-      this.locations = this.locations.split(',').map(s => parseInt(s));
+  initRunners() {
+    var fromBase = 0, toBase = 3;
+    for (var i: number = 0; i <= toBase; ++i) {
+      var target = document.querySelector("#runner-base-"+i);
+      if (target !== null) {
+        var {x, y} = this.bases[i];
+        x -= this.baseWidth*2;
+        y -= this.baseWidth*2;
+  		 target.setAttribute('x',x.toString());
+  		 target.setAttribute('y',y.toString());
+      }
     }
-    var r = new Runners(null, this.locations);
+  }
+
+  hasRunner(runner: number) {
+    var newLoc: number[];
+    var loc = this.showLastRunners ? this.lastLocations : this.locations;
+    if (typeof loc === 'string') {
+      newLoc = loc.split(',').map(s => parseInt(s));
+    }
+    var r = new Runners(null, newLoc);
     return r.hasRunner(runner);
   }
 

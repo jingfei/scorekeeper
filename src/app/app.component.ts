@@ -8,13 +8,16 @@ import { HitKind, HitResult, Batter } from './batter';
 import { Fielders } from './fielders';
 import { Runners } from './runners';
 
+interface TransitionEvent extends Event {
+  pseudoElement: string
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   providers: [ActionDataService, TextIconService]
 })
-
 export class AppComponent { // implements OnInit {
   showPitchMenu = true;
   showHitMenu = false;
@@ -34,7 +37,7 @@ export class AppComponent { // implements OnInit {
   }
 
   pitchTrigger(e: Event) {
-    var target = e.target as HTMLElement;
+    var target = e.target as HTMLInputElement;
     if(target.tagName === 'BUTTON') {
       target.disabled = true;
       var pitch = Pitch[target.dataset.pitch];
@@ -44,9 +47,9 @@ export class AppComponent { // implements OnInit {
     }
   }
 
-  btnTransitionEnd(e: Event) {
+  btnTransitionEnd(e: TransitionEvent) {
     if (e.pseudoElement === "::after") {
-      var target = e.target as HTMLElement;
+      var target = e.target as HTMLInputElement;
       target.disabled = false;
     }
   }
@@ -95,6 +98,7 @@ export class AppComponent { // implements OnInit {
   nextBatter() {
     this.showHitMenu = false;
     this.showPitchMenu = true;
+    this.fieldActionService.nextBatter();
   }
 
   getActions() {
