@@ -1,6 +1,6 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div class="container">
-  <div class="half-part history-container">
+  <div class="even-part history-container">
     <div *ngFor="let action of getAdvancedActions().slice().reverse()" id="{{action.id}}" class="history"> 
       <div *ngIf="action.batter.result">{{action.batter.result}}</div>
       <div *ngIf="action.batter.kind"><svg height="20">
@@ -14,7 +14,7 @@
     </div>
   </div>
 
-  <div class="half-part">
+  <div class="even-part field-container">
     <div class="scoreboard">
       <div>
         <span class="text">BALL</span> 
@@ -30,7 +30,7 @@
            [lastLocations]="fieldActionService.lastRunners.location"></field>
   </div>
   
-  <div class="half-part" id="buttons" (transitionend)="btnTransitionEnd($event)">
+  <div class="even-part" id="buttons" (transitionend)="btnTransitionEnd($event)">
     <div id="pitch" class="btn-group" (click)="pitchTrigger($event)" *ngIf="showPitchMenu">
       <button class="btn btn-green" data-pitch='Ball'><span [innerHtml]="getPitchIconHtml('Ball')"></span> Ball</button>
       <button class="btn btn-green" data-pitch='HitByPitch'><span [innerHtml]="getPitchIconHtml('HitByPitch')"></span> Hit by pitch</button>
