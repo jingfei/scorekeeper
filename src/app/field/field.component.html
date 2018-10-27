@@ -1,8 +1,10 @@
-<svg>
+<svg (window:resize)="init()">
   <glove></glove>
   <svg:defs>
     <svg:rect id="runner" [attr.width]="baseWidth*4" [attr.height]="baseWidth*4" />
   </svg:defs>
+  <svg:rect *ngIf="centerY + sDiamondAway * 2 - edge * 3 > 0" id="outField" [attr.x]="0" [attr.y]="0"
+      [attr.width]="graphWidth" [attr.height]="centerY + sDiamondAway * 2 - edge * 3" />
   <svg:path id="allField"
   	  [attr.d]="'M'+centerX+', '+(centerY + sDiamondAway * 2)
   		 +'L'+(centerX-edge*3)+', '+(centerY + sDiamondAway * 2 -edge*3)

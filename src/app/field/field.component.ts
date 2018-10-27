@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit, ElementRef } from '@angular/core';
 import { ActionDataService } from '../action-data.service';
 import { FieldActionService } from '../field-action.service';
 import { Subscription } from 'rxjs';
@@ -9,32 +9,33 @@ import { Runners } from '../runners';
   templateUrl: './field.component.html',
   styleUrls: ['./field.component.scss']
 })
-export class FieldComponent { // implements OnInit {
-  @Input('locations') locations;
-  @Input('lastLocations') lastLocations;
+export class FieldComponent implements OnInit {
+  @Input() locations: number[];
+  @Input() lastLocations: number[];
 
   subscription: Subscription;
   showLastRunners = false;
 
-  graphWidth = 500;
-  edge = this.graphWidth/2.5;
-  pitcherR = this.edge * .1875 * .5;
-  pitcherDis = this.edge * .675; 
-  baseR = this.edge * .15;
-  fieldEdge = this.edge / Math.sqrt(2);
-  lineGap = this.edge * .0375;
-  baseWidth = this.edge * .05;
-  sDiamondMove = this.lineGap * Math.sqrt(2);
-  sDiamondAway = (Math.sqrt(this.baseR*this.baseR - this.lineGap*this.lineGap) - this.lineGap) / Math.sqrt(2);
-  lDiamondAway = (Math.sqrt(this.baseR*this.baseR - this.lineGap*this.lineGap) + this.lineGap) / Math.sqrt(2);
-  centerX = this.edge*2.5*.5 - 10;
-  centerY = this.edge*2.5*.9;
-  bases = [ { x: this.centerX, y: this.centerY, dir: [1,-1], rotate: 0 }, 
-  				  { x: this.centerX + this.fieldEdge, y: this.centerY - this.fieldEdge, dir: [-1,-1], rotate: 135 }, 
-  				  { x: this.centerX, y: this.centerY - this.fieldEdge * 2, dir: [-1,1], rotate: 45 }, 
-  				  { x: this.centerX - this.fieldEdge, y: this.centerY - this.fieldEdge, dir: [1,1], rotate: 315 } ];
+  graphWidth: number;
+  graphHeight: number;
+  edge: number;
+  pitcherR: number;
+  pitcherDis: number;
+  baseR: number;
+  fieldEdge: number;
+  lineGap: number;
+  baseWidth: number;
+  sDiamondMove: number;
+  sDiamondAway: number;
+  lDiamondAway: number;
+  centerX: number;
+  centerY: number;
+  bases = [ { x: 0, y: 0, dir: [1,-1], rotate: 0 }, 
+  				  { x: 0, y: 0, dir: [-1,-1], rotate: 135 }, 
+  				  { x: 0, y: 0, dir: [-1,1], rotate: 45 }, 
+  				  { x: 0, y: 0, dir: [1,1], rotate: 315 } ];
   
-  constructor(private actionDataService: ActionDataService) {
+  constructor(public element: ElementRef, private actionDataService: ActionDataService) {
     this.subscription = actionDataService.fieldRunner$.subscribe(
       (n: number) => {
         this.showLastRunners = true;
@@ -42,8 +43,33 @@ export class FieldComponent { // implements OnInit {
     });
   }
 
+  ngOnInit() {
+    this.init();
+  }
+
+  init() {
+    this.graphWidth = this.element.nativeElement.getBoundingClientRect().width;
+    this.graphHeight = window.innerHeight;
+    this.edge = this.graphWidth/2.5;
+    this.pitcherR = this.edge * .1875 * .5;
+    this.pitcherDis = this.edge * .675; 
+    this.baseR = this.edge * .15;
+    this.fieldEdge = this.edge / Math.sqrt(2);
+    this.lineGap = this.edge * .0375;
+    this.baseWidth = this.edge * .05;
+    this.sDiamondMove = this.lineGap * Math.sqrt(2);
+    this.sDiamondAway = (Math.sqrt(this.baseR*this.baseR - this.lineGap*this.lineGap) - this.lineGap) / Math.sqrt(2);
+    this.lDiamondAway = (Math.sqrt(this.baseR*this.baseR - this.lineGap*this.lineGap) + this.lineGap) / Math.sqrt(2);
+    this.centerX = this.graphWidth*.5;
+    this.centerY = this.graphHeight - this.sDiamondAway * 3;
+    this.bases = [ { x: this.centerX, y: this.centerY, dir: [1,-1], rotate: 0 }, 
+    				  { x: this.centerX + this.fieldEdge, y: this.centerY - this.fieldEdge, dir: [-1,-1], rotate: 135 }, 
+    				  { x: this.centerX, y: this.centerY - this.fieldEdge * 2, dir: [-1,1], rotate: 45 }, 
+    				  { x: this.centerX - this.fieldEdge, y: this.centerY - this.fieldEdge, dir: [1,1], rotate: 315 } ];
+  }
+
   run(totalRun: number = 1, hasRun: number = 0) {
-    var fromBase = 0, toBase = 3, speed = 5;
+    var fromBase = 0, toBase = 3, speed = 8;
     var getXY = (target) => ({ x: parseInt(target.getAttribute('x')), y: parseInt(target.getAttribute('y')) });
     var goList = [];
     for (var i: number = fromBase; i <= toBase; ++i) {
@@ -102,12 +128,8 @@ export class FieldComponent { // implements OnInit {
   }
 
   hasRunner(runner: number) {
-    var newLoc: number[];
     var loc = this.showLastRunners ? this.lastLocations : this.locations;
-    if (typeof loc === 'string') {
-      newLoc = loc.split(',').map(s => parseInt(s));
-    }
-    var r = new Runners(null, newLoc);
+    var r = new Runners(null, loc);
     return r.hasRunner(runner);
   }
 

@@ -6,7 +6,7 @@
     flex-direction: column;
   
     .btn {
-      margin: -1px 1px; 
+      margin: 0px 1px; 
       overflow: hidden;
       position: relative;
 
@@ -38,9 +38,13 @@
 
 .container {
   display: flex;
+  height: 100%;
 
   .half-part {
     flex: 1 100;
+    position: relative;
+    height: 100%;
+    overflow: scroll;
   }
 }
 
@@ -48,6 +52,8 @@
   width: 100%;
   display: flex;
   justify-content: space-around;
+  position: absolute;
+  background: rgba(255,255,255,.2);
   & > div {
     line-height: 2em;
     & > span {

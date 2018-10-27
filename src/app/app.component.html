@@ -26,8 +26,8 @@
       </div>
       <!-- <div><span class="text">OUT</span></div> -->
     </div>
-    <field locations="{{fieldActionService.runners.location}}"
-           lastLocations="{{fieldActionService.lastRunners.location}}"></field>
+    <field [locations]="fieldActionService.runners.location"
+           [lastLocations]="fieldActionService.lastRunners.location"></field>
   </div>
   
   <div class="half-part" id="buttons" (transitionend)="btnTransitionEnd($event)">

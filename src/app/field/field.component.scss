@@ -2,11 +2,15 @@ $redMud: #E41010;
 $grass: #50A160;
 
 svg {
-  height: 500px;
-  width: 500px;
+  width: 100%;
+  height: 100%;
 }
 
-#allField, #infield {
+#allField, #outField {
+  stroke: $grass;
+}
+
+#allField, #infield, #outField {
   fill: $grass;
 }
 
