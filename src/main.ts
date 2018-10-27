@@ -14,15 +14,16 @@ platformBrowserDynamic().bootstrapModule(AppModule)
 declare global {
   interface Array<T> {
     count(query: T): number,
-    last(): T
+    last(): T,
+    equals(ar: T[]): boolean
   }
 }
 
 Object.defineProperties(Array.prototype, {
   count: {
-    value: function(query: string): number {
-      let count = 0;
-      for(let i=0; i<this.length; i++)
+    value: function(query): number {
+      var count = 0;
+      for(var i=0; i<this.length; i++)
         if(typeof this[i] == 'object') count += this[i].count(query);
         else if (this[i]==query) ++count;
       return count;
@@ -30,6 +31,23 @@ Object.defineProperties(Array.prototype, {
   },
   last: {
 	  value: function() { return this[this.length - 1]; }
+  },
+  equals: {
+    value: function(ar): boolean {
+      if (!ar || ar.length !== this.length) {
+        return false;
+      }
+      for (var i=0; i<this.length; ++i) {
+        if (this[i] instanceof Array && ar[i] instanceof Array) {
+          if (!this[i].equals(ar[i])) {
+            return false;
+          }
+        } else if (this[i] !== ar[i]) {
+          return false;
+        }
+      }
+      return true;
+    }
   }
 });
 

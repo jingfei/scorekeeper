@@ -60,6 +60,6 @@
     <text [attr.x]="centerX - 9 + 5" [attr.y]="centerY-pitcherDis-pitcherR*.5+20" fill="white">1</text>
   </svg:g>
   <svg:g class="runners" *ngFor="let runner of [0,1,2,3]">
-    <svg:use xlink:href="#runner" *ngIf="hasRunner(runner)" id="runner-base-{{runner}}" [attr.x]="bases[runner].x-baseWidth*2" [attr.y]="bases[runner].y-baseWidth*2" />
+    <svg:use xlink:href="#runner" *ngIf="locations[runner] > -1" id="runner-base-{{runner}}" tabindex="{{runner}}" [attr.x]="getBaseAttrX(runner)" [attr.y]="getBaseAttrY(runner)" fill="blue" />
   </svg:g>
 </svg>

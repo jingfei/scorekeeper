@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
 import { Action } from './action';
 import { Runners } from './runners';
 
@@ -7,11 +6,6 @@ import { Runners } from './runners';
   providedIn: 'root'
 })
 export class ActionDataService {
-  // Observable runner sources
-  fieldRunnerSource = new Subject<number>();
-  // Observable runner streams
-  fieldRunner$ = this.fieldRunnerSource.asObservable();
-
   lastId = 0;
   actions: Action[] = [];
 

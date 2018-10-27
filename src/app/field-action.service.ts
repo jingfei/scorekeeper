@@ -1,6 +1,5 @@
 import { ActionDataService } from './action-data.service';
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
 import { Pitch, Action } from './action';
 import { HitKind, HitResult, Batter } from './batter';
 import { Fielders } from './fielders';
@@ -11,7 +10,6 @@ import { Runners } from './runners';
 })
 export class FieldActionService {
   currentPitch: Pitch[] = [];
-  lastRunners: Runners = new Runners();
   runners: Runners = new Runners();
 
   constructor(private actionDataService: ActionDataService) { }
@@ -70,13 +68,14 @@ export class FieldActionService {
         n = 2;
         break;
       case HitResult.B3: 
-        n = 3
+        n = 3;
+        break;
+      case HitResult.HR:
+        n = 4;
         break;
     }
     if (n) {
       this.runners = action.runners;
-      this.lastRunners = new Runners(this.runners);
-      this.actionDataService.fieldRunnerSource.next(n);
       this.runners.hit(n);
     }
     this.actionDataService = this.actionDataService.addAction(action);
@@ -104,14 +103,10 @@ export class FieldActionService {
       // TODO: show batter menu
       // isNext = true;
     } else if (action.pitch === Pitch.HitByPitch) { // hit by pitch
-      this.lastRunners = new Runners(this.runners);
-      this.actionDataService.fieldRunnerSource.next(1);
       this.runners.force();
       batter.result = HitResult.HitByPitch;
       isNext = true;
     } else if (this.currentPitch.count(Pitch.Ball) === 4) { // bb
-      this.lastRunners = new Runners(this.runners);
-      this.actionDataService.fieldRunnerSource.next(1);
       this.runners.force();
       batter.result = HitResult.BB;
       isNext = true;
