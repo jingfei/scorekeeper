@@ -59,7 +59,7 @@
   	<svg:use xlink:href="#glove" [attr.x]="centerX - 9" [attr.y]="centerY - pitcherDis - pitcherR * .5" />
     <text [attr.x]="centerX - 9 + 5" [attr.y]="centerY-pitcherDis-pitcherR*.5+20" fill="white">1</text>
   </svg:g>
-  <svg:g class="runners" *ngFor="let runner of [0,1,2,3]">
-    <svg:use xlink:href="#runner" *ngIf="locations[runner] > -1" id="runner-base-{{runner}}" tabindex="{{runner}}" [attr.x]="getBaseAttrX(runner)" [attr.y]="getBaseAttrY(runner)" fill="blue" />
+  <svg:g class="runners" *ngFor="let runner of runners; index as base">
+    <svg:use xlink:href="#runner" *ngIf="runner.isOnBase" id="runner-base-{{base}}" [attr.x]="runner.x" [attr.y]="runner.y" [attr.fill]="runner.isScoring ? 'orange' : 'blue'" />
   </svg:g>
 </svg>
