@@ -1,6 +1,10 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div class="container">
-  <div class="even-part history-container">
+  <div class="even-part history-container {{historyOpen ? 'open' : ''}}">
+    <div class="sm-only">
+      <h3 class="sm-title">History</h3>
+      <button class="close-btn" (click)="toggleHistory()"></button>
+    </div>
     <div *ngFor="let action of getAdvancedActions().slice().reverse()" id="{{action.id}}" class="history"> 
       <div *ngIf="action.batter.result">{{action.batter.result}}</div>
       <div *ngIf="action.batter.kind"><svg height="20">
@@ -15,6 +19,7 @@
   </div>
 
   <div class="even-part field-container">
+    <div class="sm-only guide {{historyOpen ? 'open' : ''}}" (click)="toggleHistory()">➤</div>
     <div class="scoreboard">
       <div>
         <span class="text">BALL</span> 
@@ -29,7 +34,7 @@
     <field [locations]="fieldActionService.runners.location"></field>
   </div>
   
-  <div class="even-part" id="buttons" (transitionend)="btnTransitionEnd($event)">
+  <div class="even-part button-container" (transitionend)="btnTransitionEnd($event)">
     <div id="pitch" class="btn-group" (click)="pitchTrigger($event)" *ngIf="showPitchMenu">
       <button class="btn btn-green" data-pitch='Ball'><span [innerHtml]="getPitchIconHtml('Ball')"></span> Ball</button>
       <button class="btn btn-green" data-pitch='HitByPitch'><span [innerHtml]="getPitchIconHtml('HitByPitch')"></span> Hit by pitch</button>

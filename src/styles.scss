@@ -35,6 +35,19 @@ body, html {
   }
 }
 
+.close-btn {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: large;
+  cursor: pointer;
+  &::before {
+    content: 'x';
+  }
+}
+
 @mixin btn-color($name, $color, $darker: false) {
   @if $darker { $name: 'fill-'+$name; }
   .btn-#{$name} {
@@ -66,6 +79,13 @@ body, html {
 }
 
 svg * { stroke: $black; }
+
+.sm-only {
+  // mobile
+  @media (min-width: 576px) {
+    display: none !important;
+  }
+}
 
 @include btn-color('green', $green)
 @include btn-color('red', $red)

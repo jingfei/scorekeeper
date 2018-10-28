@@ -21,6 +21,7 @@ interface TransitionEvent extends Event {
 export class AppComponent { // implements OnInit {
   showPitchMenu = true;
   showHitMenu = false;
+  historyOpen = false;
   fieldActionService = new FieldActionService(this.actionDataService);
 
   constructor(private sanitizer: DomSanitizer,
@@ -122,5 +123,9 @@ export class AppComponent { // implements OnInit {
       }
     }
     return newActions;
+  }
+
+  toggleHistory() {
+    this.historyOpen = !this.historyOpen;
   }
 }
