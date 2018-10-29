@@ -2,6 +2,7 @@ import { ActionDataService } from './action-data.service';
 import { FieldActionService } from './field-action.service';
 import { TextIconService } from './text-icon.service';
 import { Component, OnInit } from '@angular/core';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Pitch } from './action';
 import { HitKind, HitResult, Batter } from './batter';
@@ -16,12 +17,22 @@ interface TransitionEvent extends Event {
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  providers: [ActionDataService, TextIconService]
+  providers: [ActionDataService, TextIconService],
+  animations: [
+    trigger('animationHitMenu', [
+      transition(':enter', [ 
+        style({ opacity: 0 }),
+        animate(200) 
+      ]),
+      state('*', style({ opacity: 1})),
+    ])
+  ]
 })
 export class AppComponent { // implements OnInit {
   showPitchMenu = true;
   showHitMenu = false;
   historyOpen = false;
+  hitSelectedMenu = 'hit-kind';
   fieldActionService = new FieldActionService(this.actionDataService);
 
   constructor(private sanitizer: DomSanitizer,
@@ -58,6 +69,7 @@ export class AppComponent { // implements OnInit {
   hitKindTrigger(e: Event) {
     var target = e.target as HTMLElement;
     if (target.tagName === 'LABEL') {
+      this.changeActiveElm(e.currentTarget as HTMLElement, target);
       this.fieldActionService.recordHitKind(HitKind[target.dataset.hitKind]);
     }
   }
@@ -65,6 +77,7 @@ export class AppComponent { // implements OnInit {
   hitResultTrigger(e: Event) {
     var target = e.target as HTMLElement;
     if (target.tagName === 'LABEL') {
+      this.changeActiveElm(e.currentTarget as HTMLElement, target);
       this.fieldActionService.recordHitResult(HitResult[target.dataset.hitRes]);
     }
   }
@@ -127,5 +140,22 @@ export class AppComponent { // implements OnInit {
 
   toggleHistory() {
     this.historyOpen = !this.historyOpen;
+  }
+
+  changeTabMenu(e: Event, area: string) {
+    var target = e.target as HTMLElement;
+    if (target.tagName === 'BUTTON' && !target.classList.contains('active')) {
+      this.changeActiveElm(e.currentTarget as HTMLElement, target);
+      this.hitSelectedMenu = target.id.substring(4);
+    }
+  }
+
+  changeActiveElm(currentTarget: HTMLElement, target: HTMLElement) {
+    var active = 'active';
+    var activeElm = currentTarget.querySelector('.' + active);
+    if (activeElm) {
+      activeElm.classList.remove(active);
+    }
+    target.classList.add(active);
   }
 }

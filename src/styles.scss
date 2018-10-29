@@ -7,6 +7,10 @@ $red-dark: #bd2130;
 $blue: #007bff;
 $blue-dark: #0069d9;
 $black: #343a40;
+$gray: #6c757d;
+$gray-light: #b5babe;
+$gray-light-opacity: rgba(181,186,190,.5); 
+$tab-border: 2px solid $gray-light;
 
 body, html {
   font: $font-default;
@@ -22,8 +26,8 @@ body, html {
   border-style: solid;
   display: inline-block;
   padding: .375rem .75rem;
-  background: gray;
-  border-color: gray;
+  background: $gray;
+  border-color: $gray;
   transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 
   &:not(:disabled):not(.disabled) {
@@ -43,6 +47,8 @@ body, html {
   right: 0;
   font-size: large;
   cursor: pointer;
+  background: transparent;
+  border: none;
   &::before {
     content: 'x';
   }
@@ -63,7 +69,8 @@ body, html {
     }
     border-color: $color;
     
-    &:hover:not(:active):not(:disabled):not(.disabled):not(.active) {
+    &:hover:not(:active):not(:disabled):not(.disabled):not(.active),
+    &.active, &:active {
       color: #fff;
       @if $darker { 
         background-color: $darker; 
@@ -80,6 +87,48 @@ body, html {
 
 svg * { stroke: $black; }
 
+.tab-menu {
+  display: flex;
+  .tablink {
+    border-radius: 5px 5px 0 0;
+    background: transparent;
+    flex: 1 100%;
+    cursor: pointer;
+    border: none;
+    padding: 14px 16px;
+    border-bottom: $tab-border;
+    color: $gray-light;
+
+    &:active, &.active, &:focus {
+      border: $tab-border;
+      border-bottom: none;
+      outline: none;
+      color: $black;
+
+      // mobile
+      @media (max-width: 575px) {
+        background: $gray-light-opacity;
+      }
+    }
+
+    &:not(.active):not(:active):hover {
+      background: $gray-light;
+      color: #fff;
+    }
+  }
+}
+.tab-content {
+  border: $tab-border;
+  border-top: none;
+  border-radius: 0 5px 0 5px;
+  padding: 5px;
+
+  // mobile
+  @media (max-width: 575px) {
+    background: $gray-light-opacity;
+  }
+}
+
 .sm-only {
   // mobile
   @media (min-width: 576px) {
@@ -94,3 +143,4 @@ svg * { stroke: $black; }
 @include btn-color('blue', $blue, $blue-dark)
 @include btn-color('green', $green, $green-dark)
 @include btn-color('red', $red, $red-dark)
+@include btn-color('gray', $gray)
