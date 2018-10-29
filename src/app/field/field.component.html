@@ -1,4 +1,11 @@
-<svg (window:resize)="init()">
+<svg (window:resize)="init()"
+     (mousemove)="drag($event)"
+     (touchmove)="drag($event)"
+     (mouseup)="endDrag($event)"
+     (touchend)="endDrag($event)"
+     (touchleave)="endDrag($event)"
+     (touchcancel)="endDrag($event)"
+     (mouseleave)="endDrag($event)">
   <glove *ngIf="showGloves"></glove>
   <svg:defs *ngIf="showRunners">
     <svg:rect id="runner" [attr.width]="baseWidth*4" [attr.height]="baseWidth*4" />
@@ -39,27 +46,12 @@
   			 +'l'+baseWidth+', 0'
   			 +'l0, '+baseWidth*.5+' Z'" />
   </svg:g>
-  <svg:g id="fielder">
-    <svg:use xlink:href="#glove" [attr.x]="centerX - edge" [attr.y]="centerY - fieldEdge * 2.5" />
-    <text [attr.x]="centerX - edge + 5" [attr.y]="centerY-fieldEdge*2.5+20" fill="white">7</text>
-  	<svg:use xlink:href="#glove" [attr.x]="centerX - 9" [attr.y]="centerY - fieldEdge * 3" />
-    <text [attr.x]="centerX - 9 + 5" [attr.y]="centerY-fieldEdge*3+20" fill="white">8</text>
-  	<svg:use xlink:href="#glove" [attr.x]="centerX + edge - 9" [attr.y]="centerY - fieldEdge * 2.5" />
-    <text [attr.x]="centerX + edge - 9 + 5" [attr.y]="centerY-fieldEdge*2.5+20" fill="white">9</text>
-  	<svg:use xlink:href="#glove" [attr.x]="centerX - fieldEdge" [attr.y]="centerY - fieldEdge - edge*.35" />
-    <text [attr.x]="centerX - fieldEdge + 5" [attr.y]="centerY-fieldEdge-edge*.35+20" fill="white">6</text>
-  	<svg:use xlink:href="#glove" [attr.x]="centerX - edge*.35" [attr.y]="centerY - fieldEdge * 2 - baseWidth * .5" />
-    <text [attr.x]="centerX - edge*.35 + 5" [attr.y]="centerY-fieldEdge*2-baseWidth*.5+20" fill="white">5</text>
-  	<svg:use xlink:href="#glove" [attr.x]="centerX + edge*.25" [attr.y]="centerY - fieldEdge * 2 - baseWidth * .5" />
-    <text [attr.x]="centerX + edge*.25 + 5" [attr.y]="centerY-fieldEdge*2-baseWidth*.5+20" fill="white">4</text>
-  	<svg:use xlink:href="#glove" [attr.x]="centerX + fieldEdge - edge*.1" [attr.y]="centerY - fieldEdge - edge*.35" />
-    <text [attr.x]="centerX + fieldEdge - edge*.1 + 5" [attr.y]="centerY-fieldEdge-edge*.35+20" fill="white">3</text>
-  	<svg:use xlink:href="#glove" [attr.x]="centerX - 9" [attr.y]="centerY" />
-    <text [attr.x]="centerX - 9 + 5" [attr.y]="centerY+20" fill="white">2</text>
-  	<svg:use xlink:href="#glove" [attr.x]="centerX - 9" [attr.y]="centerY - pitcherDis - pitcherR * .5" />
-    <text [attr.x]="centerX - 9 + 5" [attr.y]="centerY-pitcherDis-pitcherR*.5+20" fill="white">1</text>
+  <svg:g class="fielder" *ngFor="let fielder of fielders; index as i; first as isFirst"
+              (mousedown)="startDrag($event)" (touchstart)="startDrag($event)" id="fielder-{{i}}">
+    <svg:use *ngIf="!isFirst" xlink:href="#glove" [attr.x]="fielder.x" [attr.y]="fielder.y" />
+    <text *ngIf="!isFirst" [attr.x]="fielder.x + 5" [attr.y]="fielder.y + 20" fill="white">{{i}}</text>
   </svg:g>
-  <svg:g class="runners" *ngFor="let runner of runners; index as base">
+  <svg:g class="runner" *ngFor="let runner of runners; index as base">
     <svg:use xlink:href="#runner" *ngIf="runner.isOnBase" id="runner-base-{{base}}" [attr.x]="runner.x" [attr.y]="runner.y" [attr.fill]="runner.isScoring ? 'orange' : 'blue'" />
   </svg:g>
 </svg>

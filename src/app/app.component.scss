@@ -30,6 +30,10 @@
     overflow: hidden;
   }
 
+  &.button-container {
+    height: auto;
+  }
+
   // tablet
   @media (max-width: 767px) {
   }

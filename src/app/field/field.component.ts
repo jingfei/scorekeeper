@@ -13,6 +13,19 @@ export class FieldComponent implements OnInit {
   @Input() showGloves: boolean;
   @Input() showRunners: boolean;
 
+  dragTarget: number = 0;
+  dragOffset = { x: 0, y: 0 };
+  fielders = [{},
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+    { x: 0, y: 0 }];
+
   runners = [
     { isOnBase: false, x: 0, y: 0, isScoring: false },
     { isOnBase: false, x: 0, y: 0, isScoring: false },
@@ -64,6 +77,7 @@ export class FieldComponent implements OnInit {
     				  { x: this.centerX, y: this.centerY - this.fieldEdge * 2, dir: [-1,1], rotate: 45 }, 
     				  { x: this.centerX - this.fieldEdge, y: this.centerY - this.fieldEdge, dir: [1,1], rotate: 315 } ];
 
+    this.initFielders();
     for (var i = 0; i < this.runners.length; ++i) {
       var { x, y } = this.getRunnerXY(i);
       this.runners[i].x = x;
@@ -78,6 +92,10 @@ export class FieldComponent implements OnInit {
       } else {
         this.locations = changes.locations.currentValue;
         this.run(changes.locations.previousValue);
+      }
+    } else if (changes.showGloves) {
+      if (changes.showGloves.currentValue !== changes.showGloves.previousValue) {
+        this.initFielders();
       }
     }
   }
@@ -136,6 +154,18 @@ export class FieldComponent implements OnInit {
   	}, 10);
   }
 
+  initFielders() {
+    this.fielders[1] = { x: this.centerX, y: this.centerY - this.pitcherDis - this.pitcherR * 0.5 }; 
+    this.fielders[2] = { x: this.centerX, y: this.centerY };
+    this.fielders[3] = { x: this.centerX + this.fieldEdge - this.edge * 0.1, y: this.centerY - this.fieldEdge - this.edge * 0.35 };
+    this.fielders[4] = { x: this.centerX + this.edge * 0.25, y: this.centerY - this.fieldEdge * 2 - this.baseWidth * 0.5 };
+    this.fielders[5] = { x: this.centerX - this.fieldEdge, y: this.centerY - this.fieldEdge - this.edge * 0.35 };
+    this.fielders[6] = { x: this.centerX - this.edge * 0.35, y: this.centerY - this.fieldEdge * 2 - this.baseWidth * 0.5 };
+    this.fielders[7] = { x: this.centerX - this.edge, y: this.centerY - this.fieldEdge * 2.5 };
+    this.fielders[8] = { x: this.centerX - 9, y: this.centerY  - this.fieldEdge * 3 };
+    this.fielders[9] = { x: this.centerX + this.edge - 9, y: this.centerY - this.fieldEdge * 2.5 };
+  }
+
   initRunners() {
     for (var i: number = 0; i < this.runners.length; ++i) {
       this.runners[i] = Object.assign({ isOnBase: false, isScoring: false }, this.getRunnerXY(i));
@@ -165,6 +195,40 @@ export class FieldComponent implements OnInit {
     return {
       x: centerX + (radius * Math.cos(angleInRadians)),
       y: centerY + (radius * Math.sin(angleInRadians))
+    };
+  }
+
+  startDrag(e: MouseEvent) {
+    var target = e.currentTarget as HTMLElement;
+    if (this.showGloves && target.classList.contains('fielder')) {
+      this.dragTarget = parseInt(target.id.substring(8));
+      this.dragOffset = this.getMousePosition(e);
+      this.dragOffset.x -= this.fielders[this.dragTarget].x;
+      this.dragOffset.y -= this.fielders[this.dragTarget].y;
+    }
+  }
+
+  drag(e: MouseEvent) {
+    if (this.dragTarget) {
+      e.preventDefault();
+      var { x: dragX, y: dragY } = this.getMousePosition(e);
+      this.fielders[this.dragTarget].x = dragX - this.dragOffset.x;
+      this.fielders[this.dragTarget].y = dragY - this.dragOffset.y;
+    }
+  }
+
+  endDrag(e: Event) {
+    this.dragTarget = 0;
+  }
+
+  getMousePosition(e) {
+    var CTM = this.element.nativeElement.querySelector('svg').getScreenCTM();
+    if (e.touches) {
+      e = e.touches[0];
+    }
+    return {
+      x: (e.clientX - CTM.e) / CTM.a,
+      y: (e.clientY - CTM.f) / CTM.d
     };
   }
 }
