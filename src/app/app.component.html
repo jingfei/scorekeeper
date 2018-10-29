@@ -31,37 +31,48 @@
       <!-- <div><span class="text">OUT</span></div> -->
     </div>
     <field [locations]="fieldActionService.runners.location"
-           [showGloves]="showGloves"></field>
+           [showGloves]="showGloves"
+           [showRunners]="showRunners"></field>
   </div>
   
   <div class="even-part button-container" (transitionend)="btnTransitionEnd($event)">
-    <div id="pitcher" *ngIf="showPitchMenu">
+    <div id="main" *ngIf="showMainMenu">
       <div class="tab-menu" (click)="changeTabMenu($event)">
-        <button class="tablink active" id="tab-pitch">Pitch</button>
-        <button class="tablink" id="field" *ngIf="hasRunnerOnBase()" [@animationTablink]>Pick Off</button>
-        <button class="tablink">Change Players</button>
+        <button class="tablink active" id="tab-main-pitch">Pitch</button>
+        <button class="tablink" id="tab-main-fielders" *ngIf="hasRunnerOnBase()">Pick Off</button>
+        <button class="tablink" id="tab-main-change">Change Players</button>
       </div>
       <div class="tab-content" *ngIf="selectedMenu"> 
-        <div id="pitch" class="btn-group" (click)="pitchTrigger($event)" *ngIf="selectedMenu === 'pitch'" [@animationHitMenu]>
+        <div id="main-pitch" class="btn-group" (click)="pitchTrigger($event)" [@animationHitMenu]="selectedMenu === 'main-pitch'">
           <button class="btn btn-blue" data-pitch='Ball'><span [innerHtml]="getPitchIconHtml('Ball')"></span> Ball</button>
           <button class="btn btn-blue" data-pitch='HitByPitch'><span [innerHtml]="getPitchIconHtml('HitByPitch')"></span> Hit by pitch</button>
           <button class="btn btn-red" data-pitch='Strike'><span [innerHtml]="getPitchIconHtml('Strike')"></span> Strike</button>
           <button class="btn btn-red" data-pitch='SwingMiss'><span [innerHtml]="getPitchIconHtml('SwingMiss')"></span> Swing & Miss</button>
           <button class="btn btn-red" data-pitch='Foul'><span [innerHtml]="getPitchIconHtml('Foul')"></span> Foul</button>
           <button class="btn btn-black" data-pitch='InPlay'><span [innerHtml]="getPitchIconHtml('InPlay')"></span> in play</button>
-        </div> <!-- /.tab-content -->
-      </div>
+        </div> 
+        <div id="main-fielders" [@animationHitMenu]="selectedMenu === 'main-fielders'">
+          Please drag fielder who catch ball to base runner:
+        </div>
+        <div id="main-change" [@animationHitMenu]="selectedMenu === 'main-change'">
+          Please click on players to change:
+        </div>
+      </div><!-- /.tab-content -->
     </div>
   
     <div id="hit" *ngIf="showHitMenu">
       <div class="tab-menu" (click)="changeTabMenu($event)">
         <button class="tablink active" id="tab-hit-result">Result</button>
         <button class="tablink" id="tab-hit-kind">Kind</button>
-        <button class="tablink" id="field">Fielders</button>
-        <button class="tablink" (click)="nextBatter()" *ngIf="hitResultSelected()" [@animationTablink]>Next »</button>
+        <button class="tablink" id="tab-hit-fielders">Fielders</button>
+        <button class="tablink" (click)="nextBatter()" *ngIf="hitResultSelected()">Next »</button>
       </div>
       <div class="tab-content" *ngIf="selectedMenu">
-  		  <div class="btn-group" role="group" id="hit-kind" (click)="hitKindTrigger($event)" *ngIf="selectedMenu === 'hit-kind'" [@animationHitMenu]>
+        <div id="hit-fielders" [@animationHitMenu]="selectedMenu === 'hit-fielders'">
+          Please drag fielders to catch ball:
+        </div>
+  		  <div class="btn-group" role="group" id="hit-kind" (click)="hitKindTrigger($event)" 
+             [@animationHitMenu]="selectedMenu === 'hit-kind'">
   		    <label class="btn btn-blue" data-hit-kind="Ground"> <input type="radio" name="hit-kind" autocomplete="off">
   		  	<svg class="symb" height="12" width="12"><path d="M 0 8 A 10 10 0 0 0 12 8" stroke-width="1" fill="none" /></svg>
   		  	Grounders</label>
@@ -72,15 +83,7 @@
   		  	<svg class="symb" height="12" width="12"><path d="M 12 4 A 10 10 0 0 0 0 4" stroke-width="1" fill="none" /></svg>
   		    Fly Ball</label>
   		  </div>
-        <!-- TODO: remove pos-container -->
-  		  <div id="pos-container" *ngIf="selectedMenu === 'pos-container'" [@animationHitMenu]>
-          <div class="btn-group pos" id="pos-" (click)="fielderPosTrigger($event)">
-            <label class="btn btn-green" *ngFor="let number of [1,2,3,4,5,6,7,8,9]" [attr.data-pos]="number"><input type="radio" name="pos-" value="{{number}}" autocomplete="off">{{number}}</label>
-    	  	  <button class="btn btn-green minus" style="font-weight:bold">-</button>
-    	  	  <button class="btn btn-green" style="font-weight:bold">+</button>
-    	  	</div>
-        </div>
-  		  <div class="btn-group" role="group" id="hit-result" (click)="hitResultTrigger($event)" *ngIf="selectedMenu === 'hit-result'" [@animationHitMenu]>
+  		  <div class="btn-group" role="group" id="hit-result" (click)="hitResultTrigger($event)" [@animationHitMenu]="selectedMenu === 'hit-result'">
   		    <label class="btn btn-gray" data-hit-res="E"> <input type="radio" name="hit-result" autocomplete="off"> <span class="symb">E</span> 失誤</label>
   		    <label class="btn btn-red" data-hit-res="FC"><input type="radio" name="hit-result" autocomplete="off"> <span class="symb">FC</span> 野手選擇</label>
   		    <label class="btn btn-red" data-hit-res="DP"><input type="radio" name="hit-result" autocomplete="off"> <span class="symb">DP</span> 雙殺出局</label>

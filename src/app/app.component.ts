@@ -20,26 +20,19 @@ interface TransitionEvent extends Event {
   providers: [ActionDataService, TextIconService],
   animations: [
     trigger('animationHitMenu', [
-      transition(':enter', [ 
-        style({ opacity: 0 }),
-        animate(200, style({ opacity: 1 })) 
-      ]),
-    ]),
-    // FIXME: animation cannot work
-    trigger('animationTablink', [ 
-      transition(':enter', [
-        style({ flexGrow: 0.001 }),
-        animate(200, style({ flexGrow: 1 }))
-      ]),
-    ]),
+      state('true', style({ display: '*', opacity: 1 })),
+      state('false', style({ display: 'none', opacity: 0 })),
+      transition('false => true', animate(200))
+    ])
   ]
 })
 export class AppComponent { // implements OnInit {
-  showPitchMenu = true;
+  showMainMenu = true;
   showHitMenu = false;
   historyOpen = false;
-  selectedMenu = 'pitch';
+  selectedMenu = 'main-pitch';
   showGloves = false;
+  showRunners = true;
   fieldActionService = new FieldActionService(this.actionDataService);
 
   constructor(private sanitizer: DomSanitizer,
@@ -61,7 +54,7 @@ export class AppComponent { // implements OnInit {
       target.disabled = true;
       var pitch = Pitch[target.dataset.pitch];
       this.showHitMenu = pitch === Pitch.InPlay;
-      this.showPitchMenu = !this.showHitMenu;
+      this.showMainMenu = !this.showHitMenu;
       if (this.showHitMenu) {
         this.selectedMenu = 'hit-result';
       }
@@ -122,9 +115,9 @@ export class AppComponent { // implements OnInit {
 
   nextBatter() {
     this.showHitMenu = false;
-    this.showPitchMenu = true;
+    this.showMainMenu = true;
     this.showGloves = false;
-    this.selectedMenu = 'pitch';
+    this.selectedMenu = 'main-pitch';
     this.fieldActionService.nextBatter();
   }
 
@@ -160,13 +153,17 @@ export class AppComponent { // implements OnInit {
     if (target.tagName === 'BUTTON' && !target.classList.contains('active')) {
       this.changeActiveElm(e.currentTarget as HTMLElement, target);
       this.showGloves = false;
+      this.showRunners = true;
       if (target.id.includes('tab-')) {
         this.selectedMenu = target.id.substring(4);
-      } else {
-        this.selectedMenu = '';
-        if (target.id === 'field') {
+        if (this.selectedMenu === 'hit-fielders') {
+          this.showGloves = true;
+          this.showRunners = false;
+        } else if (this.selectedMenu === 'main-fielders') {
           this.showGloves = true;
         }
+      } else {
+        this.selectedMenu = '';
       }
     }
   }

@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 $font-default: normal 14px/1.5em 'Microsoft JhengHei',arial,sans-serif;
+$font-small: normal 12px/1.3em 'Microsoft JhengHei',arial,sans-serif;
 $green: #28a745;
 $green-dark: #218838;
 $red: #dc3545;
@@ -18,8 +19,11 @@ body, html {
   height: 100%;
 }
 
+button {
+  font: $font-small;
+}
+
 .btn {
-  font: $font-default;
   text-align: center;
   vertical-align: middle;
   line-height: 1.5;

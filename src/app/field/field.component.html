@@ -1,6 +1,6 @@
 <svg (window:resize)="init()">
   <glove *ngIf="showGloves"></glove>
-  <svg:defs>
+  <svg:defs *ngIf="showRunners">
     <svg:rect id="runner" [attr.width]="baseWidth*4" [attr.height]="baseWidth*4" />
   </svg:defs>
   <svg:rect *ngIf="centerY + sDiamondAway * 2 - edge * 3 > 0" id="outField" [attr.x]="0" [attr.y]="0"

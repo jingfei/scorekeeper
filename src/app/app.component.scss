@@ -30,15 +30,6 @@
     overflow: hidden;
   }
 
-  &.button-container {
-    #hit { 
-      text-align: center; 
-      & > div:enter {
-        transition: .4s;
-      }
-    }
-  }
-
   // tablet
   @media (max-width: 767px) {
   }

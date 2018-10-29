@@ -11,6 +11,7 @@ import { Runners } from '../runners';
 export class FieldComponent implements OnInit {
   @Input() locations: number[];
   @Input() showGloves: boolean;
+  @Input() showRunners: boolean;
 
   runners = [
     { isOnBase: false, x: 0, y: 0, isScoring: false },
