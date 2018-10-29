@@ -69,7 +69,8 @@
       </div>
       <div class="tab-content" *ngIf="selectedMenu">
         <div id="hit-fielders" [@animationHitMenu]="selectedMenu === 'hit-fielders'">
-          Please drag fielders to catch ball:
+          <div>Please drag fielders to catch ball:</div>
+          <div>{{ getActions().last().fielders.position.join(' - ') }}</div>
         </div>
   		  <div class="btn-group" role="group" id="hit-kind" (click)="hitKindTrigger($event)" 
              [@animationHitMenu]="selectedMenu === 'hit-kind'">

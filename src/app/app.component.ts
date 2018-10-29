@@ -1,9 +1,11 @@
 import { ActionDataService } from './action-data.service';
 import { FieldActionService } from './field-action.service';
+import { BridgeService } from './bridge.service';
 import { TextIconService } from './text-icon.service';
 import { Component, OnInit } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Subscription } from 'rxjs';
 import { Pitch } from './action';
 import { HitKind, HitResult, Batter } from './batter';
 import { Fielders } from './fielders';
@@ -17,7 +19,7 @@ interface TransitionEvent extends Event {
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  providers: [ActionDataService, TextIconService],
+  providers: [ActionDataService, TextIconService, BridgeService],
   animations: [
     trigger('animationHitMenu', [
       state('true', style({ display: '*', opacity: 1 })),
@@ -26,18 +28,26 @@ interface TransitionEvent extends Event {
     ])
   ]
 })
-export class AppComponent { // implements OnInit {
+export class AppComponent {
   showMainMenu = true;
   showHitMenu = false;
   historyOpen = false;
   selectedMenu = 'main-pitch';
   showGloves = false;
   showRunners = true;
-  fieldActionService = new FieldActionService(this.actionDataService);
+  fieldActionService: FieldActionService;
+  subscription: Subscription;
 
   constructor(private sanitizer: DomSanitizer,
       private actionDataService: ActionDataService,
-      private textIconService: TextIconService) { }
+      private textIconService: TextIconService,
+      private bridgeService: BridgeService) {
+        this.fieldActionService = new FieldActionService(this.actionDataService);
+        this.subscription = bridgeService.fielderPosition$.subscribe(
+          (n: number) => {
+            this.fieldActionService.recordFielder(n);
+        });
+  }
 
   getPitchIconHtml(id: string | number) {
     var pitch = typeof id === "number" ? id : Pitch[id];
@@ -83,13 +93,6 @@ export class AppComponent { // implements OnInit {
     if (target.tagName === 'LABEL') {
       this.changeActiveElm(e.currentTarget as HTMLElement, target);
       this.fieldActionService.recordHitResult(HitResult[target.dataset.hitRes]);
-    }
-  }
-
-  fielderPosTrigger(e: Event) {
-    var target = e.target as HTMLElement;
-    if (target.tagName === 'LABEL') {
-      this.fieldActionService.recordFielder(parseInt(target.dataset.pos));
     }
   }
 

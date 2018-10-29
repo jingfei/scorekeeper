@@ -1,7 +1,5 @@
 import { Component, OnChanges, Input, SimpleChanges, OnInit, ElementRef } from '@angular/core';
-import { ActionDataService } from '../action-data.service';
-import { FieldActionService } from '../field-action.service';
-import { Runners } from '../runners';
+import { BridgeService } from '../bridge.service';
 
 @Component({
   selector: 'field',
@@ -51,7 +49,7 @@ export class FieldComponent implements OnInit {
   				  { x: 0, y: 0, dir: [-1,1], rotate: 45 }, 
   				  { x: 0, y: 0, dir: [1,1], rotate: 315 } ];
   
-  constructor(public element: ElementRef, private actionDataService: ActionDataService) { }
+  constructor(public element: ElementRef, private bridgeService: BridgeService) { }
 
   ngOnInit() {
     this.init();
@@ -218,7 +216,10 @@ export class FieldComponent implements OnInit {
   }
 
   endDrag(e: Event) {
-    this.dragTarget = 0;
+    if (this.dragTarget) {
+      this.bridgeService.fielderPositionSource.next(this.dragTarget);
+      this.dragTarget = 0;
+    }
   }
 
   getMousePosition(e) {

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Action } from './action';
-import { Runners } from './runners';
 
 @Injectable({
   providedIn: 'root'
