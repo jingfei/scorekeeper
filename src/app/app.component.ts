@@ -22,17 +22,24 @@ interface TransitionEvent extends Event {
     trigger('animationHitMenu', [
       transition(':enter', [ 
         style({ opacity: 0 }),
-        animate(200) 
+        animate(200, style({ opacity: 1 })) 
       ]),
-      state('*', style({ opacity: 1})),
-    ])
+    ]),
+    // FIXME: animation cannot work
+    trigger('animationTablink', [ 
+      transition(':enter', [
+        style({ flexGrow: 0.001 }),
+        animate(200, style({ flexGrow: 1 }))
+      ]),
+    ]),
   ]
 })
 export class AppComponent { // implements OnInit {
   showPitchMenu = true;
   showHitMenu = false;
   historyOpen = false;
-  hitSelectedMenu = 'hit-kind';
+  selectedMenu = 'pitch';
+  showGloves = false;
   fieldActionService = new FieldActionService(this.actionDataService);
 
   constructor(private sanitizer: DomSanitizer,
@@ -55,6 +62,9 @@ export class AppComponent { // implements OnInit {
       var pitch = Pitch[target.dataset.pitch];
       this.showHitMenu = pitch === Pitch.InPlay;
       this.showPitchMenu = !this.showHitMenu;
+      if (this.showHitMenu) {
+        this.selectedMenu = 'hit-result';
+      }
       this.fieldActionService.recordPitch(Pitch[target.dataset.pitch]);
     }
   }
@@ -63,6 +73,7 @@ export class AppComponent { // implements OnInit {
     if (e.pseudoElement === "::after") {
       var target = e.target as HTMLInputElement;
       target.disabled = false;
+      target.classList.remove("hasactive");
     }
   }
 
@@ -112,6 +123,8 @@ export class AppComponent { // implements OnInit {
   nextBatter() {
     this.showHitMenu = false;
     this.showPitchMenu = true;
+    this.showGloves = false;
+    this.selectedMenu = 'pitch';
     this.fieldActionService.nextBatter();
   }
 
@@ -146,7 +159,15 @@ export class AppComponent { // implements OnInit {
     var target = e.target as HTMLElement;
     if (target.tagName === 'BUTTON' && !target.classList.contains('active')) {
       this.changeActiveElm(e.currentTarget as HTMLElement, target);
-      this.hitSelectedMenu = target.id.substring(4);
+      this.showGloves = false;
+      if (target.id.includes('tab-')) {
+        this.selectedMenu = target.id.substring(4);
+      } else {
+        this.selectedMenu = '';
+        if (target.id === 'field') {
+          this.showGloves = true;
+        }
+      }
     }
   }
 
@@ -157,5 +178,19 @@ export class AppComponent { // implements OnInit {
       activeElm.classList.remove(active);
     }
     target.classList.add(active);
+  }
+
+  hasRunnerOnBase(): boolean {
+    for (var i: number = 1; i < 4; ++i) {
+      if (this.fieldActionService.runners.location[i] > -1) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  hitResultSelected(): boolean {
+    var act = document.querySelector("#hit-result label.active");
+    return act ? true : false;
   }
 }

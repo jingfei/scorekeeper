@@ -10,6 +10,7 @@ import { Runners } from '../runners';
 })
 export class FieldComponent implements OnInit {
   @Input() locations: number[];
+  @Input() showGloves: boolean;
 
   runners = [
     { isOnBase: false, x: 0, y: 0, isScoring: false },
@@ -44,7 +45,7 @@ export class FieldComponent implements OnInit {
 
   init() {
     this.graphWidth = this.element.nativeElement.getBoundingClientRect().width;
-    this.graphHeight = window.innerHeight;
+    this.graphHeight = window.innerHeight - 50;
     this.edge = this.graphWidth/2.5;
     this.pitcherR = this.edge * .1875 * .5;
     this.pitcherDis = this.edge * .675; 

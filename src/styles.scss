@@ -69,9 +69,9 @@ body, html {
     }
     border-color: $color;
     
-    &:hover:not(:active):not(:disabled):not(.disabled):not(.active),
-    &.active, &:active {
+    &.active, &:active, &:focus {
       color: #fff;
+      outline: none;
       @if $darker { 
         background-color: $darker; 
         border-color: $darker;
@@ -81,6 +81,23 @@ body, html {
         border-color: $color;
       }
       svg * { stroke: #fff; }
+    }
+
+    @media (min-width: 575px) { // not mobile
+      &:hover:not(:active):not(:disabled):not(.disabled):not(.active),
+      &.active, &:active, &:focus {
+        color: #fff;
+        outline: none;
+        @if $darker { 
+          background-color: $darker; 
+          border-color: $darker;
+        }
+        @else { 
+          background-color: $color; 
+          border-color: $color;
+        }
+        svg * { stroke: #fff; }
+      }
     }
   }
 }
@@ -102,7 +119,6 @@ svg * { stroke: $black; }
     &:active, &.active, &:focus {
       border: $tab-border;
       border-bottom: none;
-      outline: none;
       color: $black;
 
       // mobile
@@ -111,9 +127,12 @@ svg * { stroke: $black; }
       }
     }
 
-    &:not(.active):not(:active):hover {
+    &:not(.active):not(:active):not(:disabled):not(.disabled):hover {
       background: $gray-light;
       color: #fff;
+    }
+    &.disabled, &:disabled {
+      cursor: not-allowed;
     }
   }
 }
@@ -126,6 +145,23 @@ svg * { stroke: $black; }
   // mobile
   @media (max-width: 575px) {
     background: $gray-light-opacity;
+  }
+}
+
+.bottom-navbar.tab-menu {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+  .tablink {
+    border-radius: 0;
+    border: 2px solid $blue-dark;
+    background: $blue;
+    color: #fff;
+    &:not(.active):not(:active):not(:disabled):not(.disabled):hover {
+      background: $blue-dark;
+      color: #fff;
+    }
   }
 }
 

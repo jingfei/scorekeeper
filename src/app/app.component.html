@@ -19,7 +19,6 @@
   </div>
 
   <div class="even-part field-container">
-    <div class="sm-only guide {{historyOpen ? 'open' : ''}}" (click)="toggleHistory()">➤</div>
     <div class="scoreboard">
       <div>
         <span class="text">BALL</span> 
@@ -31,36 +30,38 @@
       </div>
       <!-- <div><span class="text">OUT</span></div> -->
     </div>
-    <field [locations]="fieldActionService.runners.location"></field>
+    <field [locations]="fieldActionService.runners.location"
+           [showGloves]="showGloves"></field>
   </div>
   
   <div class="even-part button-container" (transitionend)="btnTransitionEnd($event)">
-    <div id="pitch" (click)="pitchTrigger($event)" *ngIf="showPitchMenu">
-      <div class="tab-menu">
+    <div id="pitcher" *ngIf="showPitchMenu">
+      <div class="tab-menu" (click)="changeTabMenu($event)">
         <button class="tablink active" id="tab-pitch">Pitch</button>
-        <button class="tablink" id="tab-pick-off">Pick Off</button>
-        <button class="tablink" id="tab-change-players">Change Players</button>
+        <button class="tablink" id="field" *ngIf="hasRunnerOnBase()" [@animationTablink]>Pick Off</button>
+        <button class="tablink">Change Players</button>
       </div>
-      <div class="tab-content"> 
-        <div id="pitching" class="btn-group" (click)="pitchTrigger($event)">
-          <button class="btn btn-green" data-pitch='Ball'><span [innerHtml]="getPitchIconHtml('Ball')"></span> Ball</button>
-          <button class="btn btn-green" data-pitch='HitByPitch'><span [innerHtml]="getPitchIconHtml('HitByPitch')"></span> Hit by pitch</button>
+      <div class="tab-content" *ngIf="selectedMenu"> 
+        <div id="pitch" class="btn-group" (click)="pitchTrigger($event)" *ngIf="selectedMenu === 'pitch'" [@animationHitMenu]>
+          <button class="btn btn-blue" data-pitch='Ball'><span [innerHtml]="getPitchIconHtml('Ball')"></span> Ball</button>
+          <button class="btn btn-blue" data-pitch='HitByPitch'><span [innerHtml]="getPitchIconHtml('HitByPitch')"></span> Hit by pitch</button>
           <button class="btn btn-red" data-pitch='Strike'><span [innerHtml]="getPitchIconHtml('Strike')"></span> Strike</button>
           <button class="btn btn-red" data-pitch='SwingMiss'><span [innerHtml]="getPitchIconHtml('SwingMiss')"></span> Swing & Miss</button>
           <button class="btn btn-red" data-pitch='Foul'><span [innerHtml]="getPitchIconHtml('Foul')"></span> Foul</button>
-          <button class="btn btn-blue" data-pitch='InPlay'><span [innerHtml]="getPitchIconHtml('InPlay')"></span> in play</button>
+          <button class="btn btn-black" data-pitch='InPlay'><span [innerHtml]="getPitchIconHtml('InPlay')"></span> in play</button>
         </div> <!-- /.tab-content -->
       </div>
     </div>
   
     <div id="hit" *ngIf="showHitMenu">
       <div class="tab-menu" (click)="changeTabMenu($event)">
-        <button class="tablink active" id="tab-hit-kind">Kind</button>
-        <button class="tablink" id="tab-pos-container">Fielders</button>
-        <button class="tablink" id="tab-hit-result">Result</button>
+        <button class="tablink active" id="tab-hit-result">Result</button>
+        <button class="tablink" id="tab-hit-kind">Kind</button>
+        <button class="tablink" id="field">Fielders</button>
+        <button class="tablink" (click)="nextBatter()" *ngIf="hitResultSelected()" [@animationTablink]>Next »</button>
       </div>
-      <div class="tab-content">
-  		  <div class="btn-group" role="group" id="hit-kind" (click)="hitKindTrigger($event)" *ngIf="hitSelectedMenu === 'hit-kind'" [@animationHitMenu]>
+      <div class="tab-content" *ngIf="selectedMenu">
+  		  <div class="btn-group" role="group" id="hit-kind" (click)="hitKindTrigger($event)" *ngIf="selectedMenu === 'hit-kind'" [@animationHitMenu]>
   		    <label class="btn btn-blue" data-hit-kind="Ground"> <input type="radio" name="hit-kind" autocomplete="off">
   		  	<svg class="symb" height="12" width="12"><path d="M 0 8 A 10 10 0 0 0 12 8" stroke-width="1" fill="none" /></svg>
   		  	Grounders</label>
@@ -71,14 +72,15 @@
   		  	<svg class="symb" height="12" width="12"><path d="M 12 4 A 10 10 0 0 0 0 4" stroke-width="1" fill="none" /></svg>
   		    Fly Ball</label>
   		  </div>
-  		  <div id="pos-container" *ngIf="hitSelectedMenu === 'pos-container'" [@animationHitMenu]>
+        <!-- TODO: remove pos-container -->
+  		  <div id="pos-container" *ngIf="selectedMenu === 'pos-container'" [@animationHitMenu]>
           <div class="btn-group pos" id="pos-" (click)="fielderPosTrigger($event)">
             <label class="btn btn-green" *ngFor="let number of [1,2,3,4,5,6,7,8,9]" [attr.data-pos]="number"><input type="radio" name="pos-" value="{{number}}" autocomplete="off">{{number}}</label>
     	  	  <button class="btn btn-green minus" style="font-weight:bold">-</button>
     	  	  <button class="btn btn-green" style="font-weight:bold">+</button>
     	  	</div>
         </div>
-  		  <div class="btn-group" role="group" id="hit-result" (click)="hitResultTrigger($event)" *ngIf="hitSelectedMenu === 'hit-result'" [@animationHitMenu]>
+  		  <div class="btn-group" role="group" id="hit-result" (click)="hitResultTrigger($event)" *ngIf="selectedMenu === 'hit-result'" [@animationHitMenu]>
   		    <label class="btn btn-gray" data-hit-res="E"> <input type="radio" name="hit-result" autocomplete="off"> <span class="symb">E</span> 失誤</label>
   		    <label class="btn btn-red" data-hit-res="FC"><input type="radio" name="hit-result" autocomplete="off"> <span class="symb">FC</span> 野手選擇</label>
   		    <label class="btn btn-red" data-hit-res="DP"><input type="radio" name="hit-result" autocomplete="off"> <span class="symb">DP</span> 雙殺出局</label>
@@ -96,8 +98,12 @@
   		  	  <svg class="symb" height="12" width="12"><circle r="1" cx="6" cy="6" stroke-width="1" fill="red"></circle><path d="M 6 12 L 12 6 L 6 0 L 0 6 Z" stroke-width="1" fill="none" /></svg>
   		  	  Home Run</label>
   	    </div>
-        <button class="btn btn-black" (click)="nextBatter()">Next Batter</button>
       </div> <!--/.tab-content-->
     </div> <!--/#hit -->
   </div>
+</div>
+<div class="bottom-navbar tab-menu">
+  <button class="tablink btn" (click)="toggleHistory()">History</button>
+  <button class="tablink btn" disabled>Undo</button>
+  <button class="tablink btn" disabled>Redo</button>
 </div>
