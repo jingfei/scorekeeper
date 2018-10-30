@@ -27,7 +27,7 @@ export class FieldActionService {
     }
   }
 
-  recordPitch(pitch: Pitch) {
+  proceedPitch(pitch: Pitch) {
     this.currentPitch.push(pitch);
     this.checkPitch();
   }
@@ -37,49 +37,40 @@ export class FieldActionService {
     this.currentPitch.pop();
   }
 
-  recordHitKind(kind: HitKind) {
+  proceedBatting(batter: Batter, fielders: Fielders) {
     var action: Action = this.actionDataService.getLastAction();
-    action.batter.kind = kind;
-    this.actionDataService = this.actionDataService.addAction(action);
-  }
+    action.batter.kind = batter.kind;
+    action.batter.result = batter.result;
+    // TODO: fielders other argument
+    action.fielders.position = fielders.position.slice();
 
-  recordHitResult(res: HitResult) {
-    var action: Action = this.actionDataService.getLastAction();
-    action.batter.result = res;
-    this.actionDataService = this.actionDataService.addAction(action);
-  }
-
-  recordFielder(pos: number, isOut: boolean = false) {
-    var action: Action = this.actionDataService.getLastAction();
-    action.fielders.add(pos, isOut);
-    this.actionDataService = this.actionDataService.addAction(action);
-  }
-
-  nextBatter() {
-    var action: Action = this.actionDataService.getLastAction();
     var n = 0;
-
-    this.currentPitch = [];
     switch(action.batter.result) {
-      case HitResult.B1: 
-        n = 1;
-        break;
-      case HitResult.B2: 
-        n = 2;
-        break;
-      case HitResult.B3: 
-        n = 3;
-        break;
-      case HitResult.HR:
-        n = 4;
-        break;
+      case HitResult.BB:
+      case HitResult.HitByPitch: 
+        n = -1; break;
+      case HitResult.B1: n = 1; break;
+      case HitResult.B2: n = 2; break;
+      case HitResult.B3: n = 3; break;
+      case HitResult.HR: n = 4; break;
     }
-    if (n) {
+    if (n === -1) {
+      this.runners = action.runners;
+      this.runners.force();
+    } else if (n === 0) {
+      action.batter.isOut = true;
+      action.fielders.addOut();
+    } else {
       this.runners = action.runners;
       this.runners.hit(n);
     }
     this.actionDataService = this.actionDataService.addAction(action);
 
+    this.currentPitch = [];
+    this.runners = new Runners(this.runners);
+  }
+
+  getNewAction(): Action {
     var newAction: Action = new Action();
     var batter: Batter = new Batter();
     var fielder: Fielders = new Fielders();
@@ -87,44 +78,23 @@ export class FieldActionService {
     newAction.fielders = fielder;
     newAction.runners = this.runners;
     this.actionDataService = this.actionDataService.addAction(newAction);
-
-    this.runners = new Runners(this.runners);
+    return newAction;
   }
 
   checkPitch() {
-    var action: Action = new Action();
-    var batter: Batter = new Batter();
-    var fielder: Fielders = new Fielders();
-    var isNext = false;
-
+    var action = this.getNewAction();
     action.pitch = this.currentPitch.last();
 
-    if (action.pitch === Pitch.InPlay) { // hit
-      // TODO: show batter menu
-      // isNext = true;
-    } else if (action.pitch === Pitch.HitByPitch) { // hit by pitch
-      this.runners.force();
-      batter.result = HitResult.HitByPitch;
-      isNext = true;
-    } else if (this.currentPitch.count(Pitch.Ball) === 4) { // bb
-      this.runners.force();
-      batter.result = HitResult.BB;
-      isNext = true;
+    if (action.pitch === Pitch.HitByPitch) {
+      action.batter.result = HitResult.HitByPitch;
+      this.proceedBatting(action.batter, action.fielders);
+    } else if (this.currentPitch.count(Pitch.Ball) === 4) {
+      action.batter.result = HitResult.BB;
+      this.proceedBatting(action.batter, action.fielders);
     } else if ( (action.pitch === Pitch.Strike || action.pitch === Pitch.SwingMiss) &&
         this.currentPitch.count(Pitch.Strike) + this.currentPitch.count(Pitch.SwingMiss) + this.currentPitch.count(Pitch.Foul) >= 3) {
-      batter.isOut = true;
-      fielder.addOut();
-      batter.result = action.pitch === Pitch.Strike ? HitResult.K : HitResult.KK;
-      isNext = true;
-    }
-    action.batter = batter;
-    action.fielders = fielder;
-    action.runners = this.runners;
-    this.actionDataService = this.actionDataService.addAction(action);
-
-    if (isNext) {
-      this.currentPitch = [];
-      this.runners = new Runners(this.runners);
+      action.batter.result = action.pitch === Pitch.Strike ? HitResult.K : HitResult.KK;
+      this.proceedBatting(action.batter, action.fielders);
     }
   }
 }

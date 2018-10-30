@@ -2,17 +2,33 @@ import { ActionDataService } from './action-data.service';
 import { FieldActionService } from './field-action.service';
 import { BridgeService } from './bridge.service';
 import { TextIconService } from './text-icon.service';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { Pitch } from './action';
 import { HitKind, HitResult, Batter } from './batter';
 import { Fielders } from './fielders';
-import { Runners } from './runners';
 
 interface TransitionEvent extends Event {
   pseudoElement: string
+}
+
+enum Const {
+  BUTTON = 'button',
+  LABEL = 'label',
+  ACTIVE = 'active',
+  FILL = 'fill',
+  OUTLINE = 'outline',
+  TAB = 'tab-',
+  DEFAULT_MAIN_MENU = 'main-pitch',
+  MAIN_MENU_PITCH = 'main-pitch',
+  MAIN_MENU_RUNNER = 'main-runner',
+  MAIN_MENU_CHANGE = 'main-change',
+  DEFAULT_HIT_MENU = 'hit-result',
+  HIT_MENU_RESULT = 'hit-result',
+  HIT_MENU_FIELDERS = 'hit-fielders',
+  HIT_MENU_KIND = 'hit-kind',
 }
 
 @Component({
@@ -21,7 +37,7 @@ interface TransitionEvent extends Event {
   styleUrls: ['./app.component.scss'],
   providers: [ActionDataService, TextIconService, BridgeService],
   animations: [
-    trigger('animationHitMenu', [
+    trigger('animationTabMenu', [
       state('true', style({ display: '*', opacity: 1 })),
       state('false', style({ display: 'none', opacity: 0 })),
       transition('false => true', animate(200))
@@ -29,12 +45,17 @@ interface TransitionEvent extends Event {
   ]
 })
 export class AppComponent {
-  showMainMenu = true;
-  showHitMenu = false;
+  Const = Const;
+  HitKind = HitKind;
+  HitResult = HitResult;
+
   historyOpen = false;
-  selectedMenu = 'main-pitch';
+  selectedMenu: string = Const.DEFAULT_MAIN_MENU;
   showGloves = false;
   showRunners = true;
+  showBatter = true;
+  batter = new Batter();
+  fielders = new Fielders();
   fieldActionService: FieldActionService;
   subscription: Subscription;
 
@@ -45,7 +66,7 @@ export class AppComponent {
         this.fieldActionService = new FieldActionService(this.actionDataService);
         this.subscription = bridgeService.fielderPosition$.subscribe(
           (n: number) => {
-            this.fieldActionService.recordFielder(n);
+            this.fielders.add(n);
         });
   }
 
@@ -60,15 +81,14 @@ export class AppComponent {
 
   pitchTrigger(e: Event) {
     var target = e.target as HTMLInputElement;
-    if(target.tagName === 'BUTTON') {
+    if(target.tagName === Const.BUTTON.toUpperCase()) {
       target.disabled = true;
       var pitch = Pitch[target.dataset.pitch];
-      this.showHitMenu = pitch === Pitch.InPlay;
-      this.showMainMenu = !this.showHitMenu;
-      if (this.showHitMenu) {
-        this.selectedMenu = 'hit-result';
+      if (pitch === Pitch.InPlay) {
+        target.disabled = false;
+        this.updateTab(Const.DEFAULT_HIT_MENU);
       }
-      this.fieldActionService.recordPitch(Pitch[target.dataset.pitch]);
+      this.fieldActionService.proceedPitch(Pitch[target.dataset.pitch]);
     }
   }
 
@@ -76,23 +96,18 @@ export class AppComponent {
     if (e.pseudoElement === "::after") {
       var target = e.target as HTMLInputElement;
       target.disabled = false;
-      target.classList.remove("hasactive");
     }
   }
 
-  hitKindTrigger(e: Event) {
+  hitTrigger(e: Event) {
     var target = e.target as HTMLElement;
-    if (target.tagName === 'LABEL') {
-      this.changeActiveElm(e.currentTarget as HTMLElement, target);
-      this.fieldActionService.recordHitKind(HitKind[target.dataset.hitKind]);
-    }
-  }
-
-  hitResultTrigger(e: Event) {
-    var target = e.target as HTMLElement;
-    if (target.tagName === 'LABEL') {
-      this.changeActiveElm(e.currentTarget as HTMLElement, target);
-      this.fieldActionService.recordHitResult(HitResult[target.dataset.hitRes]);
+    if (target.tagName === Const.LABEL.toUpperCase()) {
+      var currentTarget = e.currentTarget as HTMLElement;
+      if (currentTarget.id === Const.HIT_MENU_KIND) {
+        this.batter.kind = HitKind[target.dataset.hitKind];
+      } else if (currentTarget.id === Const.HIT_MENU_RESULT) {
+        this.batter.result = HitResult[target.dataset.hitRes];
+      }
     }
   }
 
@@ -101,31 +116,26 @@ export class AppComponent {
     var res: string[] = [];
 
     while(cnt--) {
-      res.push('fill');
+      res.push(Const.FILL);
     }
 
     if (Pitch[kind] === Pitch.Strike) {
       while(res.length < 2) {
-        res.push('outline');
+        res.push(Const.OUTLINE);
       }
     } else if (Pitch[kind] === Pitch.Ball) {
       while(res.length < 3) {
-        res.push('outline');
+        res.push(Const.OUTLINE);
       }
     }
     return res;
   }
 
   nextBatter() {
-    this.showHitMenu = false;
-    this.showMainMenu = true;
-    this.showGloves = false;
-    this.selectedMenu = 'main-pitch';
-    this.fieldActionService.nextBatter();
-  }
-
-  getActions() {
-    return this.actionDataService.actions;
+    this.updateTab(Const.DEFAULT_MAIN_MENU);
+    this.fieldActionService.proceedBatting(this.batter, this.fielders);
+    this.batter.result = this.batter.kind = null;
+    this.fielders.clear();
   }
 
   getAdvancedActions() {
@@ -151,33 +161,36 @@ export class AppComponent {
     this.historyOpen = !this.historyOpen;
   }
 
-  changeTabMenu(e: Event, area: string) {
+  changeTabMenu(e: Event) {
     var target = e.target as HTMLElement;
-    if (target.tagName === 'BUTTON' && !target.classList.contains('active')) {
-      this.changeActiveElm(e.currentTarget as HTMLElement, target);
-      this.showGloves = false;
-      this.showRunners = true;
-      if (target.id.includes('tab-')) {
-        this.selectedMenu = target.id.substring(4);
-        if (this.selectedMenu === 'hit-fielders') {
-          this.showGloves = true;
-          this.showRunners = false;
-        } else if (this.selectedMenu === 'main-fielders') {
-          this.showGloves = true;
-        }
-      } else {
-        this.selectedMenu = '';
-      }
+    if (target.tagName === Const.BUTTON.toUpperCase() && !target.classList.contains(Const.ACTIVE) && target.id.includes(Const.TAB)) {
+      this.updateTab(target.id.substring(4));
     }
   }
 
-  changeActiveElm(currentTarget: HTMLElement, target: HTMLElement) {
-    var active = 'active';
-    var activeElm = currentTarget.querySelector('.' + active);
-    if (activeElm) {
-      activeElm.classList.remove(active);
+  updateTab(menu: string) {
+    this.selectedMenu = menu;
+    this.fieldGraphUpdate(menu);
+  }
+
+  fieldGraphUpdate(menu: string) {
+    if (menu === Const.HIT_MENU_FIELDERS) {
+      this.showGloves = true;
+      this.showRunners = false;
+      this.showBatter = false;
+    } else if (menu === Const.MAIN_MENU_RUNNER) {
+      this.showGloves = false;
+      this.showRunners = true;
+      this.showBatter = false;
+    } else if (menu === Const.MAIN_MENU_CHANGE) {
+      this.showGloves = true;
+      this.showRunners = true;
+      this.showBatter = true;
+    } else if (menu.includes('main-')) {
+      this.showGloves = false;
+      this.showRunners = true;
+      this.showBatter = true;
     }
-    target.classList.add(active);
   }
 
   hasRunnerOnBase(): boolean {
@@ -190,7 +203,8 @@ export class AppComponent {
   }
 
   hitResultSelected(): boolean {
-    var act = document.querySelector("#hit-result label.active");
+    var targetId = `#${Const.HIT_MENU_RESULT} ${Const.LABEL}.${Const.ACTIVE}`;
+    var act = document.querySelector(targetId);
     return act ? true : false;
   }
 }

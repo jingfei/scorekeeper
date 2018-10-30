@@ -22,6 +22,7 @@
     <div class="field-container">
       <field [locations]="fieldActionService.runners.location"
              [showGloves]="showGloves"
+             [showBatter]="showBatter"
              [showRunners]="showRunners"></field>
     </div>
   
@@ -37,14 +38,20 @@
         </div>
         <!-- <div><span class="text">OUT</span></div> -->
       </div>
-      <div id="main" *ngIf="showMainMenu">
-        <div class="tab-menu" (click)="changeTabMenu($event)">
-          <button class="tablink active" id="tab-main-pitch">Pitch</button>
-          <button class="tablink" id="tab-main-fielders" *ngIf="hasRunnerOnBase()">Pick Off</button>
-          <button class="tablink" id="tab-main-change">Change Players</button>
-        </div>
-        <div class="tab-content" *ngIf="selectedMenu"> 
-          <div id="main-pitch" class="btn-group" (click)="pitchTrigger($event)" [@animationHitMenu]="selectedMenu === 'main-pitch'">
+      <div id="menus">
+        <div class="tab-menu" (click)="changeTabMenu($event)" *ngIf="selectedMenu.substring(0,4) === 'main'">
+          <button class="tablink" [ngClass]="{'active': selectedMenu === Const.MAIN_MENU_PITCH}" id="tab-main-pitch">Pitch</button>
+          <button class="tablink" [ngClass]="{'active': selectedMenu === Const.MAIN_MENU_RUNNER}" id="tab-main-runner" *ngIf="hasRunnerOnBase()">Runner</button>
+          <button class="tablink" [ngClass]="{'active': selectedMenu === Const.MAIN_MENU_CHANGE}" id="tab-main-change">Change Players</button>
+        </div> <!-- .tab-menu -->
+        <div class="tab-menu" (click)="changeTabMenu($event)" *ngIf="selectedMenu.substring(0,3)==='hit'">
+          <button class="tablink" [ngClass]="{'active': selectedMenu === Const.HIT_MENU_RESULT}" id="tab-hit-result">Result</button>
+          <button class="tablink" [ngClass]="{'active': selectedMenu === Const.HIT_MENU_KIND}" id="tab-hit-kind">Kind</button>
+          <button class="tablink" [ngClass]="{'active': selectedMenu === Const.HIT_MENU_FIELDERS}" id="tab-hit-fielders">Fielders</button>
+          <button class="tablink" (click)="nextBatter()" *ngIf="hitResultSelected()">Next »</button>
+        </div> <!-- .tab-menu -->
+        <div class="tab-content">
+          <div id="main-pitch" class="btn-group" (click)="pitchTrigger($event)" [@animationTabMenu]="selectedMenu === Const.MAIN_MENU_PITCH">
             <button class="btn btn-blue" data-pitch='Ball'><span [innerHtml]="getPitchIconHtml('Ball')"></span> Ball</button>
             <button class="btn btn-blue" data-pitch='HitByPitch'><span [innerHtml]="getPitchIconHtml('HitByPitch')"></span> Hit by pitch</button>
             <button class="btn btn-red" data-pitch='Strike'><span [innerHtml]="getPitchIconHtml('Strike')"></span> Strike</button>
@@ -52,59 +59,50 @@
             <button class="btn btn-red" data-pitch='Foul'><span [innerHtml]="getPitchIconHtml('Foul')"></span> Foul</button>
             <button class="btn btn-black" data-pitch='InPlay'><span [innerHtml]="getPitchIconHtml('InPlay')"></span> in play</button>
           </div> 
-          <div id="main-fielders" [@animationHitMenu]="selectedMenu === 'main-fielders'">
-            Please drag fielder who catch ball to base runner:
+          <div id="main-runner" [@animationTabMenu]="selectedMenu === Const.MAIN_MENU_RUNNER">
+            Drag the moving runners:
           </div>
-          <div id="main-change" [@animationHitMenu]="selectedMenu === 'main-change'">
+          <div id="main-change" [@animationTabMenu]="selectedMenu === Const.MAIN_MENU_CHANGE">
             Please click on players to change:
           </div>
-        </div><!-- /.tab-content -->
-      </div>
-  
-      <div id="hit" *ngIf="showHitMenu">
-        <div class="tab-menu" (click)="changeTabMenu($event)">
-          <button class="tablink active" id="tab-hit-result">Result</button>
-          <button class="tablink" id="tab-hit-kind">Kind</button>
-          <button class="tablink" id="tab-hit-fielders">Fielders</button>
-          <button class="tablink" (click)="nextBatter()" *ngIf="hitResultSelected()">Next »</button>
-        </div>
-        <div class="tab-content" *ngIf="selectedMenu">
-          <div id="hit-fielders" [@animationHitMenu]="selectedMenu === 'hit-fielders'">
+          <span *ngIf="selectedMenu.substring(0,3) === 'hit'">
+          <div id="hit-fielders" [@animationTabMenu]="selectedMenu === Const.HIT_MENU_FIELDERS">
             <div>Please drag fielders to catch ball:</div>
-            <div>{{ getActions().last().fielders.position.join(' - ') }}</div>
+            <div>{{ this.fielders.position.join(' - ') }}</div>
           </div>
-  	  	  <div class="btn-group" role="group" id="hit-kind" (click)="hitKindTrigger($event)" 
-               [@animationHitMenu]="selectedMenu === 'hit-kind'">
-  	  	    <label class="btn btn-blue" data-hit-kind="Ground"> 
+  	  	  <div id="hit-kind" class="btn-group" role="group" (click)="hitTrigger($event)" 
+               [@animationTabMenu]="selectedMenu === Const.HIT_MENU_KIND">
+  	  	    <label class="btn btn-blue" [ngClass]="{'active': this.batter.kind === HitKind.Ground}" data-hit-kind="Ground"> 
   	  	  	<svg class="symb" height="12" width="12"><path d="M 0 8 A 10 10 0 0 0 12 8" stroke-width="1" fill="none" /></svg>
   	  	  	Grounders</label>
-  	  	    <label class="btn btn-blue" data-hit-kind="LineDrive">
+  	  	    <label class="btn btn-blue" [ngClass]="{'active': this.batter.kind === HitKind.LineDrive}" data-hit-kind="LineDrive">
   	  	  	<svg class="symb" height="12" width="12"><path d="M 0 10 L 12 10" stroke-width="1" fill="none" /></svg>
   	  	  	Line Drive</label>
-  	  	    <label class="btn btn-blue" data-hit-kind="Fly">
+  	  	    <label class="btn btn-blue" [ngClass]="{'active': this.batter.kind === HitKind.Fly}" data-hit-kind="Fly">
   	  	  	<svg class="symb" height="12" width="12"><path d="M 12 4 A 10 10 0 0 0 0 4" stroke-width="1" fill="none" /></svg>
   	  	    Fly Ball</label>
   	  	  </div>
-  	  	  <div class="btn-group" role="group" id="hit-result" (click)="hitResultTrigger($event)" [@animationHitMenu]="selectedMenu === 'hit-result'">
-  	  	    <label class="btn btn-gray" data-hit-res="E"><span class="symb">E</span> Error</label>
-  	  	    <label class="btn btn-red" data-hit-res="FC"><span class="symb">FC</span> Fielder Choice</label>
-  	  	    <label class="btn btn-red" data-hit-res="DP"><span class="symb">DP</span> Double Play</label>
-  	  	    <label class="btn btn-red" data-hit-res="T"> <span class="symb">T</span> Tag Out</label>
-  	  	    <label class="btn btn-blue" data-hit-res="B1">
+  	  	  <div class="btn-group" role="group" id="hit-result" (click)="hitTrigger($event)" [@animationTabMenu]="selectedMenu === Const.HIT_MENU_RESULT">
+  	  	    <label class="btn btn-gray" [ngClass]="{'active': this.batter.result === HitResult.E}" data-hit-res="E"><span class="symb">E</span> Error</label>
+  	  	    <label class="btn btn-red" [ngClass]="{'active': this.batter.result === HitResult.FC}" data-hit-res="FC"><span class="symb">FC</span> Fielder Choice</label>
+  	  	    <label class="btn btn-red" [ngClass]="{'active': this.batter.result === HitResult.DP}" data-hit-res="DP"><span class="symb">DP</span> Double Play</label>
+  	  	    <label class="btn btn-red" [ngClass]="{'active': this.batter.result === HitResult.T}" data-hit-res="T"> <span class="symb">T</span> Tag Out</label>
+  	  	    <label class="btn btn-blue" [ngClass]="{'active': this.batter.result === HitResult.B1}" data-hit-res="B1">
   	  	  	  <svg class="symb" height="12" width="12"><path d="M 6 12 L 12 6" stroke-width="1" fill="none" /></svg>
   	  	  	  Single</label>
-  	  	    <label class="btn btn-blue" data-hit-res="B2">
+  	  	    <label class="btn btn-blue" [ngClass]="{'active': this.batter.result === HitResult.B2}" data-hit-res="B2">
   	  	  	  <svg class="symb" height="12" width="12"><path d="M 6 12 L 12 6 L 6 0" stroke-width="1" fill="none" /></svg>
   	  	  	  Double</label>
-  	  	    <label class="btn btn-blue" data-hit-res="B3">
+  	  	    <label class="btn btn-blue" [ngClass]="{'active': this.batter.result === HitResult.B3}" data-hit-res="B3">
   	  	  	  <svg class="symb" height="12" width="12"><path d="M 6 12 L 12 6 L 6 0 L 0 6" stroke-width="1" fill="none" /></svg>
   	  	  	  Triple</label>
-  	  	    <label class="btn btn-blue" data-hit-res="HR">
+  	  	    <label class="btn btn-blue" [ngClass]="{'active': this.batter.result === HitResult.HR}" data-hit-res="HR">
   	  	  	  <svg class="symb" height="12" width="12"><circle r="1" cx="6" cy="6" stroke-width="1" fill="red"></circle><path d="M 6 12 L 12 6 L 6 0 L 0 6 Z" stroke-width="1" fill="none" /></svg>
   	  	  	  Home Run</label>
   	      </div>
+          </span>
         </div> <!--/.tab-content-->
-      </div> <!--/#hit -->
+      </div>
     </div>
   </div>
 </div>

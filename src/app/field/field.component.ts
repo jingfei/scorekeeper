@@ -10,6 +10,7 @@ export class FieldComponent implements OnInit {
   @Input() locations: number[];
   @Input() showGloves: boolean;
   @Input() showRunners: boolean;
+  @Input() showBatter: boolean;
 
   dragTarget: number = 0;
   dragOffset = { x: 0, y: 0 };
@@ -86,23 +87,25 @@ export class FieldComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.locations) {
       if (changes.locations.firstChange) {
-        this.updateRunners(this.locations);
+        this.updateRunners();
       } else {
         this.locations = changes.locations.currentValue;
         this.run(changes.locations.previousValue);
       }
-    } else if (changes.showGloves) {
+    }
+    if (changes.showGloves) {
       if (changes.showGloves.currentValue !== changes.showGloves.previousValue) {
         this.initFielders();
       }
+    }
+    if (changes.showRunners || changes.showBatter) {
+      this.updateRunners();
     }
   }
 
   updateRunners(locs: number[] = this.locations) {
     for (var i = 0; i < this.runners.length; ++i) {
-      if (locs[i] > -1) {
-        this.runners[i].isOnBase = true;
-      }
+      this.runners[i].isOnBase = i ? locs[i] > -1 && this.showRunners : this.showBatter;
     }
   }
 

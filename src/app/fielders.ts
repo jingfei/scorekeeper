@@ -51,4 +51,10 @@ export class Fielders {
   addOut(n: number = 1) {
     this.outNum += n;
   }
+
+  clear() {
+    this.position = [];
+    this.isOut = [];
+    this.outNum = 0;
+  }
 }
