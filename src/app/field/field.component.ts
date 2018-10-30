@@ -57,8 +57,8 @@ export class FieldComponent implements OnInit {
 
   init() {
     this.graphWidth = this.element.nativeElement.getBoundingClientRect().width;
-    this.graphHeight = window.innerHeight - 50;
-    this.edge = this.graphWidth/2.5;
+    this.graphHeight = window.innerHeight - 50; // minus bottom menu
+    this.edge = ( this.graphWidth > this.graphHeight ? this.graphHeight : this.graphWidth ) / 2.5;
     this.pitcherR = this.edge * .1875 * .5;
     this.pitcherDis = this.edge * .675; 
     this.baseR = this.edge * .15;
