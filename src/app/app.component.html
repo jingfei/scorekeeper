@@ -67,6 +67,7 @@
           </div>
           <span *ngIf="selectedMenu.substring(0,3) === 'hit'">
           <div id="hit-fielders" [@animationTabMenu]="selectedMenu === Const.HIT_MENU_FIELDERS">
+            <div class="reset-btn" *ngIf="this.fielders.position.length" (click)="resetFielders()">⟳</div>
             <div>Please drag fielders to catch ball:</div>
             <div>{{ this.fielders.position.join(' - ') }}</div>
           </div>

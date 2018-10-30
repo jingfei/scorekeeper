@@ -134,6 +134,13 @@
   }
 }
 
+.reset-btn {
+  position: absolute;
+  right: 0; bottom: 5px;
+  font-size: 2em;
+  cursor: pointer;
+}
+
 .bottom-navbar.tab-menu {
   // mobile
   @media (min-width: 576px) {

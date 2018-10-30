@@ -138,6 +138,11 @@ export class AppComponent {
     this.fielders.clear();
   }
 
+  resetFielders() {
+    this.fielders.clear();
+    this.showGloves = true;
+  }
+
   getAdvancedActions() {
     // FIXME: no pick off currently
     var newActions = [];
