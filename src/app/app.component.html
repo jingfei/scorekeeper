@@ -48,7 +48,7 @@
           <button class="tablink" [ngClass]="{'active': selectedMenu === Const.HIT_MENU_RESULT}" id="tab-hit-result">Result</button>
           <button class="tablink" [ngClass]="{'active': selectedMenu === Const.HIT_MENU_KIND}" id="tab-hit-kind">Kind</button>
           <button class="tablink" [ngClass]="{'active': selectedMenu === Const.HIT_MENU_FIELDERS}" id="tab-hit-fielders">Fielders</button>
-          <button class="tablink" (click)="nextBatter()" *ngIf="hitResultSelected()">Next »</button>
+          <button class="tablink" (click)="nextBatter()" *ngIf="batter.result">Next »</button>
         </div> <!-- .tab-menu -->
         <div class="tab-content">
           <div id="main-pitch" class="btn-group" (click)="pitchTrigger($event)" [@animationTabMenu]="selectedMenu === Const.MAIN_MENU_PITCH">

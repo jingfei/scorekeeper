@@ -206,10 +206,4 @@ export class AppComponent {
     }
     return false;
   }
-
-  hitResultSelected(): boolean {
-    var targetId = `#${Const.HIT_MENU_RESULT} ${Const.LABEL}.${Const.ACTIVE}`;
-    var act = document.querySelector(targetId);
-    return act ? true : false;
-  }
 }

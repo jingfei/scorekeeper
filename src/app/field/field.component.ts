@@ -85,14 +85,6 @@ export class FieldComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.locations) {
-      if (changes.locations.firstChange) {
-        this.updateRunners();
-      } else {
-        this.locations = changes.locations.currentValue;
-        this.run(changes.locations.previousValue);
-      }
-    }
     if (changes.showGloves) {
       if (changes.showGloves.currentValue !== changes.showGloves.previousValue) {
         this.initFielders();
@@ -100,6 +92,17 @@ export class FieldComponent implements OnInit {
     }
     if (changes.showRunners || changes.showBatter) {
       this.updateRunners();
+    }
+    if (changes.locations) {
+      if (changes.locations.firstChange) {
+        this.updateRunners();
+      } else {
+        this.locations = changes.locations.currentValue;
+        this.showRunners = this.showBatter = true;
+        this.showGloves = false;
+        this.updateRunners(changes.locations.previousValue);
+        this.run(changes.locations.previousValue);
+      }
     }
   }
 
@@ -113,7 +116,7 @@ export class FieldComponent implements OnInit {
     var speed = 10;
     var goList = [];
     for (var base: number = 3; base >= 0; --base) {
-      if (this.runners[base].isOnBase && locs[base] > base) {
+      if (locs[base] > base) {
         goList.push({ from: base, to: (base + 1) % 4 });
 
         if (base + 1 < 4) {

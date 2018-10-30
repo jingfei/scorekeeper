@@ -124,11 +124,7 @@ svg * { stroke: $black; }
       border: $tab-border;
       border-bottom: none;
       color: $black;
-
-      // mobile
-      @media (max-width: 575px) {
-        background: $gray-light-opacity;
-      }
+      background: $gray-light-opacity;
     }
 
     &:not(.active):not(:active):not(:disabled):not(.disabled):hover {
@@ -145,11 +141,7 @@ svg * { stroke: $black; }
   border-top: none;
   border-radius: 0 5px 0 5px;
   padding: 5px;
-
-  // mobile
-  @media (max-width: 575px) {
-    background: $gray-light-opacity;
-  }
+  background: $gray-light-opacity;
 }
 
 .bottom-navbar.tab-menu {
