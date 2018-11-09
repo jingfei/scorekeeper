@@ -1,3 +1,5 @@
+import { Subject } from 'rxjs';
+
 export class Runners {
   /* location from index to where? 
    * size fix 4
@@ -6,7 +8,7 @@ export class Runners {
   location: number[] = [0, -1, -1, -1];
   score: number = 0;
 
-  constructor(last: Runners = null, location: number[] = []) {
+  constructor(private updateSource: Subject<object>, last: Runners = null, location: number[] = []) {
     if (last !== null) {
       for (let i in this.location) {
         this.setRunner(last.location[i])
@@ -42,6 +44,7 @@ export class Runners {
   go(base: number, step: number = 1) {
     var index = this.find(base);
     if (index !== -1) {
+      this.updateSource.next({pos: base, runto: base + step});
       this.location[index] += step;
       if (this.location[index] > 3) {
         ++this.score;

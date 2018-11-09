@@ -1,5 +1,6 @@
 import { ActionDataService } from './action-data.service';
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 import { Pitch, Action } from './action';
 import { HitKind, HitResult, Batter } from './batter';
 import { Fielders } from './fielders';
@@ -10,9 +11,11 @@ import { Runners } from './runners';
 })
 export class FieldActionService {
   currentPitch: Pitch[] = [];
-  runners: Runners = new Runners();
+  runners: Runners;
 
-  constructor(private actionDataService: ActionDataService) { }
+  constructor(private actionDataService: ActionDataService, private runnerUpdateSource: Subject<object>) { 
+    this.runners = new Runners(runnerUpdateSource);
+  }
 
   getCurrentPitchCount(pitch: Pitch) {
     switch(pitch) {
@@ -67,7 +70,7 @@ export class FieldActionService {
     this.actionDataService = this.actionDataService.addAction(action);
 
     this.currentPitch = [];
-    this.runners = new Runners(this.runners);
+    this.runners = new Runners(this.runnerUpdateSource, this.runners);
   }
 
   getNewAction(): Action {

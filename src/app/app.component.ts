@@ -1,7 +1,7 @@
 import { ActionDataService } from './action-data.service';
 import { FieldActionService } from './field-action.service';
-import { BridgeService } from './bridge.service';
 import { TextIconService } from './text-icon.service';
+import { BridgeService } from './bridge.service';
 import { Component } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -63,11 +63,9 @@ export class AppComponent {
       private actionDataService: ActionDataService,
       private textIconService: TextIconService,
       private bridgeService: BridgeService) {
-        this.fieldActionService = new FieldActionService(this.actionDataService);
+        this.fieldActionService = new FieldActionService(this.actionDataService, bridgeService.runnerUpdateSource);
         this.subscription = bridgeService.fielderPosition$.subscribe(
-          (n: number) => {
-            this.fielders.add(n);
-        });
+            (n: number) => this.fielders.add(n));
   }
 
   getPitchIconHtml(id: string | number) {
@@ -196,6 +194,11 @@ export class AppComponent {
       this.showRunners = true;
       this.showBatter = true;
     }
+    this.bridgeService.fieldDisplaySource.next({
+      'isShowFielders': this.showGloves,
+      'isShowRunners': this.showRunners,
+      'isShowBatter': this.showBatter
+    });
   }
 
   hasRunnerOnBase(): boolean {

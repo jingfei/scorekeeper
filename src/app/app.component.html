@@ -19,13 +19,7 @@
   </div>
 
   <div class="even-part field-button-container">
-    <div class="field-container">
-      <field [locations]="fieldActionService.runners.location"
-             [showGloves]="showGloves"
-             [showBatter]="showBatter"
-             [showRunners]="showRunners"></field>
-    </div>
-  
+    <baseball-field class="field-container"></baseball-field>
     <div class="button-container" (transitionend)="btnTransitionEnd($event)">
       <div class="scoreboard">
         <div>

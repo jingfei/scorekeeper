@@ -30,14 +30,13 @@
   &.field-button-container {
     flex: 2 1;
 
-    & > div {
+    & > div, & > baseball-field {
       width: 100%;
       position: absolute;
       
       &.field-container {
         overflow: hidden;
         height: 100%;
-        field { position: absolute; width: 100%; height: 100%; }
       }
       &.button-container {
         z-index: 50;

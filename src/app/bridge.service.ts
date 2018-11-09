@@ -5,10 +5,18 @@ import { Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class BridgeService {
-  // Observable sources
+  // fielderPosition Observable sources
   fielderPositionSource = new Subject<number>();
-  // Observable streams
+  // fielderPosition Observable streams
   fielderPosition$ = this.fielderPositionSource.asObservable();
 
-  constructor() { }
+  // runnerUpdate Observable sources
+  runnerUpdateSource = new Subject<object>();
+  // runnerUpdate Observable streams
+  runnerUpdate$ = this.runnerUpdateSource.asObservable();
+
+  // fieldDisplay Observable sources
+  fieldDisplaySource = new Subject<object>();
+  // fieldDisplay Observable streams
+  fieldDisplay$ = this.fieldDisplaySource.asObservable();
 }
