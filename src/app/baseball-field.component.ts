@@ -18,10 +18,19 @@ export class BaseballFieldComponent implements OnInit {
         (runner: object) => this.render({setRunner: runner}));
     this.subscription = bridgeService.fieldDisplay$.subscribe(
         (fieldDisplay: object) => this.render(fieldDisplay));
+
+    this.handleFieldersMove = this.handleFieldersMove.bind(this);
+  }
+
+  handleFieldersMove(fielders) {
+    this.bridgeService.fielderPositionSource.next(fielders.pos);
   }
 
   ngOnInit() {
-    this.render({ isShowFielders: false });
+    this.render({ 
+      isShowFielders: false, 
+      onFieldersMove: this.handleFieldersMove
+    });
   }
 
   render(props: object) {

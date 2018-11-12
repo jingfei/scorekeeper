@@ -51,9 +51,6 @@ export class AppComponent {
 
   historyOpen = false;
   selectedMenu: string = Const.DEFAULT_MAIN_MENU;
-  showGloves = false;
-  showRunners = true;
-  showBatter = true;
   batter = new Batter();
   fielders = new Fielders();
   fieldActionService: FieldActionService;
@@ -64,14 +61,24 @@ export class AppComponent {
       private textIconService: TextIconService,
       private bridgeService: BridgeService) {
         this.fieldActionService = new FieldActionService(this.actionDataService, bridgeService.runnerUpdateSource);
-        this.subscription = bridgeService.fielderPosition$.subscribe(
-            (n: number) => this.fielders.add(n));
+        this.subscription = bridgeService.fielderPosition$.subscribe(this.afterFieldersMove.bind(this));
+  }
+
+  afterFieldersMove(n: number) {
+    if (this.selectedMenu.includes('hit-')) {
+      this.fielders.add(n);
+    }
   }
 
   getPitchIconHtml(id: string | number) {
     var pitch = typeof id === "number" ? id : Pitch[id];
     return this.sanitizer.bypassSecurityTrustHtml(this.textIconService.getPitchIconHtml(pitch));
   }
+
+  resetFielders() {
+    this.fielders.clear();
+  }
+
 
   getHitKindIconPath(id: HitKind) {
     return this.textIconService.hitKindPath[id];
@@ -136,11 +143,6 @@ export class AppComponent {
     this.fielders.clear();
   }
 
-  resetFielders() {
-    this.fielders.clear();
-    this.showGloves = true;
-  }
-
   getAdvancedActions() {
     // FIXME: no pick off currently
     var newActions = [];
@@ -177,27 +179,31 @@ export class AppComponent {
   }
 
   fieldGraphUpdate(menu: string) {
+    var showGloves, showRunners, showBatter;
+    var isResetFielders = false;
     if (menu === Const.HIT_MENU_FIELDERS) {
-      this.showGloves = true;
-      this.showRunners = false;
-      this.showBatter = false;
+      showGloves = true;
+      showRunners = false;
+      showBatter = false;
     } else if (menu === Const.MAIN_MENU_RUNNER) {
-      this.showGloves = false;
-      this.showRunners = true;
-      this.showBatter = false;
+      showGloves = false;
+      showRunners = true;
+      showBatter = false;
     } else if (menu === Const.MAIN_MENU_CHANGE) {
-      this.showGloves = true;
-      this.showRunners = true;
-      this.showBatter = true;
+      showGloves = true;
+      showRunners = true;
+      showBatter = true;
     } else if (menu.includes('main-')) {
-      this.showGloves = false;
-      this.showRunners = true;
-      this.showBatter = true;
+      showGloves = false;
+      isResetFielders = true;
+      showRunners = true;
+      showBatter = true;
     }
     this.bridgeService.fieldDisplaySource.next({
-      'isShowFielders': this.showGloves,
-      'isShowRunners': this.showRunners,
-      'isShowBatter': this.showBatter
+      'isShowFielders': showGloves,
+      'isShowRunners': showRunners,
+      'isShowBatter': showBatter,
+      'isResetFielders': isResetFielders
     });
   }
 
