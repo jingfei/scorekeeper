@@ -11,7 +11,7 @@ export class ActionDataService {
   constructor() { }
 
   addAction(action: Action): ActionDataService {
-    var isNew = false;
+    let isNew = false;
     // Update exist data
     if (action.id > 0) {
       this.actions = this.actions.map(act => {

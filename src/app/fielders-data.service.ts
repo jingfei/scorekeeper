@@ -31,7 +31,7 @@ export class FieldersDataService {
   }
 
   checkIndex(i: number): boolean {
-    return i < 0 || i >= this.length() ? false: true;
+    return i < 0 || i >= this.length() ? false : true;
   }
 
   add(position: number, isOut: boolean = false): FieldersDataService {

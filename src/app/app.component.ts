@@ -12,7 +12,7 @@ import { Pitch } from './action';
 import { HitKind, HitResult, Batter } from './batter';
 
 interface TransitionEvent extends Event {
-  pseudoElement: string
+  pseudoElement: string;
 }
 
 enum Const {
@@ -75,7 +75,7 @@ export class AppComponent {
   }
 
   getPitchIconHtml(id: string | number) {
-    var pitch = typeof id === "number" ? id : Pitch[id];
+    const pitch = typeof id === 'number' ? id : Pitch[id];
     return this.sanitizer.bypassSecurityTrustHtml(this.textIconService.getPitchIconHtml(pitch));
   }
 
@@ -88,10 +88,10 @@ export class AppComponent {
   }
 
   pitchTrigger(e: Event) {
-    var target = e.target as HTMLInputElement;
-    if(target.tagName === Const.BUTTON.toUpperCase()) {
+    const target = e.target as HTMLInputElement;
+    if (target.tagName === Const.BUTTON.toUpperCase()) {
       target.disabled = true;
-      var pitch = Pitch[target.dataset.pitch];
+      const pitch = Pitch[target.dataset.pitch];
       if (pitch === Pitch.InPlay) {
         target.disabled = false;
         this.updateTab(Const.DEFAULT_HIT_MENU);
@@ -101,16 +101,16 @@ export class AppComponent {
   }
 
   btnTransitionEnd(e: TransitionEvent) {
-    if (e.pseudoElement === "::after") {
-      var target = e.target as HTMLInputElement;
+    if (e.pseudoElement === '::after') {
+      const target = e.target as HTMLInputElement;
       target.disabled = false;
     }
   }
 
   hitTrigger(e: Event) {
-    var target = e.target as HTMLElement;
+    const target = e.target as HTMLElement;
     if (target.tagName === Const.LABEL.toUpperCase()) {
-      var currentTarget = e.currentTarget as HTMLElement;
+      const currentTarget = e.currentTarget as HTMLElement;
       if (currentTarget.id === Const.HIT_MENU_KIND) {
         this.batter.kind = HitKind[target.dataset.hitKind];
       } else if (currentTarget.id === Const.HIT_MENU_RESULT) {
@@ -120,24 +120,24 @@ export class AppComponent {
   }
 
   getOutCount() {
-    var res: string[] = [];
+    const res: string[] = [];
     return res;
   }
 
   getPitchCount(kind: string) {
-    var cnt = this.fieldActionService.getCurrentPitchCount(Pitch[kind]);
-    var res: string[] = [];
+    let cnt = this.fieldActionService.getCurrentPitchCount(Pitch[kind]);
+    const res: string[] = [];
 
-    while(cnt--) {
+    while (cnt--) {
       res.push(Const.FILL);
     }
 
     if (Pitch[kind] === Pitch.Strike) {
-      while(res.length < 2) {
+      while (res.length < 2) {
         res.push(Const.OUTLINE);
       }
     } else if (Pitch[kind] === Pitch.Ball) {
-      while(res.length < 3) {
+      while (res.length < 3) {
         res.push(Const.OUTLINE);
       }
     }
@@ -153,12 +153,12 @@ export class AppComponent {
 
   getAdvancedActions() {
     // FIXME: no pick off currently
-    var newActions = [];
-    var actions = this.actionDataService.actions;
-    for (var i = 0; i < actions.length; ++i) {
+    const newActions = [];
+    const actions = this.actionDataService.actions;
+    for (let i = 0; i < actions.length; ++i) {
       if (actions[i].batter.result) {
-        var action = Object.assign({pitches: [actions[i].pitch]}, actions[i]);
-        var j = i-1;
+        const action = Object.assign({pitches: [actions[i].pitch]}, actions[i]);
+        let j = i - 1;
         while (j >= 0 && !actions[j].batter.result) {
           action.pitches.push(actions[j].pitch);
           --j;
@@ -175,7 +175,7 @@ export class AppComponent {
   }
 
   changeTabMenu(e: Event) {
-    var target = e.target as HTMLElement;
+    const target = e.target as HTMLElement;
     if (target.tagName === Const.BUTTON.toUpperCase() && !target.classList.contains(Const.ACTIVE) && target.id.includes(Const.TAB)) {
       this.updateTab(target.id.substring(4));
     }
@@ -187,8 +187,8 @@ export class AppComponent {
   }
 
   fieldGraphUpdate(menu: string) {
-    var showGloves, showRunners, showBatter;
-    var isResetFielders = false;
+    let showGloves, showRunners, showBatter;
+    let isResetFielders = false;
     if (menu === Const.HIT_MENU_FIELDERS) {
       showGloves = true;
       showRunners = false;
@@ -216,7 +216,7 @@ export class AppComponent {
   }
 
   hasRunnerOnBase(): boolean {
-    for (var i: number = 1; i < 4; ++i) {
+    for (let i = 1; i < 4; ++i) {
       if (this.runnersDataService.hasRunner(i)) {
         return true;
       }

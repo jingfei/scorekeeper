@@ -11,21 +11,21 @@ import { HitKind, HitResult, Batter } from './batter';
 export class FieldActionService {
   currentPitch: Pitch[] = [];
 
-  constructor(private actionDataService: ActionDataService, 
+  constructor(private actionDataService: ActionDataService,
               private runnersDataService: RunnersDataService,
               private fieldersDataService: FieldersDataService) { }
 
   getOutCount() {
-    var actions: Action[] = this.actionDataService.actions;
-
+    const actions: Action[] = this.actionDataService.actions;
+    // TODO: getOutCount
   }
 
   getCurrentPitchCount(pitch: Pitch) {
-    switch(pitch) {
+    switch (pitch) {
       case Pitch.Ball:
         return this.currentPitch.count(Pitch.Ball);
       case Pitch.Strike:
-        var cnt = this.currentPitch.count(Pitch.Strike) +
+        let cnt = this.currentPitch.count(Pitch.Strike) +
                     this.currentPitch.count(Pitch.Foul) +
                     this.currentPitch.count(Pitch.SwingMiss);
         cnt = cnt > 2 ? 2 : cnt;
@@ -44,14 +44,14 @@ export class FieldActionService {
   }
 
   proceedBatting(batter: Batter) {
-    var action: Action = this.actionDataService.getLastAction();
+    const action: Action = this.actionDataService.getLastAction();
     action.batter.kind = batter.kind;
     action.batter.result = batter.result;
 
-    var forward = 0;
-    switch(action.batter.result) {
+    let forward = 0;
+    switch (action.batter.result) {
       case HitResult.BB:
-      case HitResult.HitByPitch: 
+      case HitResult.HitByPitch:
         forward = -1; break;
       case HitResult.B1: forward = 1; break;
       case HitResult.B2: forward = 2; break;
@@ -73,8 +73,8 @@ export class FieldActionService {
   }
 
   getNewAction(): Action {
-    var newAction: Action = new Action();
-    var batter: Batter = new Batter();
+    const newAction: Action = new Action();
+    const batter: Batter = new Batter();
     this.fieldersDataService = this.fieldersDataService.newFielders();
 
     newAction.batter = batter;
@@ -87,7 +87,7 @@ export class FieldActionService {
   }
 
   checkPitch() {
-    var action = this.getNewAction();
+    const action = this.getNewAction();
     action.pitch = this.currentPitch.last();
 
     if (action.pitch === Pitch.HitByPitch) {

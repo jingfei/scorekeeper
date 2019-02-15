@@ -15,12 +15,12 @@ export class RunnersDataService {
   addNewRunner(last: Runners = null, location: number[] = []) {
     if (last !== null) {
       for (let i = 3; i >= 0; --i) {
-        this.setRunner(last.location[i])
+        this.setRunner(last.location[i]);
       }
       this.setRunner(0);
     } else if (location.length === 4) {
       for (let i = 3; i >= 0; --i) {
-        this.setRunner(location[i])
+        this.setRunner(location[i]);
       }
       this.setRunner(0);
     }
@@ -35,7 +35,7 @@ export class RunnersDataService {
   }
 
   find(base: number): number { // find index of runner
-    for (let b of this.runners.location) {
+    for (const b of this.runners.location) {
       if (b === base) {
         return b;
       }
@@ -44,7 +44,7 @@ export class RunnersDataService {
   }
 
   hit(step: number) { // every runner go step
-    for (var base = 3; base >= 0; --base) {
+    for (let base = 3; base >= 0; --base) {
       if (this.hasRunner(base)) {
         this.go(base, step);
       }
@@ -52,7 +52,7 @@ export class RunnersDataService {
   }
 
   go(base: number, step: number = 1) {
-    var index = this.find(base);
+    const index = this.find(base);
     if (index !== -1) {
       this.updateSource.next({pos: base, runto: base + step});
       this.runners.location[index] += step;
@@ -63,7 +63,7 @@ export class RunnersDataService {
   }
 
   force(base: number = 0) { // forced base from batter
-    if(this.isValidIndex(base)) {
+    if (this.isValidIndex(base)) {
       if (this.hasRunner(base + 1)) {
         this.force(base + 1);
       }
