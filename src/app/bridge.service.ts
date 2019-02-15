@@ -19,4 +19,9 @@ export class BridgeService {
   fieldDisplaySource = new Subject<object>();
   // fieldDisplay Observable streams
   fieldDisplay$ = this.fieldDisplaySource.asObservable();
+
+  // outUpdate Observable sources
+  outUpdateSource = new Subject<object>();
+  // outUpdate Observable streams
+  outUpdate$ = this.outUpdateSource.asObservable();
 }

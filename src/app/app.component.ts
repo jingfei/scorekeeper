@@ -1,4 +1,6 @@
 import { ActionDataService } from './action-data.service';
+import { RunnersDataService } from './runners-data.service';
+import { FieldersDataService } from './fielders-data.service';
 import { FieldActionService } from './field-action.service';
 import { TextIconService } from './text-icon.service';
 import { BridgeService } from './bridge.service';
@@ -8,7 +10,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { Pitch } from './action';
 import { HitKind, HitResult, Batter } from './batter';
-import { Fielders } from './fielders';
 
 interface TransitionEvent extends Event {
   pseudoElement: string
@@ -52,21 +53,24 @@ export class AppComponent {
   historyOpen = false;
   selectedMenu: string = Const.DEFAULT_MAIN_MENU;
   batter = new Batter();
-  fielders = new Fielders();
   fieldActionService: FieldActionService;
+  runnersDataService: RunnersDataService;
+  fieldersDataService: FieldersDataService;
   subscription: Subscription;
 
   constructor(private sanitizer: DomSanitizer,
       private actionDataService: ActionDataService,
       private textIconService: TextIconService,
       private bridgeService: BridgeService) {
-        this.fieldActionService = new FieldActionService(this.actionDataService, bridgeService.runnerUpdateSource);
+        this.runnersDataService = new RunnersDataService(this.bridgeService.runnerUpdateSource);
+        this.fieldersDataService = new FieldersDataService(this.bridgeService.fielderPositionSource);
+        this.fieldActionService = new FieldActionService(this.actionDataService, this.runnersDataService, this.fieldersDataService);
         this.subscription = bridgeService.fielderPosition$.subscribe(this.afterFieldersMove.bind(this));
   }
 
   afterFieldersMove(n: number) {
     if (this.selectedMenu.includes('hit-')) {
-      this.fielders.add(n);
+      this.fieldersDataService.add(n);
     }
   }
 
@@ -76,9 +80,8 @@ export class AppComponent {
   }
 
   resetFielders() {
-    this.fielders.clear();
+    this.fieldersDataService.clear();
   }
-
 
   getHitKindIconPath(id: HitKind) {
     return this.textIconService.hitKindPath[id];
@@ -138,9 +141,9 @@ export class AppComponent {
 
   nextBatter() {
     this.updateTab(Const.DEFAULT_MAIN_MENU);
-    this.fieldActionService.proceedBatting(this.batter, this.fielders);
+    this.fieldActionService.proceedBatting(this.batter);
     this.batter.result = this.batter.kind = null;
-    this.fielders.clear();
+    this.fieldersDataService.clear();
   }
 
   getAdvancedActions() {
@@ -209,7 +212,7 @@ export class AppComponent {
 
   hasRunnerOnBase(): boolean {
     for (var i: number = 1; i < 4; ++i) {
-      if (this.fieldActionService.runners.location[i] > -1) {
+      if (this.runnersDataService.hasRunner(i)) {
         return true;
       }
     }

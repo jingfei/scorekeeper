@@ -1,3 +1,4 @@
+import { GameDataService } from './game-data.service';
 import { BridgeService } from './bridge.service';
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
@@ -7,13 +8,15 @@ import { BaseballField } from 'baseball-field-component/dist/BaseballField';
 
 @Component({
   selector: 'baseball-field',
-  template: ''
+  template: '',
+  providers: [GameDataService]
 })
 export class BaseballFieldComponent implements OnInit {
   subscription: Subscription;
   props: object = {};
 
-  constructor(private bridgeService: BridgeService) { 
+  constructor(private bridgeService: BridgeService, 
+      private gameDataService: GameDataService) { 
     this.subscription = bridgeService.runnerUpdate$.subscribe(
         (runner: object) => this.render({setRunner: runner}));
     this.subscription = bridgeService.fieldDisplay$.subscribe(
@@ -27,9 +30,13 @@ export class BaseballFieldComponent implements OnInit {
   }
 
   ngOnInit() {
+    var fieldingLineup = [];
+    this.gameDataService.getFieldingTeam().forEach(player => fieldingLineup[player.fielding - 1] = player.name.split(' ')[0]);
     this.render({ 
       isShowFielders: false, 
-      onFieldersMove: this.handleFieldersMove
+      onFieldersMove: this.handleFieldersMove,
+      fieldersNameList: fieldingLineup,
+      runnersNameList: [this.gameDataService.getBattingTeam()[0].name.split(' ')[0]]
     });
   }
 
