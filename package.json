@@ -22,6 +22,8 @@
     "@angular/router": "^6.1.0",
     "baseball-field-component": "^0.1.52",
     "core-js": "^2.5.4",
+    "react": "^16.6.1",
+    "react-dom": "^16.6.1",
     "rxjs": "~6.2.0",
     "zone.js": "~0.8.26"
   },

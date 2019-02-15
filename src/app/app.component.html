@@ -24,13 +24,16 @@
       <div class="scoreboard">
         <div>
           <span class="text">BALL</span> 
-          <span class="circle {{class}}" *ngFor="let class of getPitch('Ball')"></span>
+          <span class="circle {{class}}" *ngFor="let class of getPitchCount('Ball')"></span>
         </div>
         <div>
           <span class="text">STRIKE</span>
-          <span class="circle {{class}}" *ngFor="let class of getPitch('Strike')"></span>
+          <span class="circle {{class}}" *ngFor="let class of getPitchCount('Strike')"></span>
         </div>
-        <!-- <div><span class="text">OUT</span></div> -->
+        <div>
+          <span class="text">OUT</span>
+          <span class="circle {{class}}" *ngFor="let class of getOutCount()"></span>
+        </div>
       </div>
       <div id="menus">
         <div class="tab-menu" (click)="changeTabMenu($event)" *ngIf="selectedMenu.substring(0,4) === 'main'">

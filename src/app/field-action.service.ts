@@ -15,6 +15,11 @@ export class FieldActionService {
               private runnersDataService: RunnersDataService,
               private fieldersDataService: FieldersDataService) { }
 
+  getOutCount() {
+    var actions: Action[] = this.actionDataService.actions;
+
+  }
+
   getCurrentPitchCount(pitch: Pitch) {
     switch(pitch) {
       case Pitch.Ball:
@@ -43,23 +48,23 @@ export class FieldActionService {
     action.batter.kind = batter.kind;
     action.batter.result = batter.result;
 
-    var n = 0;
+    var forward = 0;
     switch(action.batter.result) {
       case HitResult.BB:
       case HitResult.HitByPitch: 
-        n = -1; break;
-      case HitResult.B1: n = 1; break;
-      case HitResult.B2: n = 2; break;
-      case HitResult.B3: n = 3; break;
-      case HitResult.HR: n = 4; break;
+        forward = -1; break;
+      case HitResult.B1: forward = 1; break;
+      case HitResult.B2: forward = 2; break;
+      case HitResult.B3: forward = 3; break;
+      case HitResult.HR: forward = 4; break;
     }
-    if (n === -1) {
+    if (forward === -1) {
       this.runnersDataService.force();
-    } else if (n === 0) {
+    } else if (forward === 0) {
       action.batter.isOut = true;
       this.fieldersDataService.addOut();
     } else {
-      this.runnersDataService.hit(n);
+      this.runnersDataService.hit(forward);
     }
     this.actionDataService = this.actionDataService.addAction(action);
 

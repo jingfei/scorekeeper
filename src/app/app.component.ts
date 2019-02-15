@@ -119,7 +119,12 @@ export class AppComponent {
     }
   }
 
-  getPitch(kind: string) {
+  getOutCount() {
+    var res: string[] = [];
+    return res;
+  }
+
+  getPitchCount(kind: string) {
     var cnt = this.fieldActionService.getCurrentPitchCount(Pitch[kind]);
     var res: string[] = [];
 
